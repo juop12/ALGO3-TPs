@@ -1,4 +1,9 @@
-
+!classDefinition: #AvispaOriana category: 'AvispasYAbejasParte2'!
+DenotativeObject subclass: #AvispaOriana
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'AvispasYAbejasParte2'!
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -10,11 +15,11 @@ AvispaOriana class
 habitat
 	^Habitat.! !
 
-!AvispaOriana class methodsFor: 'as yet unclassified' stamp: 'JMS 4/22/2022 21:20:30'!
+!AvispaOriana class methodsFor: 'as yet unclassified' stamp: 'JMS 4/23/2022 01:08:57'!
 intentarReproducirse
 	self habitat cantidadDeOrugas < 1 ifTrue: [^nil].
 	self habitat sacrificarOruga.
-	self habitat ponerHuevoDeAvispasDe: 'Oriana y Ornella'.! !
+	self habitat ponerHuevoDeAvispasConFirmaGenetica: 'Oriana y Ornella'.! !
 
 
 !classDefinition: #AvispaLara category: 'AvispasYAbejasParte2'!
@@ -30,17 +35,19 @@ AvispaOriana subclass: #AvispaLara
 AvispaLara class
 	instanceVariableNames: ''!
 
-!AvispaLara class methodsFor: 'as yet unclassified' stamp: 'JMS 4/22/2022 23:18:13'!
+!AvispaLara class methodsFor: 'as yet unclassified' stamp: 'JMS 4/23/2022 01:14:58'!
 intentarReproducirse
+	" Le roba siempre primero a Oriana o Ornella. "
+
 	| CantidadDeHuevosDePolly CantidadDeHuevosDeOrianayOrnella |
 
 	self habitat cantidadDeHuevosDeAvispas < 1 ifTrue: [^nil].
 	
 	CantidadDeHuevosDeOrianayOrnella := self habitat cantidadDeHuevosDeAvispasDe: 'Oriana y Ornella'.	
-	CantidadDeHuevosDeOrianayOrnella > 0 ifTrue: [^ self habitat robarNidoYDarseloALara: 'Oriana y Ornella'].
+	CantidadDeHuevosDeOrianayOrnella > 0 ifTrue: [^ self habitat intercambiarConLaraElNidoRobadoDe: 'Oriana y Ornella'].
 	
 	CantidadDeHuevosDePolly := self habitat cantidadDeHuevosDeAvispasDe: 'Polly'.
-	CantidadDeHuevosDePolly > 0 ifTrue: [^ self habitat robarNidoYDarseloALara: 'Polly'].	
+	CantidadDeHuevosDePolly > 0 ifTrue: [^ self habitat intercambiarConLaraElNidoRobadoDe: 'Polly'].	
 	
 ! !
 
@@ -66,11 +73,11 @@ AvispaOriana subclass: #AvispaPolly
 AvispaPolly class
 	instanceVariableNames: ''!
 
-!AvispaPolly class methodsFor: 'as yet unclassified' stamp: 'JMS 4/22/2022 21:18:34'!
+!AvispaPolly class methodsFor: 'as yet unclassified' stamp: 'JMS 4/23/2022 01:08:57'!
 intentarReproducirse
 	self habitat cantidadDePolillas < 1 ifTrue: [^nil].
 	self habitat sacrificarPolilla.
-	self habitat ponerHuevoDeAvispasDe: 'Polly'.! !
+	self habitat ponerHuevoDeAvispasConFirmaGenetica: 'Polly'.! !
 
 
 !classDefinition: #Habitat category: 'AvispasYAbejasParte2'!
@@ -102,28 +109,31 @@ huevosAlInicioDeLosTiempos: cantidad
 	DiccionarioDeHuevosDeAvispasConGenetica at: 'Oriana y Ornella' put: 0.
 	DiccionarioDeHuevosDeAvispasConGenetica at: 'Lara' put: 0.	! !
 
+!Habitat class methodsFor: 'HuevosDeAvispas' stamp: 'JMS 4/23/2022 01:14:58'!
+intercambiarConLaraElNidoRobadoDe: unStringFirmaGeneticaRobada
+	" Intercambio de nidos. Esta es nuestra interpretacion de 'le roba el nido ... y lo reemplaza por el suyo.'. "
+	
+	| HuevosEntregados HuevosRobados |
+	
+	HuevosEntregados := DiccionarioDeHuevosDeAvispasConGenetica at: 'Lara'.
+	HuevosRobados := DiccionarioDeHuevosDeAvispasConGenetica at: unStringFirmaGeneticaRobada.
+	
+	DiccionarioDeHuevosDeAvispasConGenetica at: unStringFirmaGeneticaRobada put: HuevosEntregados .
+	DiccionarioDeHuevosDeAvispasConGenetica at: 'Lara' put: HuevosRobados .
+	
+	! !
+
 !Habitat class methodsFor: 'HuevosDeAvispas' stamp: 'JMS 4/22/2022 21:05:28'!
 nuevoHuevoDeAvispas
 	CantidadDeHuevosDeAvispas := CantidadDeHuevosDeAvispas + 1. ! !
 
-!Habitat class methodsFor: 'HuevosDeAvispas' stamp: 'JMS 4/22/2022 22:01:11'!
-ponerHuevoDeAvispasDe: unStringFirmaGenetica
+!Habitat class methodsFor: 'HuevosDeAvispas' stamp: 'JMS 4/23/2022 01:08:56'!
+ponerHuevoDeAvispasConFirmaGenetica: unStringFirmaGenetica
 	| NuevaCantidadDeHuevos | 	
 	self nuevoHuevoDeAvispas. 
 	
 	NuevaCantidadDeHuevos := (DiccionarioDeHuevosDeAvispasConGenetica at: unStringFirmaGenetica) + 1.
 	DiccionarioDeHuevosDeAvispasConGenetica at: unStringFirmaGenetica put: NuevaCantidadDeHuevos.! !
-
-!Habitat class methodsFor: 'HuevosDeAvispas' stamp: 'JMS 4/22/2022 23:18:13'!
-robarNidoYDarseloALara: unStringFirmaGeneticaRobada
-	| NuevaCantidadDeHuevos |
-	
-	NuevaCantidadDeHuevos := (DiccionarioDeHuevosDeAvispasConGenetica at: 'Lara') + (DiccionarioDeHuevosDeAvispasConGenetica at: unStringFirmaGeneticaRobada).
-	DiccionarioDeHuevosDeAvispasConGenetica at: unStringFirmaGeneticaRobada put: 0.
-
-	DiccionarioDeHuevosDeAvispasConGenetica at: 'Lara' put: NuevaCantidadDeHuevos.
-	
-	! !
 
 
 !Habitat class methodsFor: 'Orugas' stamp: 'JMS 4/22/2022 21:03:07'!
@@ -161,7 +171,7 @@ sacrificarPolilla
 	CantidadDePolillas := CantidadDePolillas - 1.! !
 
 
-!Habitat class methodsFor: '--** private fileout/in **--' stamp: 'JMS 4/22/2022 23:20:17'!
+!Habitat class methodsFor: '--** private fileout/in **--' stamp: 'JMS 4/23/2022 01:15:59'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
