@@ -3,10 +3,12 @@
 ## Sobre implementar funcionalidad
 
   Implementamos los primeros test en clase y nos centramos en pasar cada prueba de manera secuencial. Por lo tanto, no pasaron los 3 tests de una. En nuestro caso particular, decidimos verificar cada test y luego volver a verificar sus anteriores. En definitiva, seguimos este orden al hacer las pruebas.
-  
+
+<pre>
   1. |1      |
   2. |2 1 2  | 
   3. |3 1 2 3|
+</pre>
   
   En el caso (2.) verificamos el test 2, luego el 1 y luego el 2 denuevo para estar seguros de que todo anda correctamente.
   
