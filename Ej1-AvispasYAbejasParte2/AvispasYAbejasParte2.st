@@ -1,9 +1,4 @@
-!classDefinition: #AvispaOriana category: 'AvispasYAbejasParte2'!
-DenotativeObject subclass: #AvispaOriana
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'AvispasYAbejasParte2'!
+
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
