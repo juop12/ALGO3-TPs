@@ -171,7 +171,7 @@ sacrificarPolilla
 	CantidadDePolillas := CantidadDePolillas - 1.! !
 
 
-!Habitat class methodsFor: '--** private fileout/in **--' stamp: 'JMS 4/23/2022 01:15:59'!
+!Habitat class methodsFor: '--** private fileout/in **--' stamp: 'JMS 4/23/2022 11:14:36'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
