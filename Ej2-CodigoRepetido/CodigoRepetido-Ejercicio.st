@@ -21,47 +21,27 @@ TestCase subclass: #CustomerBookTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'jms 5/1/2022 00:45:47'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'jms 5/1/2022 01:07:21'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	"| customerBook millisecondsBeforeRunning millisecondsAfterRunning milliseconds |"
-	| customerBook milliseconds |
+	| customerBook |
 	
 	customerBook := CustomerBook new.
 	
-	"
-	millisecondsBeforeRunning := self actualTime.
-	customerBook addCustomerNamed: 'John Lennon'.
-	millisecondsAfterRunning := self actualTime.
-	"
+	self assertTimeSpentDoing: [customerBook addCustomerNamed: 'John Lennon'.] isLessThan: 50.
 
-	milliseconds := self timeSpentBy: customerBook Doing: #addCustomerNamed: With:'John Lennon'.
-	
-	
-	self assert: self aNumberInMilliseconds: milliseconds isLessThan: 50.
-	
-	"Cuanto tiempo se estuvo ejecutando addCustomerNamed."
-	"self assert: (self diferenceMillisecondsBefore: millisecondsBeforeRunning After: millisecondsAfterRunning isLessThan: 50)"
-	"self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (50 * millisecond)"
-	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'jms 5/1/2022 00:18:40'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'jms 5/1/2022 01:12:08'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
-	| customerBook millisecondsBeforeRunning millisecondsAfterRunning paulMcCartney |
+	| customerBook |
 	
 	customerBook := CustomerBook new.
-	paulMcCartney := 'Paul McCartney'.
 	
-	customerBook addCustomerNamed: paulMcCartney.
+	customerBook addCustomerNamed: 'Paul McCartney'.
 	
-	millisecondsBeforeRunning := self actualTime.
-	customerBook removeCustomerNamed: paulMcCartney.
-	millisecondsAfterRunning := self actualTime.
-	
-	self assert: (self diferenceMillisecondsBefore: millisecondsBeforeRunning After: millisecondsAfterRunning isLessThan: 100)
-	"self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (100 * millisecond)"
+	self assertTimeSpentDoing: [customerBook removeCustomerNamed: 'Paul McCartney'.] isLessThan: 100.
 	
 ! !
 
@@ -173,11 +153,6 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 ! !
 
 
-!CustomerBookTest methodsFor: 'extraMessages' stamp: 'jms 5/1/2022 00:27:12'!
-aNumberInMilliseconds: aNumberInMilliseconds isLessThan: aNumber 
-	
-	^aNumberInMilliseconds < (aNumber * millisecond)! !
-
 !CustomerBookTest methodsFor: 'extraMessages' stamp: 'jms 5/1/2022 00:15:00'!
 actualTime 
 	
@@ -186,40 +161,15 @@ actualTime
 	
 	! !
 
+!CustomerBookTest methodsFor: 'extraMessages' stamp: 'jms 5/1/2022 01:06:17'!
+assertTimeSpentDoing: aClosure isLessThan: aNumber 
+	
+	self assert: (self timeSpentDoing: aClosure) < (aNumber * millisecond)! !
+
 !CustomerBookTest methodsFor: 'extraMessages' stamp: 'jms 5/1/2022 00:24:18'!
 diferenceInTimeBetween: startTime And: finishTime
 	
 	^(finishTime-startTime)! !
-
-!CustomerBookTest methodsFor: 'extraMessages' stamp: 'jms 5/1/2022 00:24:55'!
-diferenceMillisecondsBefore: startTime After: finishTime isLessThan: aNumber 
-	
-	^(self diferenceInTimeBetween: startTime And: finishTime) < (aNumber * millisecond)! !
-
-!CustomerBookTest methodsFor: 'extraMessages' stamp: 'jms 5/1/2022 00:06:41'!
-prepareCustomerBookForTesting: unStringNombre
-
-	| customerBook |
-	
-	customerBook := CustomerBook new.
-	
-	
-	! !
-
-!CustomerBookTest methodsFor: 'extraMessages' stamp: 'jms 5/1/2022 00:39:25'!
-timeSpentBy: anObject Doing: aMessage With: aCollaborator
-	
-	| millisecondsBeforeRunning millisecondsAfterRunning |
-	
-	millisecondsBeforeRunning := self actualTime.
-	anObject aMessage asMessage aCollaborator.
-	millisecondsAfterRunning := self actualTime.
-	
-	^self diferenceInTimeBetween: millisecondsBeforeRunning And: millisecondsAfterRunning. 
-	
-	
-	
-	! !
 
 !CustomerBookTest methodsFor: 'extraMessages' stamp: 'jms 5/1/2022 00:25:36'!
 timeSpentDoing: aClosure
