@@ -14,10 +14,10 @@ En Smalltalk al representar entes de la realidad se puede utilizar objetos (indi
 
 Quitar código repetido está ligado a las ideas de Naur, incluso fue el foco principal en uno de los ejemplos explicados en el paper. 
 
-<pre>
+<block>
 Ejemplo: 
   Se nos presenta el caso de un equipo A que crea un compilador y un equipo B que va a construir sobre el código del grupo A para hacer una extensión a ese   compilador. Cuando el grupo B escribe el código y lo manda al grupo A, estos notan que no se estaba haciendo uso de funciones implementadas previamente por ellos. El grupo B creó funciones que cumplían el mismo propósito que otras ya existentes, destruyendo el poder y simplicidad del código original. 
-</pre>
+</block>
 
 El equipo B repitió código cuando pudo usar lo que ya estaba implementado, muy parecido a lo que nos sucedió en este ejercicio. Vimos esto de primera mano en los test 01 y 02, para quitar las colaboraciones repetidas lo primero que hicimos fue definir nuevos mensajes que funcionaran como un cronómetro. Sin embargo, los desarrolladores de Cuis habrían utilizado mensajes ya existentes, pues ellos conocen el entorno que crearon.
 
