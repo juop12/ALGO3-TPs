@@ -2,12 +2,13 @@
 
 ## Abstracción de los tests 01 y 02:
 
-El los tests 01 y 02 el tipo de código que se repite es el que mide el tiempo en el que se realizan una acción, por lo que la entidad de la realidad que podemos crear en nuestro código para poder usarla en ambos tests es un cronómetro.
-Cuariosamente, aunque en un primer momento implementamos con mensajes una función para medir el tiempo, luego nos dimos cuenta que la clase TestCase (Superclase de CustomerBookTest) ya tenía implementada un mensaje que cumplía esta función por lo que lo pudimos usar para nuestros fines.
+En los tests 01 y 02, el código repetido mide el tiempo en el que se realiza una acción particular. Una entidad de la realidad que cumple esta función es un cronómetro.
+
+Curiosamente, aunque en una primera aproximación implementamos con mensajes dicho ente, descrubrimos más tarde que la clase TestCase (Superclase de CustomerBookTest) ya responde a mensajes aptos para resolver el problema. Por lo tanto, descartamos nuestro modelo y utilizamos el protocolo de TestCase ya definido en Cuis que cumple el mismo propósito. Dicese, abstraernos de colaboraciones redundantes en los tests y cronómetrar su evaluación.
 
 ## Cómo representar en Smalltalk
 
-En smalltalk para representar entes de la realidad podemos utilizar clases u objetos. Al trabajar con objetos, tenemos un objeto que vamos modificando con el tiempo a través de mensajes, mientras que al trabajar con clases, creamos diferentes instancias de estas y les pasamos mensajes. Los objetos pueden tener una relación de padres e hijos, mientras que las clases tienen relación de clase, subclase y superclase. 
+En Smalltalk al representar entes de la realidad se puede utilizar objetos (individuales) o clases (con instancias). A la hora de trabajar con objetos, se crea un modelo particular de una entidad real. Se lo modifica a través del tiempo a partir de la creación de mensajes que puede responder (y sus respectivos métodos). Por otro lado, al trabajar con clases, creamos diferentes instancias de estas y les pasamos mensajes. Los objetos pueden tener una relación de padres e hijos, mientras que las clases tienen relación de clase, subclase y superclase. 
 
 ## Teoría de Naur
 
