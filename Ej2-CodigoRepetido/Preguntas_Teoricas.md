@@ -13,7 +13,10 @@ En Smalltalk al representar entes de la realidad se puede utilizar objetos (indi
 ## Teoría de Naur
 
 Quitar código repetido está ligado a las ideas de Naur, incluso fue el foco principal en uno de los ejemplos que dio en el paper. 
+
 En esa parte del paper se nos presenta el caso de un equipo A que crea un compilador y un equipo B que va a construir sobre el código del grupo A para hacer una extensión a ese compilador. Vemos que cuando el grupo B creaba código y lo mandaba al grupo A, estos notaban que no estaban haciendo uso de lo que ya estaba implementado, sino que creaban nuevas cosas que hacían lo mismo, destruyendo el poder y simplicidad del código. 
+
 El equipo B estaba repitiendo código cuando todo el tiempo pudo usar lo que ya estaba ahí, muy parecido a lo que vimos en este ejercicio. 
 Vimos esto de primera mano en los test uno y dos. Cuando quisimos quitar los mensajes repetidos lo primero que hicimos fue crear nuevos mensajes que funcionaran como un cronómetro para mensajes, sin embargo si los desarrolladores de smalltalk hubieran visto eso, rápidamente nos hubieran dicho que ya existe una función que hace lo que yo intento hacer, pues ellos conocen el entorno que crearon.
-En conclusión, la relación entre la teoría del sistema del paper y quitar código repetido, es que el código repetido es producto muchas veces de no conocer las mejores formas de construir sobre un software dado, ya que al no conocer muchas de las cosas de las que este software es capaz, pensaremos que las necesitamos implementar, solo para crear código que se repite.
+
+En conclusión, la relación entre la teoría del sistema del paper y quitar código repetido, es que el código repetido es producto muchas veces de no conocer las mejores formas de construir sobre un software dado, ya que al no conocer muchas de las cosas de las que este software es capaz, pensaremos que las necesitamos implementar, solo para crear código que se repite. 
