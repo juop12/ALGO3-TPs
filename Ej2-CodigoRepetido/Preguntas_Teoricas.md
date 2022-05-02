@@ -8,7 +8,7 @@ Curiosamente, aunque en una primera aproximación implementamos con mensajes dic
 
 ## Cómo representar en Smalltalk
 
-En Smalltalk al representar entes de la realidad se puede utilizar objetos (individuales) o clases (con instancias). A la hora de trabajar con objetos, se crea un modelo particular de una entidad real. Se lo modifica a través del tiempo a partir de la creación de mensajes que puede responder (y sus respectivos métodos). Por otro lado, al trabajar con clases, creamos diferentes instancias de estas y les pasamos mensajes. Los objetos pueden tener una relación de padres e hijos, mientras que las clases tienen relación de clase, subclase y superclase. 
+En Smalltalk al representar entes de la realidad se puede utilizar objetos (individuales) o clases (con instancias). A la hora de trabajar con objetos, se crea un modelo particular de una entidad real. Se lo modifica a través del tiempo a partir de la creación de mensajes que puede responder (y sus respectivos métodos). Por otro lado, al trabajar con clases, creamos diferentes instancias de estas y les enviamos mensajes que las definen. Los objetos pueden tener una relación de padre e hijo, mientras que las clases tienen relación de clase, subclase y superclase. 
 
 ## Teoría de Naur
 
