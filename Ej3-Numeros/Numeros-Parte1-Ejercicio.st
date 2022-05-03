@@ -130,24 +130,25 @@ setUp
 
 !classDefinition: #Numero category: 'Numeros-Parte1-Ejercicio'!
 Object subclass: #Numero
-	instanceVariableNames: 'type value numerator denominator'
+	instanceVariableNames: 'value numerator denominator'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'NR 9/9/2019 15:44:29'!
+!Numero methodsFor: 'arithmetic operations' stamp: 'jMS 5/3/2022 15:56:32'!
 * aMultiplier 
 
-	(type = #Entero and: [aMultiplier type = #Entero]) ifTrue:	
+	"(type = #Entero and: [aMultiplier type = #Entero]) ifTrue:	
 		[ ^self class with: value * aMultiplier integerValue ].
 		
 	(type = #Fraccion and: [aMultiplier type = #Fraccion]) ifTrue:
-		[ ^self class with: (numerator * aMultiplier numerator) over: (denominator * aMultiplier denominator) ].
+		[ ^self class with: (numerator * aMultiplier numerator) over: (denominator * aMultiplier denominator) ]."
 		
-	self error: 'Tipo de número no soportado'
-	! !
+	"self error: 'Tipo de número no soportado'"
+	
+	^self subclassResponsibility.! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'JMS 5/2/2022 21:58:37'!
+!Numero methodsFor: 'arithmetic operations' stamp: 'jMS 5/3/2022 16:38:14'!
 + anAdder 
 	
 	"(type = #Entero and: [anAdder type = #Entero]) ifTrue:
@@ -162,25 +163,30 @@ Object subclass: #Numero
 		^ self class with: newNumerator over: newDenominator ]."
 	
 	"self error: 'Tipo de número no soportado'"
+	
 	^self subclassResponsibility .
 	! !
 
-!Numero methodsFor: 'arithmetic operations' stamp: 'NR 9/8/2019 23:19:57'!
+!Numero methodsFor: 'arithmetic operations' stamp: 'jMS 5/3/2022 16:19:15'!
 negated
 	
-	type = #Entero ifTrue:
+	"type = #Entero ifTrue:
 		[ ^self * (self class with: -1) ].
 	type = #Fraccion ifTrue:
-		[ ^self class with: numerator * (self class with: -1) over: denominator ].! !
+		[ ^self class with: numerator * (self class with: -1) over: denominator ]."
+	
+	^self subclassResponsibility.! !
 
 
-!Numero methodsFor: 'testing' stamp: 'NR 9/8/2019 22:00:09'!
+!Numero methodsFor: 'testing' stamp: 'jMS 5/3/2022 16:12:31'!
 isNegative
 	
-	type = #Entero ifTrue:
+	"type = #Entero ifTrue:
 		[ ^value < 0 ].
 	type = #Fraccion ifTrue:
-		[ ^denominator < 0 ].! !
+		[ ^denominator < 0 ]."
+		
+	^self subclassResponsibility.! !
 
 !Numero methodsFor: 'testing' stamp: 'JMS 5/2/2022 21:45:19'!
 isOne
@@ -203,20 +209,18 @@ isZero
 	^self subclassResponsibility .! !
 
 
-!Numero methodsFor: 'initialization' stamp: 'NR 9/8/2019 20:40:14'!
+!Numero methodsFor: 'initialization' stamp: 'jMS 5/3/2022 16:58:10'!
 initializeWith: aValue
 	
-	type := #Entero.
 	value := aValue! !
 
-!Numero methodsFor: 'initialization' stamp: 'NR 9/8/2019 20:40:23'!
+!Numero methodsFor: 'initialization' stamp: 'jMS 5/3/2022 16:58:15'!
 initializeWith: aNumerator over: aDenominator
 
 	"Estas precondiciones estan por si se comenten errores en la implementacion - Hernan"
 	aNumerator isZero ifTrue: [ self error: 'una fraccion no puede ser cero' ].
 	aDenominator isOne ifTrue: [ self error: 'una fraccion no puede tener denominador 1 porque sino es un entero' ].
 	
-	type:=#Fraccion.
 	numerator := aNumerator.
 	denominator := aDenominator ! !
 
@@ -238,56 +242,64 @@ numerator
 
 	^numerator! !
 
-!Numero methodsFor: 'accessing' stamp: 'NR 9/8/2019 21:55:04'!
-type
-	
-	^type! !
 
-
-!Numero methodsFor: 'printing' stamp: 'NR 9/8/2019 21:59:58'!
+!Numero methodsFor: 'printing' stamp: 'jMS 5/3/2022 16:36:50'!
 printOn: aStream
 	
-	type = #Entero ifTrue:
+	"type = #Entero ifTrue:
 		[ aStream print: value ].
 	
 	type = #Fraccion ifTrue:
 		[ aStream 
 			print: numerator;
 			nextPut: $/;
-			print: denominator ].! !
+			print: denominator ]."
+	
+	^self subclassResponsibility.! !
 
 
-!Numero methodsFor: 'comparing' stamp: 'NR 9/8/2019 21:50:26'!
+!Numero methodsFor: 'comparing' stamp: 'jMS 5/3/2022 16:38:06'!
 = anObject
 
-	^(anObject isKindOf: self class) and: [ type = anObject type and: 
+	"Podria revisarse. Consultar."
+	
+	"^(anObject isKindOf: self class) and: [ type = anObject type and: 
 		[ type = #Entero ifTrue: [ value = anObject integerValue] 
 		ifFalse: [ type = #Fraccion ifTrue:
-			[ (numerator * anObject denominator) = (denominator * anObject numerator) ]]]]! !
+			[ (numerator * anObject denominator) = (denominator * anObject numerator) ]]]]"
 
-!Numero methodsFor: 'comparing' stamp: 'NR 9/8/2019 22:00:49'!
+	^self subclassResponsibility. ! !
+
+!Numero methodsFor: 'comparing' stamp: 'jMS 5/3/2022 16:35:28'!
 hash
-	type = #Entero ifTrue:
+	
+	"type = #Entero ifTrue:
 		[ ^value hash ].
 	type = #Fraccion ifTrue:
-		[ ^(numerator hash / denominator hash) hash ].! !
+		[ ^(numerator hash / denominator hash) hash ]."
+		
+	^self subclassResponsibility. ! !
 
 
-!Numero methodsFor: 'arithmetic operations - private' stamp: 'NR 9/9/2019 16:21:07'!
+!Numero methodsFor: 'arithmetic operations - private' stamp: 'jMS 5/3/2022 16:04:56'!
 // aDivisor 
 	
-	type = #Entero ifTrue:
-		[ ^self class with: value // aDivisor integerValue ].
+	"type = #Entero ifTrue:
+		[ ^self class with: value // aDivisor integerValue ]."
 		
-	self error: 'Tipo de número no soportado'! !
+	"self error: 'Tipo de número no soportado'"
+	
+	^self subclassResponsibility.! !
 
-!Numero methodsFor: 'arithmetic operations - private' stamp: 'NR 9/9/2019 16:21:17'!
+!Numero methodsFor: 'arithmetic operations - private' stamp: 'jMS 5/3/2022 16:01:31'!
 greatestCommonDivisorWith: anEntero 
 	
-	type = #Entero ifTrue:
-		[^self class with: (value gcd: anEntero integerValue)].
+	"type = #Entero ifTrue:
+		[^self class with: (value gcd: anEntero integerValue)]."
 		
-	self error: 'Tipo de número no soportado'! !
+	"self error: 'Tipo de número no soportado'."
+		
+	^self subclassResponsibility.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -309,7 +321,7 @@ with: aValue
 	
 	^Entero new initializeWith: aValue! !
 
-!Numero class methodsFor: 'instance creation' stamp: 'JMS 5/2/2022 21:42:12'!
+!Numero class methodsFor: 'instance creation' stamp: 'jMS 5/3/2022 16:54:15'!
 with: aDividend over: aDivisor
 
 	| greatestCommonDivisor numerator denominator |
@@ -317,7 +329,7 @@ with: aDividend over: aDivisor
 	aDivisor isZero ifTrue: [ self error: self canNotDivideByZeroErrorDescription ].
 	aDividend isZero ifTrue: [ ^aDividend ].
 	
-	aDivisor isNegative ifTrue: [ ^self with: aDividend negated over: aDivisor negated].
+	aDivisor isNegative ifTrue: [ ^self with: aDividend negated over: aDivisor negated ].
 	
 	greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
 	numerator := aDividend // greatestCommonDivisor.
@@ -335,12 +347,32 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
 
-!Entero methodsFor: 'testing' stamp: 'JMS 5/2/2022 21:59:02'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'jMS 5/3/2022 15:57:11'!
+* aMultiplier 
+
+	^self class with: value * aMultiplier integerValue.
+		
+	"self error: 'Tipo de número no soportado'"! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/2/2022 21:59:02'!
 + anAdder
 	
 	^self class with: value + anAdder integerValue.
 	
 	"self error: 'Tipo de número no soportado'."! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'jMS 5/3/2022 16:20:11'!
+negated
+	
+	^self * (self class with: -1).
+
+	! !
+
+
+!Entero methodsFor: 'testing' stamp: 'jMS 5/3/2022 16:12:58'!
+isNegative
+	
+	^value < 0.! !
 
 !Entero methodsFor: 'testing' stamp: 'JMS 5/2/2022 21:46:05'!
 isOne
@@ -352,6 +384,35 @@ isZero
 	
 	^value = 0.! !
 
+
+!Entero methodsFor: 'printing' stamp: 'jMS 5/3/2022 16:37:06'!
+printOn: aStream
+	
+	aStream print: value.! !
+
+
+!Entero methodsFor: 'comparing' stamp: 'jMS 5/3/2022 16:58:01'!
+= anObject
+
+	^(anObject isMemberOf: self class)
+		ifTrue: [ value = anObject integerValue ].! !
+
+!Entero methodsFor: 'comparing' stamp: 'jMS 5/3/2022 16:35:41'!
+hash
+
+	^value hash.! !
+
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'jMS 5/3/2022 16:06:48'!
+// aDivisor 
+	
+	^self class with: value // aDivisor integerValue.! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'jMS 5/3/2022 16:06:43'!
+greatestCommonDivisorWith: anEntero 
+	
+	^self class with: (value gcd: anEntero integerValue).! !
+
 
 !classDefinition: #Fraccion category: 'Numeros-Parte1-Ejercicio'!
 Numero subclass: #Fraccion
@@ -360,18 +421,37 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
 
-!Fraccion methodsFor: 'testing' stamp: 'JMS 5/2/2022 21:59:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'jMS 5/3/2022 15:57:33'!
+* aMultiplier 
+		
+	^self class with: (numerator * aMultiplier numerator) over: (denominator * aMultiplier denominator).
+		
+	"self error: 'Tipo de número no soportado'"! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'jMS 5/3/2022 15:41:08'!
 + anAdder
 
 	| newNumerator newDenominator |
 		
-	
 	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
 	newDenominator := denominator * anAdder denominator.
 		
 	^ self class with: newNumerator over: newDenominator.
 	
-	"self error: 'Tipo de número no soportado'"! !
+	"self error: 'Tipo de número no soportado'"
+! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'jMS 5/3/2022 16:19:41'!
+negated
+	
+	^self class with: numerator * (self class with: -1) over: denominator.
+	! !
+
+
+!Fraccion methodsFor: 'testing' stamp: 'jMS 5/3/2022 16:13:45'!
+isNegative
+	
+	^denominator < 0.! !
 
 !Fraccion methodsFor: 'testing' stamp: 'JMS 5/2/2022 21:46:26'!
 isOne
@@ -382,3 +462,37 @@ isOne
 isZero
 
 	^false.! !
+
+
+!Fraccion methodsFor: 'printing' stamp: 'jMS 5/3/2022 16:37:46'!
+printOn: aStream
+	
+	 aStream 
+		print: numerator;
+		nextPut: $/;
+		print: denominator.
+	
+! !
+
+
+!Fraccion methodsFor: 'comparing' stamp: 'jMS 5/3/2022 16:50:26'!
+= anObject
+
+	^(anObject isMemberOf: self class)		
+		ifTrue: [ (numerator * anObject denominator) = (denominator * anObject numerator) ].! !
+
+!Fraccion methodsFor: 'comparing' stamp: 'jMS 5/3/2022 16:35:59'!
+hash
+
+	^(numerator hash / denominator hash) hash.! !
+
+
+!Fraccion methodsFor: 'arithmetic operations - private' stamp: 'jMS 5/3/2022 16:06:12'!
+// aDivisor 
+		
+	^self error: 'Tipo de número no soportado'! !
+
+!Fraccion methodsFor: 'arithmetic operations - private' stamp: 'jMS 5/3/2022 16:06:30'!
+greatestCommonDivisorWith: anEntero 
+	
+	^self error: 'Tipo de número no soportado'.! !
