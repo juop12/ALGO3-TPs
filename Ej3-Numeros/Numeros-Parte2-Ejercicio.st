@@ -341,6 +341,16 @@ isZero
 	self subclassResponsibility ! !
 
 
+!Numero methodsFor: 'private' stamp: 'JMS 5/7/2022 17:20:46'!
+aFraccionCantBeZeroDescription	
+
+	self! !
+
+!Numero methodsFor: 'private' stamp: 'JMS 5/7/2022 17:22:37'!
+aFraccionCantHaveOneAsDenominatorDescription
+
+	self! !
+
 !Numero methodsFor: 'private' stamp: 'HernanWilkinson 5/7/2016 22:48'!
 invalidNumberType
 
@@ -454,17 +464,6 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (value gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'error' stamp: 'JMS 5/7/2022 16:59:03'!
-aFraccionCantBeZeroDescription	
-
-	self! !
-
-!Entero methodsFor: 'error' stamp: 'JMS 5/7/2022 16:58:55'!
-aFraccionCantHaveOneAsDenominatrorDescription
-
-	self! !
-
-
 !Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 15:42:49'!
 beAddedToAFraccion: anAugend
 	
@@ -502,12 +501,6 @@ divideAnEntero: aDividend
 	^Fraccion with: aDividend over: self.
 ! !
 
-!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 16:07:43'!
-is
-	
-	self subclassResponsibility.
-! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Entero class' category: 'Numeros-Parte2-Ejercicio'!
@@ -518,17 +511,25 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'JMS 5/7/2022 16:36:12'!
+!Entero class methodsFor: 'instance creation' stamp: 'JMS 5/7/2022 17:38:31'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
 	
+	"Iterar por una lista de subclasses."
+	"
+	(Negative mmm: aValue) ifTrue: [^Negative new initializeWith: aValue].
+	(One mmm: aValue) ifTrue: [^One new initializeWith: aValue].
+	(Zero mmm: aValue) ifTrue: [^Zero new initializeWith: aValue].
+	(Natural mmm: aValue) ifTrue: [^Natural new initializeWith: aValue].
+	"
+	"
 	aValue negative ifTrue: [^Negative new initializeWith: aValue].
 	aValue = 1 ifTrue: [^One new initializeWith: aValue].
 	aValue isZero ifTrue: [^Zero new initializeWith: aValue].
-	
-	^Natural new initializeWith: aValue! !
+	aValue > 1 ifTrue: [^Natural new initializeWith: aValue].
+	"! !
 
 
 !classDefinition: #Natural category: 'Numeros-Parte2-Ejercicio'!
@@ -575,8 +576,8 @@ fibonacci
 	^Entero with: 1.! !
 
 
-!One methodsFor: 'error' stamp: 'JMS 5/7/2022 16:58:55'!
-aFraccionCantHaveOneAsDenominatrorDescription
+!One methodsFor: 'error' stamp: 'JMS 5/7/2022 17:13:47'!
+aFraccionCantHaveOneAsDenominatorDescription
 
 	^self error: 'una fraccion no puede tener denominador 1 porque sino es un entero'.! !
 
@@ -651,17 +652,13 @@ numerator
 	^ numerator! !
 
 
-!Fraccion methodsFor: 'initialization' stamp: 'JMS 5/7/2022 16:59:03'!
+!Fraccion methodsFor: 'initialization' stamp: 'JMS 5/7/2022 17:27:00'!
 initializeWith: aNumerator over: aDenominator
 
 	"Estas precondiciones estan por si se comenten errores en la implementacion - Hernan"
-	"
-	aNumerator isZero ifTrue: [ self error: 'una fraccion no puede ser cero' ].
-	aDenominator isOne ifTrue: [ self error: 'una fraccion no puede tener denominador 1 porque sino es un entero' ].
-	"
 	
 	aNumerator aFraccionCantBeZeroDescription .
-	aDenominator aFraccionCantHaveOneAsDenominatrorDescription .
+	aDenominator aFraccionCantHaveOneAsDenominatorDescription .
 	
 	numerator := aNumerator.
 	denominator := aDenominator ! !
