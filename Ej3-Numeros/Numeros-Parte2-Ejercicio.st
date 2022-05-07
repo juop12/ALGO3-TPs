@@ -369,7 +369,7 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/5/2022 20:56:41'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 14:06:29'!
 * aMultiplier 
 	
 	"(aMultiplier isKindOf: self class) 
@@ -378,7 +378,7 @@ Numero subclass: #Entero
 	(aMultiplier isKindOf: Fraccion)
 		ifTrue: [^ self * aMultiplier numerator / aMultiplier denominator.]."
 		
-	^aMultiplier beMultipliedByAnEntero: self.! !
+	^aMultiplier beMultipliedToAnEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/5/2022 20:09:57'!
 + anAdder 
@@ -400,10 +400,19 @@ Numero subclass: #Entero
 	
 	^ self class with: value - aSubtrahend integerValue.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 14:08:19'!
 / aDivisor 
 	
-	^Fraccion with: self over: aDivisor! !
+	"(aDivisor isKindOf: self class) 
+		ifTrue: [^Fraccion with: self over: aDivisor].
+	"	
+	"Dar vuelta la fraccion."
+	"(aDivisor isKindOf: Fraccion)
+		ifTrue: [^self * aDivisor denominator / aDivisor numerator ].
+	"
+	
+	^ aDivisor beDividedToAnEntero: self.
+! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/5/2022 21:18:27'!
 fibonacci
@@ -501,8 +510,20 @@ beAddedToAnEntero: anAugend
 
 ! !
 
-!Entero methodsFor: 'private' stamp: 'JMS 5/5/2022 20:56:47'!
-beMultipliedByAnEntero: aMultiplier
+!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 14:10:34'!
+beDividedToAnEntero: aDividend
+	
+	^Fraccion with: aDividend over: self.
+! !
+
+!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 14:06:18'!
+beMultipliedToAFraccion: aMultiplier
+	
+	^aMultiplier numerator * self / aMultiplier denominator.
+! !
+
+!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 14:06:29'!
+beMultipliedToAnEntero: aMultiplier
 	
 	^Entero with: (aMultiplier integerValue * self integerValue).
 ! !
@@ -533,7 +554,7 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'JMS 5/5/2022 21:04:04'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 14:06:18'!
 * aMultiplier 
 	
 	"(aMultiplier isKindOf: self class)
@@ -542,7 +563,7 @@ Numero subclass: #Fraccion
 	(aMultiplier isKindOf: Entero)
 		ifTrue: [^self numerator * aMultiplier / self denominator]."
 	
-	^aMultiplier beMultipliedByAFraccion: self.! !
+	^aMultiplier beMultipliedToAFraccion: self.! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'JMS 5/5/2022 20:39:39'!
 + anAdder 
@@ -661,16 +682,24 @@ beAddedToAnEntero: anAugend
 	
 ! !
 
-!Fraccion methodsFor: 'private' stamp: 'JMS 5/5/2022 21:04:02'!
-beMultipliedByAFraccion: aMultiplier
+!Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 14:08:18'!
+beDividedToAnEntero: aDividend
 	
-	^aMultiplier * self numerator / self denominator .
+	^aDividend * self denominator / self numerator.! !
+
+!Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 14:06:18'!
+beMultipliedToAFraccion: aMultiplier
 	
-	"^ self * aMultiplier numerator / aMultiplier denominator."
+	| newNumerator newDenominator |
+	
+	newNumerator := aMultiplier numerator * self numerator.
+	newDenominator := aMultiplier denominator * self denominator.
+	
+	^ newNumerator / newDenominator.
 ! !
 
-!Fraccion methodsFor: 'private' stamp: 'JMS 5/5/2022 20:58:51'!
-beMultipliedByAnEntero: aMultiplier
+!Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 14:06:29'!
+beMultipliedToAnEntero: aMultiplier
 	
 	^aMultiplier * self numerator / self denominator .
 	
