@@ -369,66 +369,31 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 14:06:29'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 15:16:18'!
 * aMultiplier 
-	
-	"(aMultiplier isKindOf: self class) 
-		ifTrue: [^self class with: value * aMultiplier integerValue].
-	
-	(aMultiplier isKindOf: Fraccion)
-		ifTrue: [^ self * aMultiplier numerator / aMultiplier denominator.]."
 		
 	^aMultiplier beMultipliedToAnEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/5/2022 20:09:57'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 15:43:10'!
 + anAdder 
-	
-	"(anAdder isKindOf: self class) 
-		ifTrue: [^self class with: value + anAdder integerValue].
-	
-	(anAdder isKindOf: Fraccion) 
-		ifTrue: [^self * anAdder denominator + anAdder numerator / anAdder denominator]."
-				
-	"Las instancias que no reconocen este mensaje van a tirar error."
-	^anAdder beAddedToAnEntero: self.
-	
-	
-! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
+	^anAdder beAddedToAnEntero: self.! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 15:25:41'!
 - aSubtrahend 
 	
-	^ self class with: value - aSubtrahend integerValue.! !
+	^aSubtrahend negated beAddedToAnEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 14:08:19'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 15:21:11'!
 / aDivisor 
 	
-	"(aDivisor isKindOf: self class) 
-		ifTrue: [^Fraccion with: self over: aDivisor].
-	"	
-	"Dar vuelta la fraccion."
-	"(aDivisor isKindOf: Fraccion)
-		ifTrue: [^self * aDivisor denominator / aDivisor numerator ].
-	"
-	
-	^ aDivisor beDividedToAnEntero: self.
+	^ aDivisor divideAnEntero: self.
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/5/2022 21:18:27'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 16:34:03'!
 fibonacci
 
-	| one two |
-	
-	one := Entero with: 1.
-	two := Entero with: 2.
-	
-	"Pasan 3 cosas. Separar."
-	
-	self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
-	(self isZero or: [self isOne]) ifTrue: [^one].
-	
-	^ (self - one) fibonacci + (self - two) fibonacci
-		! !
+	self subclassResponsibility.! !
 
 
 !Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 21:01'!
@@ -489,18 +454,21 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (value gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'private' stamp: 'JMS 5/5/2022 20:44:51'!
+!Entero methodsFor: 'error' stamp: 'JMS 5/7/2022 16:59:03'!
+aFraccionCantBeZeroDescription	
+
+	self! !
+
+!Entero methodsFor: 'error' stamp: 'JMS 5/7/2022 16:58:55'!
+aFraccionCantHaveOneAsDenominatrorDescription
+
+	self! !
+
+
+!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 15:42:49'!
 beAddedToAFraccion: anAugend
 	
-	"^self class with: anAugend integerValue + self integerValue."
-	
-	| newNumerator newDenominator |
-	
-	newNumerator := anAugend numerator + (self * anAugend denominator).
-	newDenominator := anAugend denominator.
-	
-	^ newNumerator / newDenominator.
-
+	^anAugend beAddedToAnEntero: self.
 ! !
 
 !Entero methodsFor: 'private' stamp: 'JMS 5/5/2022 20:13:20'!
@@ -510,22 +478,34 @@ beAddedToAnEntero: anAugend
 
 ! !
 
-!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 14:10:34'!
-beDividedToAnEntero: aDividend
-	
-	^Fraccion with: aDividend over: self.
-! !
-
-!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 14:06:18'!
+!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 15:49:13'!
 beMultipliedToAFraccion: aMultiplier
 	
-	^aMultiplier numerator * self / aMultiplier denominator.
+	^aMultiplier beMultipliedToAnEntero: self.
 ! !
 
 !Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 14:06:29'!
 beMultipliedToAnEntero: aMultiplier
 	
 	^Entero with: (aMultiplier integerValue * self integerValue).
+! !
+
+!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 15:20:54'!
+divideAFraccion: aDividend
+	
+	^aDividend numerator / (self * aDividend denominator).
+! !
+
+!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 15:21:11'!
+divideAnEntero: aDividend
+	
+	^Fraccion with: aDividend over: self.
+! !
+
+!Entero methodsFor: 'private' stamp: 'JMS 5/7/2022 16:07:43'!
+is
+	
+	self subclassResponsibility.
 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -538,13 +518,86 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'JS 5/5/2022 03:55:37'!
+!Entero class methodsFor: 'instance creation' stamp: 'JMS 5/7/2022 16:36:12'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
 	
-	^self new initializeWith: aValue! !
+	aValue negative ifTrue: [^Negative new initializeWith: aValue].
+	aValue = 1 ifTrue: [^One new initializeWith: aValue].
+	aValue isZero ifTrue: [^Zero new initializeWith: aValue].
+	
+	^Natural new initializeWith: aValue! !
+
+
+!classDefinition: #Natural category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Natural
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Natural methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 16:17:02'!
+fibonacci
+
+	| one two |
+	
+	one := Entero with: 1.
+	two := Entero with: 2.
+	
+	^ (self - one) fibonacci + (self - two) fibonacci! !
+
+
+!classDefinition: #Negative category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Negative
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Negative methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 16:15:11'!
+fibonacci
+	
+	self error: Entero negativeFibonacciErrorDescription.! !
+
+
+!classDefinition: #One category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #One
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!One methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 16:15:28'!
+fibonacci
+	
+	^Entero with: 1.! !
+
+
+!One methodsFor: 'error' stamp: 'JMS 5/7/2022 16:58:55'!
+aFraccionCantHaveOneAsDenominatrorDescription
+
+	^self error: 'una fraccion no puede tener denominador 1 porque sino es un entero'.! !
+
+
+!classDefinition: #Zero category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Zero
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Zero methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 16:15:44'!
+fibonacci
+	
+	^Entero with: 1.! !
+
+
+!Zero methodsFor: 'error' stamp: 'JMS 5/7/2022 16:59:03'!
+aFraccionCantBeZeroDescription
+	
+	^self error: 'una fraccion no puede ser cero'.! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
@@ -554,57 +607,26 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 14:06:18'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 15:15:46'!
 * aMultiplier 
-	
-	"(aMultiplier isKindOf: self class)
-		ifTrue: [^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)].
-	
-	(aMultiplier isKindOf: Entero)
-		ifTrue: [^self numerator * aMultiplier / self denominator]."
 	
 	^aMultiplier beMultipliedToAFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'JMS 5/5/2022 20:39:39'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 15:15:52'!
 + anAdder 
 	
-	"
-	(anAdder isKindOf: self class) ifTrue: [
-			| newNumerator newDenominator |
-			
-			newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-			newDenominator := denominator * anAdder denominator.
-			
-			^newNumerator / newDenominator 
-		].
-
-	(anAdder isKindOf: Entero) ifTrue: [
-			| newNumerator newDenominator |
-			
-			newNumerator := numerator + (anAdder integerValue * denominator).
-			newDenominator := denominator.
-			
-			^newNumerator / newDenominator 
-		].
-	"
 	^ anAdder beAddedToAFraccion: self.
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 15:22:41'!
 - aSubtrahend 
 	
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-	newDenominator := denominator * aSubtrahend denominator.
-	
-	^newNumerator / newDenominator 
-! !
+	^aSubtrahend negated beAddedToAFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'JMS 5/7/2022 15:20:54'!
 / aDivisor 
 	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+	^aDivisor divideAFraccion: self.! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -629,12 +651,17 @@ numerator
 	^ numerator! !
 
 
-!Fraccion methodsFor: 'initialization' stamp: 'HernanWilkinson 5/7/2016 22:54'!
+!Fraccion methodsFor: 'initialization' stamp: 'JMS 5/7/2022 16:59:03'!
 initializeWith: aNumerator over: aDenominator
 
 	"Estas precondiciones estan por si se comenten errores en la implementacion - Hernan"
+	"
 	aNumerator isZero ifTrue: [ self error: 'una fraccion no puede ser cero' ].
 	aDenominator isOne ifTrue: [ self error: 'una fraccion no puede tener denominador 1 porque sino es un entero' ].
+	"
+	
+	aNumerator aFraccionCantBeZeroDescription .
+	aDenominator aFraccionCantHaveOneAsDenominatrorDescription .
 	
 	numerator := aNumerator.
 	denominator := aDenominator ! !
@@ -665,13 +692,13 @@ printOn: aStream
 		print: denominator ! !
 
 
-!Fraccion methodsFor: 'private' stamp: 'JMS 5/5/2022 20:39:48'!
+!Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 15:13:18'!
 beAddedToAFraccion: anAugend
 	
 	| newNumerator newDenominator |
 	
 	newNumerator := (anAugend numerator * self denominator) + (self numerator * anAugend denominator).
-	newDenominator := self denominator * anAugend denominator.
+	newDenominator := anAugend denominator * self denominator.
 	
 	^ newNumerator / newDenominator .! !
 
@@ -681,11 +708,6 @@ beAddedToAnEntero: anAugend
 	^anAugend * self denominator + self numerator / self denominator
 	
 ! !
-
-!Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 14:08:18'!
-beDividedToAnEntero: aDividend
-	
-	^aDividend * self denominator / self numerator.! !
 
 !Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 14:06:18'!
 beMultipliedToAFraccion: aMultiplier
@@ -698,13 +720,20 @@ beMultipliedToAFraccion: aMultiplier
 	^ newNumerator / newDenominator.
 ! !
 
-!Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 14:06:29'!
+!Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 15:48:18'!
 beMultipliedToAnEntero: aMultiplier
 	
-	^aMultiplier * self numerator / self denominator .
+	^aMultiplier * self numerator / self denominator.! !
+
+!Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 15:20:54'!
+divideAFraccion: aDividend
 	
-	"^ self * aMultiplier numerator / aMultiplier denominator."
-! !
+	^(aDividend numerator * self denominator) / (aDividend denominator * self numerator).! !
+
+!Fraccion methodsFor: 'private' stamp: 'JMS 5/7/2022 15:21:11'!
+divideAnEntero: aDividend
+	
+	^aDividend * self denominator / self numerator.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -712,12 +741,10 @@ beMultipliedToAnEntero: aMultiplier
 Fraccion class
 	instanceVariableNames: ''!
 
-!Fraccion class methodsFor: 'intance creation' stamp: 'JMS 5/5/2022 21:18:49'!
+!Fraccion class methodsFor: 'intance creation' stamp: 'JMS 5/7/2022 16:49:34'!
 with: aDividend over: aDivisor
 
 	| greatestCommonDivisor numerator denominator |
-
-	"Sacar un if."
 		
 	aDivisor isZero ifTrue: [ self error: self canNotDivideByZeroErrorDescription ].
 	aDividend isZero ifTrue: [ ^aDividend ].
