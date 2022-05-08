@@ -10,11 +10,9 @@ El segundo llamado será enviado al colaborador del primer llamado y tendrá com
 
 Por definición, una clase Abstracta no instancia objetos, sin embargo, una clase concreta sí. El lugar más óptimo para instanciar un objeto es en el apartado Class de la clase de dicho objeto o de alguna de sus SuperClases. Se debe instanciar en dicho apartado ya que sino se están mezclando los conceptos de instancia y clase. 
 
-<pre>
-Es más sencillo explicarlo con un ejemplo:
-
-Se tiene dos entes, una silla y una idea de silla. Las sillas son instancias de la idea de silla (clase silla). Si se quiere crear una silla nueva, no se le pediría a la silla que lo haga. Es más lógico pedirselo a la idea de silla ya que es la base de todas las sillas posibles.
-</pre>
+> Es más sencillo explicarlo con un ejemplo:
+> 
+> Se tiene dos entes, una silla y una idea de silla. Las sillas son instancias de la idea de silla (clase silla). Si se quiere crear una silla nueva, no se le pediría a la silla que lo haga. Es más lógico pedirselo a la idea de silla ya que es la base de todas las sillas posibles.
 
 Si se crean objetos desde distintos lugares y de formas diferentes intentaríamos buscar un patrón entre ellos. Luego, buscaríamos abstraer el código de forma tal que pudieramos decantarle la responsabilidad de instanciarlos a la clase o la SuperClase apropiada.
 
