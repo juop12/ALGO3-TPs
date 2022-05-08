@@ -2,9 +2,9 @@
 
 ## Aporte de los mensajes de DD
 En un Double Dispatch, el receptor de un mensaje es polimórfico, sin embargo también lo es el parámetro que se le pasa.
-El primer llamado es un mensaje a una clase polimórfica normal, pero en este caso aporta solo la mitad de la información, ya que el parámetro de ese mensaje también es polimórfico. 
+El primer llamado es un mensaje a una clase polimórfica que aporta solo la mitad de la información, debido al doble polimorfísmo. 
 
-El segundo llamado será al parámetro del primer llamado y tendrá como parámetro al objeto que hizo el primer llamado, de esa forma cambiando su comprotamiento dependiendo de la relación entre ambos objetos y aportando el resto de la información.
+El segundo llamado será enviado al colaborador del primer llamado y tendrá como colaborador externo al objeto que recibió el primer llamado, aportando así, el resto de la información. De esta forma, el comportamiento de las colaboraciones cambia dependiendo de la relación entre ambos objetos.
 
 ## Lógica de instanciado
 Antes de este ejercicio siempre instanciabamos los objetos en los métodos de los mensajes, sin embargo ahora está implementado un mensaje setUp en donde se instancian los objetos. 
