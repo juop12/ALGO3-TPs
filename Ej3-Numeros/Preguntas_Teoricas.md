@@ -16,14 +16,6 @@ Por definición, una clase Abstracta no instancia objetos, sin embargo, una clas
 
 Si se crean objetos desde distintos lugares y de formas diferentes intentaríamos buscar un patrón entre ellos. Luego, buscaríamos abstraer el código de forma tal que pudieramos decantarle la responsabilidad de instanciarlos a la clase o la SuperClase apropiada.
 
-## Editar.
-
-Antes de este ejercicio siempre instanciabamos los objetos en los métodos de los mensajes, sin embargo ahora está implementado un mensaje setUp en donde se instancian los objetos. 
-
-Nos parece que cuando tenemos muchos tests en los que haremos uso de objetos para verificar resultados y vamos a reutilizar algunos de estos en los tests conviene instanciarlos en un mensaje, pues quedan más ordenados y nos evitamos repetir código.
-
-Sin embargo si vamos a reutilizar los nombres de las variables pero el objeto adentro va a ser distinto, entonces nos parece mejor instanciar en cada test, pues así no hay conflicto entre ellos.
-
 ## Nombres de las categorías de métodos
 Normalmente nombramos las categorías de métodos basándonos en qué hacen los métodos que pertenecen a esa categoría. Un buen ejemplo es cómo se categorizan los mensajes de la clase Entero; tiene secciones para los operadores aritméticos, la inicialización o para acceder a colaboradores internos. 
 
