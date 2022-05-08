@@ -336,25 +336,56 @@ isZero
 	self subclassResponsibility ! !
 
 
-!Numero methodsFor: 'private' stamp: 'JMS 5/8/2022 15:49:47'!
+!Numero methodsFor: 'error' stamp: 'JMS 5/8/2022 15:49:47'!
 aFraccionCantBeZero	
 
 	self! !
 
-!Numero methodsFor: 'private' stamp: 'JMS 5/8/2022 15:53:07'!
+!Numero methodsFor: 'error' stamp: 'JMS 5/8/2022 15:53:07'!
 aFraccionCantHaveOneAsDenominator
 
 	self! !
 
-!Numero methodsFor: 'private' stamp: 'JMS 5/8/2022 15:47:41'!
+!Numero methodsFor: 'error' stamp: 'JMS 5/8/2022 15:47:41'!
 canNotDivideByZero
 
 	self! !
 
-!Numero methodsFor: 'private' stamp: 'HernanWilkinson 5/7/2016 22:48'!
+!Numero methodsFor: 'error' stamp: 'HernanWilkinson 5/7/2016 22:48'!
 invalidNumberType
 
 	self error: self class invalidNumberTypeErrorDescription! !
+
+
+!Numero methodsFor: 'private' stamp: 'RB 5/8/2022 18:49:49'!
+beAddedToAFraccion: anAugend
+	
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'RB 5/8/2022 18:51:59'!
+beAddedToAnEntero: anAugend
+	
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'RB 5/8/2022 18:52:17'!
+beMultipliedToAFraccion: aMultiplier
+	
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'RB 5/8/2022 18:53:21'!
+beMultipliedToAnEntero: aMultiplier
+	
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'RB 5/8/2022 18:53:36'!
+divideAFraccion: aDividend
+	
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'private' stamp: 'RB 5/8/2022 18:53:49'!
+divideAnEntero: aDividend
+	
+	self subclassResponsibility.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
