@@ -24,7 +24,7 @@ test02PushAddElementsToTheStack
 	
 	self deny: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:01'!
+!OOStackTest methodsFor: 'test' stamp: 'JMS 5/10/2022 21:12:10'!
 test03PopRemovesElementsFromTheStack
 
 	| stack |
@@ -35,7 +35,7 @@ test03PopRemovesElementsFromTheStack
 	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:09'!
+!OOStackTest methodsFor: 'test' stamp: 'JMS 5/10/2022 21:12:10'!
 test04PopReturnsLastPushedObject
 
 	| stack pushedObject |
@@ -46,7 +46,7 @@ test04PopReturnsLastPushedObject
 	
 	self assert: stack pop = pushedObject! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:48'!
+!OOStackTest methodsFor: 'test' stamp: 'JMS 5/10/2022 21:12:10'!
 test05StackBehavesLIFO
 
 	| stack firstPushedObject secondPushedObject |
@@ -91,7 +91,7 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: stack size = 1.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:26'!
+!OOStackTest methodsFor: 'test' stamp: 'JMS 5/10/2022 21:12:10'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
@@ -105,7 +105,7 @@ test08CanNotPopWhenThereAreNoObjectsInTheStack
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:31'!
+!OOStackTest methodsFor: 'test' stamp: 'JMS 5/10/2022 21:12:10'!
 test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 
 	| stack  |
@@ -152,10 +152,19 @@ Object subclass: #OOStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'private' stamp: 'JMS 5/9/2022 22:07:25'!
-isEmpty
+!OOStack methodsFor: 'private' stamp: 'JMS 5/10/2022 21:13:32'!
+checkHowToBehave
+
+	"switch dinamico"
+	OOStack subclasses 
+		detect: [ :subclass | subclass includes: stack]
+		ifFound: [ :subclass | ^subclass new]
+		ifNone: [self].
 	
-	^stack isEmpty.! !
+	"
+	stack isEmpty ifTrue: [^Empty new].
+	^Real new.
+	"! !
 
 
 !OOStack methodsFor: 'initialization' stamp: 'JMS 5/9/2022 22:00:05'!
@@ -164,32 +173,39 @@ initialize
 	stack := OrderedCollection new.! !
 
 
+!OOStack methodsFor: 'accessing' stamp: 'JMS 5/10/2022 20:25:27'!
+isEmpty
+	
+	^stack isEmpty.! !
+
 !OOStack methodsFor: 'accessing' stamp: 'JMS 5/9/2022 22:32:20'!
 size
 
 	^stack size.
 	! !
 
-!OOStack methodsFor: 'accessing' stamp: 'JMS 5/9/2022 22:39:18'!
+!OOStack methodsFor: 'accessing' stamp: 'JMS 5/10/2022 21:13:32'!
 top
 
-	self isEmpty ifTrue: [^self error: self class stackEmptyErrorDescription].
-
-	^stack last.
+	^self checkHowToBehave top: stack.
 	! !
 
 
-!OOStack methodsFor: 'operations' stamp: 'JMS 5/9/2022 22:37:37'!
+!OOStack methodsFor: 'operations' stamp: 'JMS 5/10/2022 21:13:32'!
 pop
 	
-	self isEmpty ifTrue: [^self error: self class stackEmptyErrorDescription].
-	
-	^stack removeLast.! !
+	^self checkHowToBehave pop: stack.! !
 
 !OOStack methodsFor: 'operations' stamp: 'JMS 5/9/2022 22:08:35'!
 push: aString 
 
 	^stack add: aString.! !
+
+
+!OOStack methodsFor: 'error' stamp: 'JMS 5/10/2022 20:17:50'!
+stackEmpty
+
+	self error: self class stackEmptyErrorDescription.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -201,6 +217,79 @@ OOStack class
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+
+!classDefinition: #ErrorStack category: 'Stack-Exercise'!
+OOStack subclass: #ErrorStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!ErrorStack methodsFor: 'initialization' stamp: 'JMS 5/10/2022 20:30:08'!
+initialize
+
+	self
+	! !
+
+
+!ErrorStack methodsFor: 'operations' stamp: 'JMS 5/10/2022 20:33:31'!
+pop: anStack
+	
+	self stackEmpty.! !
+
+!ErrorStack methodsFor: 'operations' stamp: 'JMS 5/10/2022 20:33:13'!
+top: anStack
+	
+	self stackEmpty.
+
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ErrorStack class' category: 'Stack-Exercise'!
+ErrorStack class
+	instanceVariableNames: ''!
+
+!ErrorStack class methodsFor: 'verification - private' stamp: 'JMS 5/10/2022 21:05:37'!
+includes: anStack
+	
+	^anStack isEmpty.	! !
+
+
+!classDefinition: #RealStack category: 'Stack-Exercise'!
+OOStack subclass: #RealStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!RealStack methodsFor: 'initialization' stamp: 'JMS 5/10/2022 20:30:17'!
+initialize
+	
+	self! !
+
+
+!RealStack methodsFor: 'operations' stamp: 'JMS 5/10/2022 20:34:01'!
+pop: anStack
+	
+	^anStack removeLast.! !
+
+!RealStack methodsFor: 'operations' stamp: 'JMS 5/10/2022 20:33:50'!
+top: anStack
+	
+	^anStack last.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'RealStack class' category: 'Stack-Exercise'!
+RealStack class
+	instanceVariableNames: ''!
+
+!RealStack class methodsFor: 'verification - private' stamp: 'JMS 5/10/2022 21:06:14'!
+includes: anStack
+	
+	^anStack isEmpty not	.! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
