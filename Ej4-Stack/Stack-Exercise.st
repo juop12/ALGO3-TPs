@@ -152,7 +152,7 @@ Object subclass: #OOStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'private' stamp: 'JMS 5/10/2022 21:13:32'!
+!OOStack methodsFor: 'private' stamp: 'JMS 5/10/2022 21:51:56'!
 checkHowToBehave
 
 	"switch dinamico"
@@ -160,6 +160,15 @@ checkHowToBehave
 		detect: [ :subclass | subclass includes: stack]
 		ifFound: [ :subclass | ^subclass new]
 		ifNone: [self].
+	
+	"
+	| temp |
+	
+	temp := OOStack subclasses
+				detect: [ :subclass | subclass includes: stack].
+	
+	^temp new.	
+	"
 	
 	"
 	stack isEmpty ifTrue: [^Empty new].
