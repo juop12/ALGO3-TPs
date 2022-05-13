@@ -179,10 +179,14 @@ setUp
 	! !
 
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'JMS 5/12/2022 21:25:41'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'RB 5/13/2022 18:08:07'!
 test01FinderShouldReturnAnEmptyListIfTheStackIsEmpty
 	
-	"self assert: emptyStack."! !
+	| emptyCollection | 
+	
+	emptyCollection := SentenceFinderByPrefix new find: prefixWithLowerCases in: emptyStack.
+	
+	self assert: emptyCollection size equals: 0.! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
@@ -239,11 +243,6 @@ top
 	^self checkHowToBehave top: stack.
 	! !
 
-
-!OOStack methodsFor: 'enumerating' stamp: 'JMS 5/12/2022 20:25:05'!
-collect: aBlock
-
-	^stack collect: aBlock.! !
 
 
 !OOStack methodsFor: 'operations' stamp: 'JMS 5/10/2022 21:13:32'!
@@ -354,8 +353,21 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'operation' stamp: 'JMS 5/12/2022 20:25:13'!
+!SentenceFinderByPrefix methodsFor: 'operation' stamp: 'RB 5/13/2022 18:17:52'!
 find: aPrefix in: aStack
-
-	^aStack collect: [ :element | element beginsWith: aPrefix].
+	| matchesCollection auxiliarStack |
+	
+	auxiliarStack := OOStack new.
+	matchesCollection  := OrderedCollection new.
+	
+	aStack size timesRepeat: [
+		auxiliarStack push: aStack pop.
+		(auxiliarStack top beginsWith: aPrefix) ifTrue: [matchesCollection add: auxiliarStack top].
+		].
+	
+	auxiliarStack size timesRepeat: 
+		[aStack push: auxiliarStack pop.].
+	
+	^matchesCollection.
+	
 	! !
