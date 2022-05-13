@@ -144,7 +144,7 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'JMS 5/12/2022 21:30:47'!
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'RB 5/13/2022 18:49:06'!
 setUp
 	
 	prefixWithLowerCases := 'dummyprefix'.
@@ -170,7 +170,7 @@ setUp
 	"Si testeas estos 4 te tienen que tirar False"
 	stackWithManyElements push: prefixWithSpaces.
 	stackWithManyElements push: prefixBeginningWithSpace.
-	stackWithManyElements push: prefixEndingWithSpace.
+	"stackWithManyElements push: prefixEndingWithSpace."
 	stackWithManyElements push: emptyPrefix.
 	stackWithManyElements push: 'dummytext'.
 	
@@ -187,6 +187,23 @@ test01FinderShouldReturnAnEmptyListIfTheStackIsEmpty
 	emptyCollection := SentenceFinderByPrefix new find: prefixWithLowerCases in: emptyStack.
 	
 	self assert: emptyCollection size equals: 0.! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'RB 5/13/2022 18:48:43'!
+test02FinderShouldReturnAListWithOneElementIfThereIsOnlyOneMatchInTheStack
+	
+	| matchingCollection expectedCollection | 
+	
+	
+	matchingCollection := SentenceFinderByPrefix new find: 'dummypre' in: stackWithManyElements.
+	
+	expectedCollection := OrderedCollection new.
+	
+	expectedCollection add: 'dummyprefix'.
+	"expectedCollection add: 'dummyprefix '."
+	
+	self assert: (expectedCollection includesAllOf: matchingCollection ).
+	
+	! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
