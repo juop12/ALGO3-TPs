@@ -1,176 +1,182 @@
 !classDefinition: #MarsRoverTests category: 'MarsRover'!
 TestCase subclass: #MarsRoverTests
-	instanceVariableNames: ''
+	instanceVariableNames: 'marsRover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/27/2022 23:15:55'!
-test01CuandoSeCreaQueDevuelvaBienParametrosIniciales
+!MarsRoverTests methodsFor: 'setup' stamp: 'JMS 5/28/2022 23:16:19'!
+setUp
 
-	|marsRover|
+	| northDirection |
 	
-	marsRover := MarsRover in: (0@0) facing: $N.
+	northDirection := North new.
 	
-	self assert: (marsRover position = (0@0) and: [marsRover orientation = $N]).! !
+	marsRover := MarsRover at: (0@0) facing: northDirection.! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:53'!
-test02N_Forward
 
-	|marsRover|
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:21:42'!
+test01marsRoverShouldBeCreatedWithTheCorrectDirectionAndPosition
 	
-	marsRover := MarsRover in: (0@0) facing: $N.
-	
+	self assertMarsRoverIsPositionedAtOriginFacingNorth.! !
+
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:24:19'!
+test02givenAMarsRoverAt0FacingNorth_whenMovedForward_YCoordinateShouldBe1FacingNorth
+
 	marsRover execute: 'f'.	
 	
-	self assert: (marsRover position = (0@1) and: [marsRover orientation = $N]).! !
+	self assert: ((marsRover isPositionedAt: 0@1) and: [ marsRover isFacingNorth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:53'!
-test03N_Backwards
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:24:40'!
+test03givenAMarsRoverAt0FacingNorth_whenMovedBackwards_YCoordinateShouldBeMinus1FacingNorth
 
-	|marsRover|
-	
-	marsRover := MarsRover in: (0@0) facing: $N.
-	
 	marsRover execute: 'b'.	
 	
-	self assert: (marsRover position = (0@-1) and: [marsRover orientation = $N]).! !
+	self assert: ((marsRover isPositionedAt: 0@-1) and: [ marsRover isFacingNorth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:53'!
-test04S_Forward
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:24:56'!
+test04givenAMarsRoverAt0FacingSouth_whenMovedForward_YCoordinateShouldBeMinus1FacingSouth
 
-	|marsRover|
+	|marsRover10|
 	
-	marsRover := MarsRover in: (0@0) facing: $S.
+	marsRover10 := MarsRover at: (0@0) facing: South new.
+	marsRover10 execute: 'f'.	
 	
-	marsRover execute: 'f'.	
-	
-	self assert: (marsRover position = (0@-1) and: [marsRover orientation = $S]).! !
+	self assert: ((marsRover10 isPositionedAt: 0@-1) and: [ marsRover10 isFacingSouth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:54'!
-test05S_Backwards
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:25:13'!
+test05givenAMarsRoverAt0FacingSouth_whenMovedBackwards_YCoordinateShouldBe1FacingSouth
 
-	|marsRover|
+	|marsRover10|
 	
-	marsRover := MarsRover in: (0@0) facing: $S.
+	marsRover10 := MarsRover at: (0@0) facing: South new.
+	marsRover10 execute: 'b'.	
 	
-	marsRover execute: 'b'.	
-	
-	self assert: (marsRover position = (0@1) and: [marsRover orientation = $S]).! !
+	self assert: ((marsRover10 isPositionedAt: 0@1) and: [ marsRover10 isFacingSouth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:53'!
-test06E_Forward
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:25:22'!
+test06givenAMarsRoverAt0FacingEast_whenMovedForward_XCoordinateShouldBe1FacingEast
 
-	|marsRover|
+	|marsRover10|
 	
-	marsRover := MarsRover in: (0@0) facing: $E.
+	marsRover10 := MarsRover at: (0@0) facing: East new.
+	marsRover10 execute: 'f'.	
 	
-	marsRover execute: 'f'.	
-	
-	self assert: (marsRover position = (1@0) and: [marsRover orientation = $E]).! !
+	self assert: ((marsRover10 isPositionedAt: 1@0) and: [ marsRover10 isFacingEast ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:54'!
-test07E_Backwards
-	|marsRover|
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:25:30'!
+test07givenAMarsRoverAt0FacingEast_whenMovedBackwards_XCoordinateShouldBeMinus1FacingEast
 	
-	marsRover := MarsRover in: (0@0) facing: $E.
+	|marsRover10|
 	
-	marsRover execute: 'b'.	
+	marsRover10 := MarsRover at: (0@0) facing: East new.
+	marsRover10 execute: 'b'.	
 	
-	self assert: (marsRover position = (-1@0) and: [marsRover orientation = $E]).! !
+	self assert: ((marsRover10 isPositionedAt: -1@0) and: [ marsRover10 isFacingEast ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:53'!
-test08O_Forward
-	|marsRover|
-	
-	marsRover := MarsRover in: (0@0) facing: $O.
-	
-	marsRover execute: 'f'.	
-	
-	self assert: (marsRover position = (-1@0) and: [marsRover orientation = $O]).! !
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:25:37'!
+test08givenAMarsRoverAt0FacingWest_whenMovedForward_XCoordinateShouldBeMinus1FacingWest
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:53'!
-test09O_Backwards
+	|marsRover10|
+	
+	marsRover10 := MarsRover at: (0@0) facing: West new.
+	marsRover10 execute: 'f'.	
+	
+	self assert: ((marsRover10 isPositionedAt: -1@0) and: [ marsRover10 isFacingWest ]).! !
 
-	|marsRover|
-	
-	marsRover := MarsRover in: (0@0) facing: $O.
-	
-	marsRover execute: 'b'.	
-	
-	self assert: (marsRover position = (1@0) and: [marsRover orientation = $O]).! !
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:25:46'!
+test09givenAMarsRoverAt0FacingWest_whenMovedBackwards_XCoordinateShouldBe1FacingWest
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:54'!
-test10SeveralCharacters
+	|marsRover10|
+	
+	marsRover10 := MarsRover at: (0@0) facing: West new.
+	marsRover10 execute: 'b'.	
+	
+	self assert: ((marsRover10 isPositionedAt: 1@0) and: [ marsRover10 isFacingWest ]).! !
 
-	|marsRover|
-	
-	marsRover := MarsRover in: (0@0) facing: $N.
-	
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:26:04'!
+test10givenAMarsRoverAt0FacingNorth_whenMovedForwardAndBackwards_PositionShouldRemainTheSameFacingNorth
+
 	marsRover execute: 'fb'.	
 	
-	self assert: (marsRover position = (0@0) and: [marsRover orientation = $N]).! !
+	self assertMarsRoverIsPositionedAtOriginFacingNorth.! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:54'!
-test11RotationClockwise
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:26:39'!
+test11givenAMarsRoverAt0FacingNorth_whenRotatedRight_PositionShouldRemainTheSameFacingEast
 
-	|marsRover|
-	
-	marsRover := MarsRover in: (0@0) facing: $N.
-	
 	marsRover execute: 'r'.	
 	
-	self assert: (marsRover position = (0@0) and: [marsRover orientation = $E]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRover isFacingEast ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:53'!
-test12RotationCounterClockwise
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:26:54'!
+test12givenAMarsRoverAt0FacingNorth_whenRotatedLeft_PositionShouldRemainTheSameFacingWest
 
-	|marsRover|
-	
-	marsRover := MarsRover in: (0@0) facing: $N.
-	
 	marsRover execute: 'l'.	
 	
-	self assert: (marsRover position = (0@0) and: [marsRover orientation = $O]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRover isFacingWest ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:53'!
-test13RotationAndAntiRotation
-	|marsRover|
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:27:06'!
+test13givenAMarsRoverAt0FacingNorth_whenRotatedRightAndLeft_PositionAndDirectionShouldRemainTheSame
+
+	marsRover execute: 'rl'.	
 	
-	marsRover := MarsRover in: (0@0) facing: $N.
-	marsRover execute: 'flfflrbflbrllfff'.	
-	
-	self assert: (marsRover position = (1@2) and: [marsRover orientation = $E]).
+	self assertMarsRoverIsPositionedAtOriginFacingNorth.
 	 ! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/27/2022 20:03:34'!
-test14InitializationError
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:05:04'!
+test14initializingMarsRoverWithInvalidPositionShouldRaiseAnException
 
-	self should: [MarsRover in: 2 facing: $N.]
+	self should: [MarsRover at: 2 facing: North new.]
 		 raise: Error
 	        withExceptionDo: [ :anError | 
-						self assert: MarsRover invalidStartingPositionErrorDescription equals: anError messageText ].! !
+				self assert: MarsRover aCoordinateMustBeAPointErrorDescription equals: anError messageText ].! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/27/2022 20:04:29'!
-test15InitializationError
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:05:01'!
+test15initializingMarsRoverWithInvalidDirectionShouldRaiseAnException
 
-	self should: [MarsRover in: 0@0 facing: $G.]
+	self should: [ MarsRover at: 0@0 facing: $G. ]
 		 raise: Error
 	        withExceptionDo: [ :anError | 
-						self assert: MarsRover invalidStartingOrientationErrorDescription equals: anError messageText ].! !
+				self assert: MarsRover aDirectionMustBeACardinalDirectionErrorDescription equals: anError messageText ].! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'RB 5/28/2022 01:06:53'!
-test16CommandsShouldReceiveOnlyStrings
-
-	|marsRover|
-	
-	marsRover := MarsRover in: (0@0) facing: $N.
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:16:19'!
+test16givenAValidMarsRover_whenSendingSthgOtherThanAString_marsRoverShouldRaiseAnException
 
 	self should: [marsRover execute: 6.	]
 		 raise: Error
 	        withExceptionDo: [ :anError | 
-						self assert: MarsRover invalidCommandArgumentErrorDescription equals: anError messageText ].
+				self assert: MarsRover aStringOfCommandsMustBeAStringErrorDescription equals: anError messageText ].
 					! !
+
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:27:54'!
+test17givenAMarsRoverAt0FacingNorth_whenSendingSeveralCommands_marsRoversActsAccordingly
+
+	marsRover execute: 'frlbfffrrrrbb'.	
+	
+	self assert: ((marsRover isPositionedAt: 0@1) and: [ marsRover isFacingNorth ]).
+	 ! !
+
+!MarsRoverTests methodsFor: 'testing' stamp: 'JMS 5/28/2022 23:28:11'!
+test18givenAMarsRoverAt0FacingNorth_whenSendingWrongCommands_marsRoverShouldMoveAndThenRaiseAnException
+	
+	self should: [ marsRover execute: 'ffxr'. ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+				self assert: MarsRover aCommandMustBeAValidCommandErrorDescription equals: anError messageText ].
+	
+	self assert: ((marsRover isPositionedAt: 0@2) and: [ marsRover isFacingNorth ]).
+	 ! !
+
+
+!MarsRoverTests methodsFor: 'private' stamp: 'JMS 5/28/2022 23:23:20'!
+assertMarsRoverIsPositionedAtOrigin
+
+	^marsRover isPositionedAt: 0@0.! !
+
+!MarsRoverTests methodsFor: 'private' stamp: 'JMS 5/28/2022 23:23:09'!
+assertMarsRoverIsPositionedAtOriginFacingNorth
+
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRover isFacingNorth ])! !
 
 
 !classDefinition: #CardinalDirection category: 'MarsRover'!
@@ -180,29 +186,36 @@ Object subclass: #CardinalDirection
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!CardinalDirection methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:30:28'!
-symbol
+!CardinalDirection methodsFor: 'information' stamp: 'JMS 5/28/2022 20:38:43'!
+isCardinalDirection
+	
+	^true.! !
+
+!CardinalDirection methodsFor: 'information' stamp: 'JMS 5/28/2022 20:39:08'!
+isFacingEast
+
+	^false.! !
+
+!CardinalDirection methodsFor: 'information' stamp: 'JMS 5/28/2022 20:39:13'!
+isFacingNorth
+
+	^false.! !
+
+!CardinalDirection methodsFor: 'information' stamp: 'JMS 5/28/2022 20:39:18'!
+isFacingSouth
+
+	^false.! !
+
+!CardinalDirection methodsFor: 'information' stamp: 'JMS 5/28/2022 20:39:21'!
+isFacingWest
+
+	^false.! !
+
+
+!CardinalDirection methodsFor: 'private - execute dispatch' stamp: 'JMS 5/28/2022 19:05:31'!
+send: aRover toExecute: aCommand
 	
 	self subclassResponsibility.! !
-
-!CardinalDirection methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:47:18'!
-withThisOrientation: aRover executeACommand: aCommand
-	
-	self subclassResponsibility.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'CardinalDirection class' category: 'MarsRover'!
-CardinalDirection class
-	instanceVariableNames: ''!
-
-!CardinalDirection class methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:28:30'!
-createOrientationFrom: aDirection
-
-	self subclasses 
-		detect: [ :subclass | subclass canInstanciateADirection: aDirection ]
-		ifFound: [ :subclass | ^subclass new ]
-		ifNone:  [ ^MarsRover invalidStartingOrientation ].! !
 
 
 !classDefinition: #East category: 'MarsRover'!
@@ -212,26 +225,16 @@ CardinalDirection subclass: #East
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!East methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:44:14'!
-symbol
+!East methodsFor: 'information' stamp: 'JMS 5/28/2022 20:36:43'!
+isFacingEast
 
-	^$E! !
+	^true.! !
 
-!East methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:47:19'!
-withThisOrientation: aRover executeACommand: aCommand
+
+!East methodsFor: 'private - execute dispatch' stamp: 'JMS 5/28/2022 19:05:31'!
+send: aRover toExecute: aCommand
 	
 	aRover executeFacingEast: aCommand.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'East class' category: 'MarsRover'!
-East class
-	instanceVariableNames: ''!
-
-!East class methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:09:28'!
-canInstanciateADirection: aDirection
-
-	^(aDirection = $E)! !
 
 
 !classDefinition: #North category: 'MarsRover'!
@@ -241,27 +244,17 @@ CardinalDirection subclass: #North
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!North methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:30:51'!
-symbol
+!North methodsFor: 'information' stamp: 'JMS 5/28/2022 20:37:00'!
+isFacingNorth
 
-	^$N! !
+	^true.! !
 
-!North methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:47:19'!
-withThisOrientation: aRover executeACommand: aCommand
+
+!North methodsFor: 'private - execute dispatch' stamp: 'JMS 5/28/2022 19:05:31'!
+send: aRover toExecute: aCommand
 	
 	aRover executeFacingNorth: aCommand.
 	! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'North class' category: 'MarsRover'!
-North class
-	instanceVariableNames: ''!
-
-!North class methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:09:39'!
-canInstanciateADirection: aDirection
-
-	^(aDirection = $N)! !
 
 
 !classDefinition: #South category: 'MarsRover'!
@@ -271,26 +264,16 @@ CardinalDirection subclass: #South
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!South methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:44:30'!
-symbol
+!South methodsFor: 'information' stamp: 'JMS 5/28/2022 20:37:22'!
+isFacingSouth
 
-	^$S! !
+	^true.! !
 
-!South methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:47:19'!
-withThisOrientation: aRover executeACommand: aCommand
+
+!South methodsFor: 'private - execute dispatch' stamp: 'JMS 5/28/2022 19:05:31'!
+send: aRover toExecute: aCommand
 	
 	aRover executeFacingSouth: aCommand.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'South class' category: 'MarsRover'!
-South class
-	instanceVariableNames: ''!
-
-!South class methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:09:57'!
-canInstanciateADirection: aDirection
-
-	^(aDirection = $S)! !
 
 
 !classDefinition: #West category: 'MarsRover'!
@@ -300,26 +283,16 @@ CardinalDirection subclass: #West
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!West methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:44:22'!
-symbol
+!West methodsFor: 'information' stamp: 'JMS 5/28/2022 20:37:40'!
+isFacingWest
 
-	^$O! !
+	^true.! !
 
-!West methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:47:19'!
-withThisOrientation: aRover executeACommand: aCommand
+
+!West methodsFor: 'private - execute dispatch' stamp: 'JMS 5/28/2022 19:05:31'!
+send: aRover toExecute: aCommand
 	
 	aRover executeFacingWest: aCommand.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'West class' category: 'MarsRover'!
-West class
-	instanceVariableNames: ''!
-
-!West class methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:09:48'!
-canInstanciateADirection: aDirection
-
-	^(aDirection = $O)! !
 
 
 !classDefinition: #Command category: 'MarsRover'!
@@ -329,22 +302,22 @@ Object subclass: #Command
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!Command methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:21:33'!
+!Command methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:21:33'!
 beExecutedWhileFacingEastBy: aRover
 
 	self subclassResponsibility.! !
 
-!Command methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:22:14'!
+!Command methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:22:14'!
 beExecutedWhileFacingNorthBy: aRover
 
 	self subclassResponsibility.! !
 
-!Command methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:22:44'!
+!Command methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:22:44'!
 beExecutedWhileFacingSouthBy: aRover
 
 	self subclassResponsibility.! !
 
-!Command methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:23:10'!
+!Command methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:23:10'!
 beExecutedWhileFacingWestBy: aRover
 
 	self subclassResponsibility.! !
@@ -355,13 +328,13 @@ beExecutedWhileFacingWestBy: aRover
 Command class
 	instanceVariableNames: ''!
 
-!Command class methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:32:50'!
+!Command class methodsFor: 'instance creation' stamp: 'JMS 5/28/2022 20:54:51'!
 createAnInstanceOf: aCommand
 
 	self subclasses 
-		detect: [ :subclass | subclass canInstanciateACommand: aCommand ]
+		detect: [ :subclass | subclass canInstanciateACommandFrom: aCommand ]
 		ifFound: [ :subclass | ^subclass new ]
-		ifNone:  [].! !
+		ifNone:  [ MarsRover aCommandMustBeAValidCommand ].! !
 
 
 !classDefinition: #MoveBackwards category: 'MarsRover'!
@@ -371,22 +344,22 @@ Command subclass: #MoveBackwards
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MoveBackwards methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:37:34'!
+!MoveBackwards methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:37:34'!
 beExecutedWhileFacingEastBy: aRover
 
 	aRover moveBackwardsWhileFacingEast.! !
 
-!MoveBackwards methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:37:47'!
+!MoveBackwards methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:37:47'!
 beExecutedWhileFacingNorthBy: aRover
 
 	aRover moveBackwardsWhileFacingNorth.! !
 
-!MoveBackwards methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:38:04'!
+!MoveBackwards methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:38:04'!
 beExecutedWhileFacingSouthBy: aRover
 
 	aRover moveBackwardsWhileFacingSouth.! !
 
-!MoveBackwards methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:38:23'!
+!MoveBackwards methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:38:23'!
 beExecutedWhileFacingWestBy: aRover
 
 	aRover moveBackwardsWhileFacingWest.! !
@@ -397,10 +370,10 @@ beExecutedWhileFacingWestBy: aRover
 MoveBackwards class
 	instanceVariableNames: ''!
 
-!MoveBackwards class methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:50:19'!
-canInstanciateACommand: aCharacter
+!MoveBackwards class methodsFor: 'verification - private' stamp: 'JMS 5/28/2022 18:37:18'!
+canInstanciateACommandFrom: aCommand
 
-	^aCharacter = $b.! !
+	^aCommand = $b.! !
 
 
 !classDefinition: #MoveForward category: 'MarsRover'!
@@ -410,22 +383,22 @@ Command subclass: #MoveForward
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MoveForward methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:38:36'!
+!MoveForward methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:38:36'!
 beExecutedWhileFacingEastBy: aRover
 
 	aRover moveForwardWhileFacingEast.! !
 
-!MoveForward methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:38:52'!
+!MoveForward methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:38:52'!
 beExecutedWhileFacingNorthBy: aRover
 
 	aRover moveForwardWhileFacingNorth.! !
 
-!MoveForward methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:39:09'!
+!MoveForward methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:39:09'!
 beExecutedWhileFacingSouthBy: aRover
 
 	aRover moveForwardWhileFacingSouth.! !
 
-!MoveForward methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:39:24'!
+!MoveForward methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:39:24'!
 beExecutedWhileFacingWestBy: aRover
 
 	aRover moveForwardWhileFacingWest.! !
@@ -436,10 +409,10 @@ beExecutedWhileFacingWestBy: aRover
 MoveForward class
 	instanceVariableNames: ''!
 
-!MoveForward class methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:50:29'!
-canInstanciateACommand: aCharacter
+!MoveForward class methodsFor: 'verification - private' stamp: 'JMS 5/28/2022 18:37:18'!
+canInstanciateACommandFrom: aCommand
 
-	^aCharacter = $f.! !
+	^aCommand = $f.! !
 
 
 !classDefinition: #RotateLeft category: 'MarsRover'!
@@ -449,22 +422,22 @@ Command subclass: #RotateLeft
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!RotateLeft methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:41:19'!
+!RotateLeft methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:41:19'!
 beExecutedWhileFacingEastBy: aRover
 
 	aRover rotateLeftWhenFacingEast.! !
 
-!RotateLeft methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:41:38'!
+!RotateLeft methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:41:38'!
 beExecutedWhileFacingNorthBy: aRover
 
 	aRover rotateLeftWhenFacingNorth.! !
 
-!RotateLeft methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:42:21'!
+!RotateLeft methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:42:21'!
 beExecutedWhileFacingSouthBy: aRover
 
 	aRover rotateLeftWhenFacingSouth.! !
 
-!RotateLeft methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:42:34'!
+!RotateLeft methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:42:34'!
 beExecutedWhileFacingWestBy: aRover
 
 	aRover rotateLeftWhenFacingWest.! !
@@ -475,10 +448,10 @@ beExecutedWhileFacingWestBy: aRover
 RotateLeft class
 	instanceVariableNames: ''!
 
-!RotateLeft class methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:50:38'!
-canInstanciateACommand: aCharacter
+!RotateLeft class methodsFor: 'verification - private' stamp: 'JMS 5/28/2022 18:37:18'!
+canInstanciateACommandFrom: aCommand
 
-	^aCharacter = $l.! !
+	^aCommand = $l.! !
 
 
 !classDefinition: #RotateRight category: 'MarsRover'!
@@ -488,22 +461,22 @@ Command subclass: #RotateRight
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!RotateRight methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:43:09'!
+!RotateRight methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:43:09'!
 beExecutedWhileFacingEastBy: aRover
 
 	aRover rotateRightWhenFacingEast.! !
 
-!RotateRight methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:43:21'!
+!RotateRight methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:43:21'!
 beExecutedWhileFacingNorthBy: aRover
 
 	aRover rotateRightWhenFacingNorth.! !
 
-!RotateRight methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:43:35'!
+!RotateRight methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:43:35'!
 beExecutedWhileFacingSouthBy: aRover
 
 	aRover rotateRightWhenFacingSouth.! !
 
-!RotateRight methodsFor: 'as yet unclassified' stamp: 'RB 5/28/2022 01:43:56'!
+!RotateRight methodsFor: 'private - execute dispatch' stamp: 'RB 5/28/2022 01:43:56'!
 beExecutedWhileFacingWestBy: aRover
 
 	aRover rotateRightWhenFacingWest.! !
@@ -514,23 +487,48 @@ beExecutedWhileFacingWestBy: aRover
 RotateRight class
 	instanceVariableNames: ''!
 
-!RotateRight class methodsFor: 'as yet unclassified' stamp: 'RB 5/27/2022 21:50:44'!
-canInstanciateACommand: aCharacter
+!RotateRight class methodsFor: 'verification - private' stamp: 'JMS 5/28/2022 18:37:18'!
+canInstanciateACommandFrom: aCommand
 
-	^aCharacter = $r.! !
+	^aCommand = $r.! !
 
 
 !classDefinition: #MarsRover category: 'MarsRover'!
 Object subclass: #MarsRover
-	instanceVariableNames: 'position orientation'
+	instanceVariableNames: 'position facingDirection'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRover methodsFor: 'accessing' stamp: 'RB 5/27/2022 21:30:00'!
-orientation
+!MarsRover methodsFor: 'accessing' stamp: 'JMS 5/28/2022 20:43:33'!
+facingDirection
 	
-	^orientation symbol.! !
+	^facingDirection.! !
+
+!MarsRover methodsFor: 'accessing' stamp: 'JMS 5/28/2022 20:42:44'!
+isFacingEast
+
+	^facingDirection isFacingEast.! !
+
+!MarsRover methodsFor: 'accessing' stamp: 'JMS 5/28/2022 20:42:23'!
+isFacingNorth
+
+	^facingDirection isFacingNorth.! !
+
+!MarsRover methodsFor: 'accessing' stamp: 'JMS 5/28/2022 20:42:52'!
+isFacingSouth
+
+	^facingDirection isFacingSouth.! !
+
+!MarsRover methodsFor: 'accessing' stamp: 'JMS 5/28/2022 20:42:59'!
+isFacingWest
+
+	^facingDirection isFacingWest.! !
+
+!MarsRover methodsFor: 'accessing' stamp: 'JMS 5/28/2022 23:18:34'!
+isPositionedAt: aCoordinate
+	
+	^position = aCoordinate.! !
 
 !MarsRover methodsFor: 'accessing' stamp: 'jms 5/27/2022 17:33:19'!
 position
@@ -538,149 +536,154 @@ position
 	^position.! !
 
 
-!MarsRover methodsFor: 'input' stamp: 'RB 5/28/2022 01:47:19'!
-execute: aStringOfCommands
+!MarsRover methodsFor: 'error' stamp: 'JMS 5/28/2022 18:02:11'!
+aStringOfCommandsMustBeAString
 
-	| counter aCommand |
-	
-	self assertCommandArgumentIsValid: aStringOfCommands.
-	
-	counter := 1.
-	
-	aStringOfCommands size timesRepeat: [
-		
-				aCommand := aStringOfCommands at: counter.
-
-				orientation withThisOrientation: self executeACommand: aCommand.
-								
-				counter := counter + 1.
-			].! !
+	self error: self class aStringOfCommandsMustBeAStringErrorDescription.! !
 
 
-!MarsRover methodsFor: 'initialization' stamp: 'RB 5/28/2022 01:46:00'!
-initializeLocatedIn: aCoordinate facing: aDirection 
+!MarsRover methodsFor: 'initialization' stamp: 'JMS 5/28/2022 19:08:00'!
+initializePositionedAt: aCoordinate facing: aDirection 
 
 	position := aCoordinate.
+	facingDirection := aDirection.! !
+
+
+!MarsRover methodsFor: 'operations' stamp: 'JMS 5/28/2022 19:17:01'!
+execute: aStringOfCommands
+
+	self assertStringOfCommandsIsString: aStringOfCommands.
 	
-	orientation := aDirection.! !
+	self executeEachCommandIn: aStringOfCommands.! !
 
 
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:37:34'!
-moveBackwardsWhileFacingEast
+!MarsRover methodsFor: 'testing' stamp: 'JMS 5/28/2022 18:16:42'!
+assertStringOfCommandsIsString: aStringOfCommands
 
-	position := position + (-1@0).! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:37:47'!
-moveBackwardsWhileFacingNorth
-
-	position := position + (0@-1).! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:38:04'!
-moveBackwardsWhileFacingSouth
-	
-	position := position + (0@1).! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:38:23'!
-moveBackwardsWhileFacingWest
-
-	position := position + (1@0)..! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:38:36'!
-moveForwardWhileFacingEast
-
-	position := position + (1@0).! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:38:52'!
-moveForwardWhileFacingNorth
-
-	position := position + (0@1).! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:39:09'!
-moveForwardWhileFacingSouth
-	
-	position := position + (0@-1).! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:39:24'!
-moveForwardWhileFacingWest
-
-	position := position + (-1@0).! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:41:19'!
-rotateLeftWhenFacingEast
-
-	orientation :=  CardinalDirection createOrientationFrom: $N.! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:41:38'!
-rotateLeftWhenFacingNorth
-
-	orientation :=  CardinalDirection createOrientationFrom: $O.! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:42:21'!
-rotateLeftWhenFacingSouth
-	
-	orientation :=  CardinalDirection createOrientationFrom: $E.! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:42:34'!
-rotateLeftWhenFacingWest
-
-	orientation :=  CardinalDirection createOrientationFrom: $S.! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:43:09'!
-rotateRightWhenFacingEast
-
-	orientation :=  CardinalDirection createOrientationFrom: $S.! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:43:21'!
-rotateRightWhenFacingNorth
-
-	orientation :=  CardinalDirection createOrientationFrom: $E.! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:43:35'!
-rotateRightWhenFacingSouth
-	
-	orientation :=  CardinalDirection createOrientationFrom: $O.! !
-
-!MarsRover methodsFor: 'comanditos' stamp: 'RB 5/28/2022 01:43:56'!
-rotateRightWhenFacingWest
-
-	orientation :=  CardinalDirection createOrientationFrom: $N.! !
+	aStringOfCommands isString ifFalse: [ self aStringOfCommandsMustBeAString. ].! !
 
 
-!MarsRover methodsFor: 'private commands' stamp: 'RB 5/28/2022 01:32:27'!
+!MarsRover methodsFor: 'private - commands by direction' stamp: 'RB 5/28/2022 01:32:27'!
 executeFacingEast: aCommand
 
 	(Command createAnInstanceOf: aCommand) beExecutedWhileFacingEastBy: self.
 ! !
 
-!MarsRover methodsFor: 'private commands' stamp: 'RB 5/28/2022 01:32:27'!
+!MarsRover methodsFor: 'private - commands by direction' stamp: 'RB 5/28/2022 01:32:27'!
 executeFacingNorth: aCommand
 
 	(Command createAnInstanceOf: aCommand) beExecutedWhileFacingNorthBy: self.
 ! !
 
-!MarsRover methodsFor: 'private commands' stamp: 'RB 5/28/2022 01:32:27'!
+!MarsRover methodsFor: 'private - commands by direction' stamp: 'RB 5/28/2022 01:32:27'!
 executeFacingSouth: aCommand
 
 	(Command createAnInstanceOf: aCommand) beExecutedWhileFacingSouthBy: self.
 ! !
 
-!MarsRover methodsFor: 'private commands' stamp: 'RB 5/28/2022 01:32:27'!
+!MarsRover methodsFor: 'private - commands by direction' stamp: 'RB 5/28/2022 01:32:27'!
 executeFacingWest: aCommand
 
 	(Command createAnInstanceOf: aCommand) beExecutedWhileFacingWestBy: self.
 	! !
 
 
-!MarsRover methodsFor: 'error' stamp: 'RB 5/27/2022 21:17:10'!
-invalidCommandArgument
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 19:49:34'!
+executeEachCommandIn: aStringOfCommands
+		
+	aStringOfCommands do: [ :aCharacter |
+				facingDirection send: self toExecute: aCharacter.				
+				].! !
 
-	self error: self class invalidCommandArgumentErrorDescription! !
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:14:17'!
+moveBackwardsWhileFacingEast
 
+	self moveForwardWhileFacingWest.! !
 
-!MarsRover methodsFor: 'testing' stamp: 'RB 5/27/2022 20:24:44'!
-assertCommandArgumentIsValid: aString
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:14:35'!
+moveBackwardsWhileFacingNorth
 
-	^ aString isString ifFalse: [ self invalidCommandArgument ]! !
+	self moveForwardWhileFacingSouth.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:14:58'!
+moveBackwardsWhileFacingSouth
+	
+	self moveForwardWhileFacingNorth.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:15:06'!
+moveBackwardsWhileFacingWest
+
+	self moveForwardWhileFacingEast.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:13:12'!
+moveForwardWhileFacingEast
+
+	self updatePositionByAdding: 1@0.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:13:26'!
+moveForwardWhileFacingNorth
+
+	self updatePositionByAdding: 0@1.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:13:39'!
+moveForwardWhileFacingSouth
+	
+	self updatePositionByAdding: 0@-1.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:13:48'!
+moveForwardWhileFacingWest
+
+	self updatePositionByAdding: -1@0.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:22:17'!
+rotateLeftWhenFacingEast
+
+	self rotateRightWhenFacingWest.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:22:06'!
+rotateLeftWhenFacingNorth
+
+	self rotateRightWhenFacingSouth.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:21:46'!
+rotateLeftWhenFacingSouth
+	
+	self rotateRightWhenFacingNorth.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:21:27'!
+rotateLeftWhenFacingWest
+
+	self rotateRightWhenFacingEast.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:24:23'!
+rotateRightWhenFacingEast
+
+	self updateFacingDirection: South new.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:24:27'!
+rotateRightWhenFacingNorth
+
+	self updateFacingDirection: East new.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:24:31'!
+rotateRightWhenFacingSouth
+	
+	self updateFacingDirection: West new.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:24:35'!
+rotateRightWhenFacingWest
+
+	self updateFacingDirection: North new.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 21:23:25'!
+updateFacingDirection: aDirection
+
+	facingDirection := aDirection.! !
+
+!MarsRover methodsFor: 'private - operations' stamp: 'JMS 5/28/2022 20:01:32'!
+updatePositionByAdding: aCoordinate
+
+	position := position + aCoordinate.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -688,39 +691,61 @@ assertCommandArgumentIsValid: aString
 MarsRover class
 	instanceVariableNames: ''!
 
-!MarsRover class methodsFor: 'initialization' stamp: 'RB 5/28/2022 01:46:00'!
-in: aCoordinate facing: aDirection 
-	| orientation |
+!MarsRover class methodsFor: 'error' stamp: 'JMS 5/28/2022 20:55:14'!
+aCommandMustBeAValidCommand
+
+	self error: self aCommandMustBeAValidCommandErrorDescription.! !
+
+!MarsRover class methodsFor: 'error' stamp: 'JMS 5/28/2022 18:19:09'!
+aCoordinateMustBeAPoint
+
+	self error: self aCoordinateMustBeAPointErrorDescription.! !
+
+!MarsRover class methodsFor: 'error' stamp: 'JMS 5/28/2022 20:33:41'!
+aDirectionMustBeACardinalDirection
+
+	self error: self aDirectionMustBeACardinalDirectionErrorDescription.! !
+
+
+!MarsRover class methodsFor: 'error descriptions' stamp: 'JMS 5/28/2022 20:56:56'!
+aCommandMustBeAValidCommandErrorDescription
+
+	^'A Mars Rover can only receive valid commands, forward (f), backwards (b), turn right (r), turn left (l).'.! !
+
+!MarsRover class methodsFor: 'error descriptions' stamp: 'JMS 5/28/2022 18:22:37'!
+aCoordinateMustBeAPointErrorDescription
+
+	^'A Mars Rover can only receive valid coordinates (Point class instances).'.! !
+
+!MarsRover class methodsFor: 'error descriptions' stamp: 'JMS 5/28/2022 20:57:09'!
+aDirectionMustBeACardinalDirectionErrorDescription
+
+	^'A Mars Rover can only receive valid directions (instances of CardinalDirection subclasses).'.! !
+
+!MarsRover class methodsFor: 'error descriptions' stamp: 'JMS 5/28/2022 18:13:58'!
+aStringOfCommandsMustBeAStringErrorDescription
 	
-	(aCoordinate isPoint) ifFalse: [self invalidStartingPosition].
+	^'#execute can only receive a string as collaborator.'.! !
+
+
+!MarsRover class methodsFor: 'instance creation' stamp: 'JMS 5/28/2022 20:59:17'!
+at: aCoordinate facing: aDirection 
 	
-	orientation :=  CardinalDirection createOrientationFrom: aDirection.
+	self assertACoordinateIsPoint: aCoordinate.
+	self assertADirectionIsACardinalDirection: aDirection.
 		
-	^self new initializeLocatedIn: aCoordinate facing: orientation.! !
+	^self new initializePositionedAt: aCoordinate facing: aDirection.
+	! !
 
 
-!MarsRover class methodsFor: 'error descriptions' stamp: 'RB 5/27/2022 20:18:58'!
-invalidCommandArgumentErrorDescription
-	
-	^'Command can only receive strings as arguments.'! !
+!MarsRover class methodsFor: 'testing' stamp: 'JMS 5/28/2022 18:18:04'!
+assertACoordinateIsPoint: aCoordinate
 
-!MarsRover class methodsFor: 'error descriptions' stamp: 'RB 5/27/2022 20:07:16'!
-invalidStartingOrientationErrorDescription
+	aCoordinate isPoint ifFalse: [ self aCoordinateMustBeAPoint. ].! !
 
-	^'Mars Rober can only be created facing a valid orientation.'! !
+!MarsRover class methodsFor: 'testing' stamp: 'JMS 5/28/2022 21:08:54'!
+assertADirectionIsACardinalDirection: aDirection
 
-!MarsRover class methodsFor: 'error descriptions' stamp: 'RB 5/27/2022 20:06:39'!
-invalidStartingPositionErrorDescription
-
-	^'Mars Rober can only be created in a valid coordinate.'! !
-
-
-!MarsRover class methodsFor: 'error' stamp: 'RB 5/27/2022 21:16:41'!
-invalidStartingOrientation
-
-	self error: self invalidStartingOrientationErrorDescription! !
-
-!MarsRover class methodsFor: 'error' stamp: 'RB 5/27/2022 21:18:51'!
-invalidStartingPosition
-
-	self error: self invalidStartingPositionErrorDescription! !
+	[ aDirection isCardinalDirection ]
+		on: Error
+		do: [ self aDirectionMustBeACardinalDirection. ].! !
