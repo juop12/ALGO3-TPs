@@ -28,61 +28,61 @@ test01marsRoverShouldBeCreatedWithTheCorrectDirectionAndPosition
 	
 	self assertMarsRoverIsPositionedAtOriginFacingNorth.! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:57'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:12'!
 test02givenAMarsRoverAt0FacingNorth_whenMovedForward_YCoordinateShouldBe1FacingNorth
 
 	marsRoverInitializedFacingNorth execute: 'f'.	
 	
-	self assert: ((marsRoverInitializedFacingNorth isPositionedAt: 0@1) and: [ marsRoverInitializedFacingNorth isNorth ]).! !
+	self assert: ((marsRoverInitializedFacingNorth isPositionedAt: 0@1) and: [ marsRoverInitializedFacingNorth isFacingNorth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:57'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:12'!
 test03givenAMarsRoverAt0FacingNorth_whenMovedBackwards_YCoordinateShouldBeMinus1FacingNorth
 
 	marsRoverInitializedFacingNorth execute: 'b'.	
 	
-	self assert: ((marsRoverInitializedFacingNorth isPositionedAt: 0@-1) and: [ marsRoverInitializedFacingNorth isNorth ]).! !
+	self assert: ((marsRoverInitializedFacingNorth isPositionedAt: 0@-1) and: [ marsRoverInitializedFacingNorth isFacingNorth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:21:09'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:49:19'!
 test04givenAMarsRoverAt0FacingSouth_whenMovedForward_YCoordinateShouldBeMinus1FacingSouth
 	
 	marsRoverInitializedFacingSouth execute: 'f'.	
 	
-	self assert: ((marsRoverInitializedFacingSouth isPositionedAt: 0@-1) and: [ marsRoverInitializedFacingSouth isSouth ]).! !
+	self assert: ((marsRoverInitializedFacingSouth isPositionedAt: 0@-1) and: [ marsRoverInitializedFacingSouth isFacingSouth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:21:09'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:49:19'!
 test05givenAMarsRoverAt0FacingSouth_whenMovedBackwards_YCoordinateShouldBe1FacingSouth
 	
 	marsRoverInitializedFacingSouth execute: 'b'.	
 	
-	self assert: ((marsRoverInitializedFacingSouth isPositionedAt: 0@1) and: [ marsRoverInitializedFacingSouth isSouth ]).! !
+	self assert: ((marsRoverInitializedFacingSouth isPositionedAt: 0@1) and: [ marsRoverInitializedFacingSouth isFacingSouth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:42'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:04'!
 test06givenAMarsRoverAt0FacingEast_whenMovedForward_XCoordinateShouldBe1FacingEast
 
 	marsRoverInitializedFacingEast execute: 'f'.	
 	
-	self assert: ((marsRoverInitializedFacingEast isPositionedAt: 1@0) and: [ marsRoverInitializedFacingEast isEast ]).! !
+	self assert: ((marsRoverInitializedFacingEast isPositionedAt: 1@0) and: [ marsRoverInitializedFacingEast isFacingEast ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:42'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:04'!
 test07givenAMarsRoverAt0FacingEast_whenMovedBackwards_XCoordinateShouldBeMinus1FacingEast
 	
 	marsRoverInitializedFacingEast execute: 'b'.	
 	
-	self assert: ((marsRoverInitializedFacingEast isPositionedAt: -1@0) and: [ marsRoverInitializedFacingEast isEast ]).! !
+	self assert: ((marsRoverInitializedFacingEast isPositionedAt: -1@0) and: [ marsRoverInitializedFacingEast isFacingEast ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:21:18'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:19'!
 test08givenAMarsRoverAt0FacingWest_whenMovedForward_XCoordinateShouldBeMinus1FacingWest
 
 	marsRoverInitializedFacingWest execute: 'f'.	
 	
-	self assert: ((marsRoverInitializedFacingWest isPositionedAt: -1@0) and: [ marsRoverInitializedFacingWest isWest ]).! !
+	self assert: ((marsRoverInitializedFacingWest isPositionedAt: -1@0) and: [ marsRoverInitializedFacingWest isFacingWest ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:21:18'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:19'!
 test09givenAMarsRoverAt0FacingWest_whenMovedBackwards_XCoordinateShouldBe1FacingWest
 	
 	marsRoverInitializedFacingWest execute: 'b'.	
 	
-	self assert: ((marsRoverInitializedFacingWest isPositionedAt: 1@0) and: [ marsRoverInitializedFacingWest isWest ]).! !
+	self assert: ((marsRoverInitializedFacingWest isPositionedAt: 1@0) and: [ marsRoverInitializedFacingWest isFacingWest ]).! !
 
 !MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:57'!
 test10givenAMarsRoverAt0FacingNorth_whenMovedForwardAndBackwards_positionShouldRemainTheSameFacingNorth
@@ -91,61 +91,61 @@ test10givenAMarsRoverAt0FacingNorth_whenMovedForwardAndBackwards_positionShouldR
 	
 	self assertMarsRoverIsPositionedAtOriginFacingNorth.! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:57'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:04'!
 test11givenAMarsRoverAt0FacingNorth_whenRotatedRight_positionShouldRemainTheSameFacingEast
 	
 	marsRoverInitializedFacingNorth execute: 'r'.	
 	
-	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingNorth isEast ]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingNorth isFacingEast ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:57'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:19'!
 test12givenAMarsRoverAt0FacingNorth_whenRotatedLeft_positionShouldRemainTheSameFacingWest
 	
 	marsRoverInitializedFacingNorth execute: 'l'.	
 	
-	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingNorth isWest ]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingNorth isFacingWest ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:21:09'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:19'!
 test13givenAMarsRoverAt0FacingSouth_whenRotatedRight_positionShouldRemainTheSameFacingWest
 	
 	marsRoverInitializedFacingSouth execute: 'r'.	
 	
-	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingSouth isWest ]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingSouth isFacingWest ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:21:09'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:04'!
 test14givenAMarsRoverAt0FacingSouth_whenRotatedLeft_positionShouldRemainTheSameFacingEast
 	
 	marsRoverInitializedFacingSouth execute: 'l'.	
 	
-	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingSouth isEast ]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingSouth isFacingEast ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:42'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:49:19'!
 test15givenAMarsRoverAt0FacingEast_whenRotatedRight_positionShouldRemainTheSameFacingSouth
 	
 	marsRoverInitializedFacingEast execute: 'r'.	
 	
-	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingEast isSouth ]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingEast isFacingSouth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:42'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:12'!
 test16givenAMarsRoverAt0FacingEast_whenRotatedLeft_positionShouldRemainTheSameFacingNorth
 	
 	marsRoverInitializedFacingEast execute: 'l'.	
 	
-	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingEast isNorth ]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingEast isFacingNorth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:21:18'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:12'!
 test17givenAMarsRoverAt0FacingWest_whenRotatedRight_positionShouldRemainTheSameFacingNorth
 	
 	marsRoverInitializedFacingWest execute: 'r'.	
 	
-	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingWest isNorth ]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingWest isFacingNorth ]).! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:21:18'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:49:19'!
 test18givenAMarsRoverAt0FacingWest_whenRotatedLeft_positionShouldRemainTheSameFacingSouth
 	
 	marsRoverInitializedFacingWest execute: 'l'.	
 	
-	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingWest isSouth ]).! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingWest isFacingSouth ]).! !
 
 !MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:57'!
 test19givenAMarsRoverAt0FacingNorth_whenRotatedRightAndLeft_PositionAndDirectionShouldRemainTheSame
@@ -155,12 +155,12 @@ test19givenAMarsRoverAt0FacingNorth_whenRotatedRightAndLeft_PositionAndDirection
 	self assertMarsRoverIsPositionedAtOriginFacingNorth.
 	 ! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:57'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:12'!
 test20givenAMarsRoverAt0FacingNorth_whenSendingSeveralCommands_marsRoversActsAccordingly
 	
 	marsRoverInitializedFacingNorth execute: 'frlbfffrrrrbb'.	
 	
-	self assert: ((marsRoverInitializedFacingNorth isPositionedAt: 0@1) and: [ marsRoverInitializedFacingNorth isNorth ]).
+	self assert: ((marsRoverInitializedFacingNorth isPositionedAt: 0@1) and: [ marsRoverInitializedFacingNorth isFacingNorth ]).
 	 ! !
 
 !MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:14:09'!
@@ -188,7 +188,7 @@ test23givenAValidMarsRover_whenSendingSthgOtherThanAString_marsRoverShouldRaiseA
 				self assert: MarsRover aCommandSequenceMustBeAStringErrorDescription equals: anError messageText ].
 					! !
 
-!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:20:57'!
+!MarsRoverTests methodsFor: 'testing' stamp: 'jms 5/31/2022 19:51:12'!
 test24givenAMarsRoverAt0FacingNorth_whenSendingWrongCommands_marsRoverShouldMoveAndThenRaiseAnException
 	
 	self should: [ marsRoverInitializedFacingNorth execute: 'ffxr'. ]
@@ -196,7 +196,7 @@ test24givenAMarsRoverAt0FacingNorth_whenSendingWrongCommands_marsRoverShouldMove
 		withExceptionDo: [ :anError | 
 				self assert: MarsRover aCommandMustBeAValidCommandErrorDescription equals: anError messageText ].
 	
-	self assert: ((marsRoverInitializedFacingNorth isPositionedAt: 0@2) and: [ marsRoverInitializedFacingNorth isNorth ]).
+	self assert: ((marsRoverInitializedFacingNorth isPositionedAt: 0@2) and: [ marsRoverInitializedFacingNorth isFacingNorth ]).
 	 ! !
 
 
@@ -205,10 +205,10 @@ assertMarsRoverIsPositionedAtOrigin
 
 	^marsRoverInitializedFacingNorth isPositionedAt: 0@0.! !
 
-!MarsRoverTests methodsFor: 'private' stamp: 'jms 5/31/2022 19:20:57'!
+!MarsRoverTests methodsFor: 'private' stamp: 'jms 5/31/2022 19:51:12'!
 assertMarsRoverIsPositionedAtOriginFacingNorth
 
-	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingNorth isNorth ])! !
+	self assert: (self assertMarsRoverIsPositionedAtOrigin and: [ marsRoverInitializedFacingNorth isFacingNorth ])! !
 
 
 !classDefinition: #Command category: 'MarsRover'!
@@ -421,22 +421,22 @@ isAPosibleFacingDirectionOfARover
 	
 	^true.! !
 
-!FacingDirectionOfARover methodsFor: 'information' stamp: 'jms 5/31/2022 18:04:16'!
+!FacingDirectionOfARover methodsFor: 'information' stamp: 'jms 5/31/2022 19:53:17'!
 isEast
 
 	^false.! !
 
-!FacingDirectionOfARover methodsFor: 'information' stamp: 'jms 5/31/2022 18:03:50'!
+!FacingDirectionOfARover methodsFor: 'information' stamp: 'jms 5/31/2022 19:53:10'!
 isNorth
 
 	^false.! !
 
-!FacingDirectionOfARover methodsFor: 'information' stamp: 'jms 5/31/2022 18:04:07'!
+!FacingDirectionOfARover methodsFor: 'information' stamp: 'jms 5/31/2022 19:52:22'!
 isSouth
 
 	^false.! !
 
-!FacingDirectionOfARover methodsFor: 'information' stamp: 'jms 5/31/2022 18:03:59'!
+!FacingDirectionOfARover methodsFor: 'information' stamp: 'jms 5/31/2022 19:51:40'!
 isWest
 
 	^false.! !
@@ -455,7 +455,7 @@ FacingDirectionOfARover subclass: #East
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!East methodsFor: 'information' stamp: 'jms 5/31/2022 18:04:16'!
+!East methodsFor: 'information' stamp: 'jms 5/31/2022 19:53:17'!
 isEast
 
 	^true.! !
@@ -474,7 +474,7 @@ FacingDirectionOfARover subclass: #North
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!North methodsFor: 'information' stamp: 'jms 5/31/2022 18:03:50'!
+!North methodsFor: 'information' stamp: 'jms 5/31/2022 19:53:10'!
 isNorth
 
 	^true.! !
@@ -494,7 +494,7 @@ FacingDirectionOfARover subclass: #South
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!South methodsFor: 'information' stamp: 'jms 5/31/2022 18:04:07'!
+!South methodsFor: 'information' stamp: 'jms 5/31/2022 19:52:23'!
 isSouth
 
 	^true.! !
@@ -513,7 +513,7 @@ FacingDirectionOfARover subclass: #West
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!West methodsFor: 'information' stamp: 'jms 5/31/2022 18:04:00'!
+!West methodsFor: 'information' stamp: 'jms 5/31/2022 19:52:06'!
 isWest
 
 	^true.! !
@@ -532,30 +532,30 @@ Object subclass: #MarsRover
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRover methodsFor: 'accessing' stamp: 'jms 5/31/2022 18:04:16'!
-isEast
+!MarsRover methodsFor: 'accessing' stamp: 'jms 5/31/2022 19:52:58'!
+isFacingEast
 
 	^facingDirection isEast.! !
 
-!MarsRover methodsFor: 'accessing' stamp: 'jms 5/31/2022 18:03:50'!
-isNorth
+!MarsRover methodsFor: 'accessing' stamp: 'jms 5/31/2022 19:52:54'!
+isFacingNorth
 
 	^facingDirection isNorth.! !
+
+!MarsRover methodsFor: 'accessing' stamp: 'jms 5/31/2022 19:52:44'!
+isFacingSouth
+
+	^facingDirection isSouth.! !
+
+!MarsRover methodsFor: 'accessing' stamp: 'jms 5/31/2022 19:52:47'!
+isFacingWest
+
+	^facingDirection isWest.! !
 
 !MarsRover methodsFor: 'accessing' stamp: 'JMS 5/28/2022 23:18:34'!
 isPositionedAt: aCoordinate
 	
 	^position = aCoordinate.! !
-
-!MarsRover methodsFor: 'accessing' stamp: 'jms 5/31/2022 18:04:07'!
-isSouth
-
-	^facingDirection isSouth.! !
-
-!MarsRover methodsFor: 'accessing' stamp: 'jms 5/31/2022 18:04:00'!
-isWest
-
-	^facingDirection isWest.! !
 
 
 !MarsRover methodsFor: 'error' stamp: 'jms 5/31/2022 18:16:13'!
