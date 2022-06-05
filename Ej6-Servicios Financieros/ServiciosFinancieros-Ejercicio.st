@@ -96,45 +96,44 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferTest methodsFor: 'tests' stamp: 'rb 6/3/2022 17:56:31'!
-test01
+!TransferTest methodsFor: 'as yet unclassified' stamp: 'rb 6/4/2022 23:21:34'!
+test01TransferenceDecreasesBalanceOnOneAccountAndDepositsItOnAnother
 
 	| account1 account2 |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
-	
-	account1 transfer: 100 * peso to: account2.
-	
-	self assert:  100 * peso equals: account2 balance.
-	self assert: -100 * peso equals: account1 balance.! !
 
-!TransferTest methodsFor: 'tests' stamp: 'rb 6/3/2022 18:17:51'!
-test02
+	Transfer transfer: 100 * peso from: account1 to: account2.
+	
+	self assert: -100 * peso equals: account1 balance.
+	self assert:  100 * peso equals: account2 balance.! !
+
+!TransferTest methodsFor: 'as yet unclassified' stamp: 'rb 6/4/2022 23:21:34'!
+test02TransferenceMovesMoneyFromOneAccountToTheOtherAndViceversa
 
 	| account1 account2 |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
-	
-	account1 transfer: 50 * peso to: account2.
-	
-	self assert:  50 * peso equals: account2 balance.
-	self assert: -50 * peso equals: account1 balance.! !
 
-!TransferTest methodsFor: 'tests' stamp: 'rb 6/3/2022 18:35:59'!
+	Transfer transfer: 100 * peso from: account1 to: account2.
+	Transfer transfer:   50 * peso from: account2 to: account1.
+	
+	self assert: -50 * peso equals: account1 balance.
+	self assert:  50 * peso equals: account2 balance.! !
+
+!TransferTest methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:51:14'!
 test03
 
 	| account1 account2 |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
+
+	Transfer transfer: 100 * peso from: account1 to: account2.
 	
-	self should: [account1 transfer: 0 * peso to: account2]
-		raise: Error
-		withExceptionDo: [ :anError | 
-					self assert: ReceptiveAccount canNotTransfer0PesosErrorDescription equals: anError messageText
-					].! !
+	self assert: (account1 lastTransaction isLinkedTo: account2 lastTransaction).! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -155,14 +154,15 @@ value
 AccountTransaction class
 	instanceVariableNames: ''!
 
-!AccountTransaction class methodsFor: 'instance creation' stamp: 'NR 10/17/2019 03:22:00'!
+!AccountTransaction class methodsFor: 'instance creation' stamp: 'rb 6/4/2022 23:27:10'!
 register: aValue on: account
 
 	| transaction |
 	
 	transaction := self for: aValue.
+	
 	account register: transaction.
-		
+	
 	^ transaction! !
 
 
@@ -201,6 +201,35 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
+!classDefinition: #TransferDeposit category: 'ServiciosFinancieros-Ejercicio'!
+Deposit subclass: #TransferDeposit
+	instanceVariableNames: 'parallelTransaction'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:51:32'!
+isLinkedTo: aTransaction
+
+	^parallelTransaction = aTransaction.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:45:54'!
+linkTo: aTransaction
+
+	parallelTransaction := aTransaction.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferDeposit class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferDeposit class
+	instanceVariableNames: ''!
+
+!TransferDeposit class methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:24:27'!
+with: aValue
+
+	^self new initializeFor: aValue.! !
+
+
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
 AccountTransaction subclass: #Withdraw
 	instanceVariableNames: 'value'
@@ -236,6 +265,35 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
+!classDefinition: #TransferWithdraw category: 'ServiciosFinancieros-Ejercicio'!
+Withdraw subclass: #TransferWithdraw
+	instanceVariableNames: 'parallelTransaction'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:51:41'!
+isLinkedTo: aTransaction
+
+	^parallelTransaction = aTransaction.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:46:10'!
+linkTo: aTransaction
+
+	parallelTransaction := aTransaction.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferWithdraw class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferWithdraw class
+	instanceVariableNames: ''!
+
+!TransferWithdraw class methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:25:05'!
+with: aValue
+
+	^self new initializeFor: aValue.! !
+
+
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #ReceptiveAccount
 	instanceVariableNames: 'transactions'
@@ -262,6 +320,10 @@ hasRegistered: aTransaction
 	^ transactions includes: aTransaction 
 ! !
 
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'rb 6/5/2022 01:03:41'!
+lastTransaction
+	^self transactions last.! !
+
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
 
@@ -279,14 +341,6 @@ assertAValueIsNot0: aValue
 
 	^ aValue = 0 ifTrue: [ self error: self class canNotTransfer0PesosErrorDescription ]! !
 
-!ReceptiveAccount methodsFor: 'category-name' stamp: 'rb 6/3/2022 18:34:47'!
-transfer: aValue to: aReceptiveAccount 
-	
-	self assertAValueIsNot0: aValue.
-	
-	Deposit register: aValue on: aReceptiveAccount.
-	Withdraw register: aValue on: self.! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'ReceptiveAccount class' category: 'ServiciosFinancieros-Ejercicio'!
@@ -297,3 +351,60 @@ ReceptiveAccount class
 canNotTransfer0PesosErrorDescription
 
 	^'Cant transfer 0 pesos' ! !
+
+
+!classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Transfer
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Transfer class' category: 'ServiciosFinancieros-Ejercicio'!
+Transfer class
+	instanceVariableNames: ''!
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:49:13'!
+transfer: aValue from: accountToTransferFrom to: accountToTransferTo
+
+	| depositTransaction withdrawTransaction |
+	
+	depositTransaction   := TransferDeposit    with: aValue.
+	withdrawTransaction := TransferWithdraw with: aValue.
+	
+	depositTransaction   linkTo: withdrawTransaction.
+	withdrawTransaction linkTo: depositTransaction.
+	
+	accountToTransferFrom register: withdrawTransaction.
+	accountToTransferTo     register: depositTransaction.! !
+
+
+!classDefinition: #TransferTransactions category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #TransferTransactions
+	instanceVariableNames: 'value counterpart'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+
+!classDefinition: #TransferDepositEx category: 'ServiciosFinancieros-Ejercicio'!
+TransferTransactions subclass: #TransferDepositEx
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferDepositEx methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 01:27:01'!
+initializeFor: aValue
+
+	value := aValue! !
+
+
+!classDefinition: #TransferWithdrawEx category: 'ServiciosFinancieros-Ejercicio'!
+TransferTransactions subclass: #TransferWithdrawEx
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
