@@ -96,8 +96,45 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferTest methodsFor: 'tests' stamp: 'jms 6/2/2022 21:43:07'!
-test01! !
+!TransferTest methodsFor: 'tests' stamp: 'rb 6/3/2022 17:56:31'!
+test01
+
+	| account1 account2 |
+	
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	
+	account1 transfer: 100 * peso to: account2.
+	
+	self assert:  100 * peso equals: account2 balance.
+	self assert: -100 * peso equals: account1 balance.! !
+
+!TransferTest methodsFor: 'tests' stamp: 'rb 6/3/2022 18:17:51'!
+test02
+
+	| account1 account2 |
+	
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	
+	account1 transfer: 50 * peso to: account2.
+	
+	self assert:  50 * peso equals: account2 balance.
+	self assert: -50 * peso equals: account1 balance.! !
+
+!TransferTest methodsFor: 'tests' stamp: 'rb 6/3/2022 18:35:59'!
+test03
+
+	| account1 account2 |
+	
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	
+	self should: [account1 transfer: 0 * peso to: account2]
+		raise: Error
+		withExceptionDo: [ :anError | 
+					self assert: ReceptiveAccount canNotTransfer0PesosErrorDescription equals: anError messageText
+					].! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -235,3 +272,28 @@ register: aTransaction
 transactions 
 
 	^ transactions copy! !
+
+
+!ReceptiveAccount methodsFor: 'category-name' stamp: 'rb 6/3/2022 18:34:47'!
+assertAValueIsNot0: aValue
+
+	^ aValue = 0 ifTrue: [ self error: self class canNotTransfer0PesosErrorDescription ]! !
+
+!ReceptiveAccount methodsFor: 'category-name' stamp: 'rb 6/3/2022 18:34:47'!
+transfer: aValue to: aReceptiveAccount 
+	
+	self assertAValueIsNot0: aValue.
+	
+	Deposit register: aValue on: aReceptiveAccount.
+	Withdraw register: aValue on: self.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReceptiveAccount class' category: 'ServiciosFinancieros-Ejercicio'!
+ReceptiveAccount class
+	instanceVariableNames: ''!
+
+!ReceptiveAccount class methodsFor: 'error descriptions' stamp: 'rb 6/3/2022 18:29:16'!
+canNotTransfer0PesosErrorDescription
+
+	^'Cant transfer 0 pesos' ! !
