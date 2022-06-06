@@ -123,7 +123,7 @@ test02TransferMovesMoneyFromOneAccountToTheOtherAndViceversa
 	self assert: -50 * peso equals: account1 balance.
 	self assert:  50 * peso equals: account2 balance.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 14:14:46'!
+!TransferTest methodsFor: 'as yet unclassified' stamp: 'rb 6/6/2022 00:25:04'!
 test03TransferTransactionsKnowTheirCounterpart
 
 	| account1 account2 |
@@ -133,8 +133,8 @@ test03TransferTransactionsKnowTheirCounterpart
 
 	Transfer transfer: 100 * peso from: account1 to: account2.
 	
-	self assert: (account1 lastTransaction isLinkedTo: account2 lastTransaction).
-	self assert: (account2 lastTransaction isLinkedTo: account1 lastTransaction).! !
+	self assert: (account1 transactions last hasAsItsCounterpart: account2 transactions last).
+	self assert: (account2 transactions last hasAsItsCounterpart: account1 transactions last).! !
 
 !TransferTest methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 15:24:48'!
 test04TransferCannotMoveANegativeAmountFromOneAccountToAnother
@@ -214,19 +214,19 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
-!classDefinition: #TransferDeposit category: 'ServiciosFinancieros-Ejercicio'!
-Deposit subclass: #TransferDeposit
+!classDefinition: #TransferDepositEx category: 'ServiciosFinancieros-Ejercicio'!
+Deposit subclass: #TransferDepositEx
 	instanceVariableNames: 'parallelTransaction'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:51:32'!
+!TransferDepositEx methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:51:32'!
 isLinkedTo: aTransaction
 
 	^parallelTransaction = aTransaction.! !
 
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:45:54'!
+!TransferDepositEx methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:45:54'!
 linkTo: aTransaction
 
 	parallelTransaction := aTransaction.! !
@@ -267,19 +267,19 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
-!classDefinition: #TransferWithdraw category: 'ServiciosFinancieros-Ejercicio'!
-Withdraw subclass: #TransferWithdraw
+!classDefinition: #TransferWithdrawEx category: 'ServiciosFinancieros-Ejercicio'!
+Withdraw subclass: #TransferWithdrawEx
 	instanceVariableNames: 'parallelTransaction'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:51:41'!
+!TransferWithdrawEx methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:51:41'!
 isLinkedTo: aTransaction
 
 	^parallelTransaction = aTransaction.! !
 
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:46:10'!
+!TransferWithdrawEx methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 02:46:10'!
 linkTo: aTransaction
 
 	parallelTransaction := aTransaction.! !
@@ -331,10 +331,39 @@ transactions
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Transfer
-	instanceVariableNames: ''
+	instanceVariableNames: 'value withdrawLeg depositLeg'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Transfer methodsFor: 'initialization' stamp: 'rb 6/5/2022 22:47:28'!
+beRegisteredFrom: accountToTransferFrom to: accountToTransferTo.
+
+	accountToTransferFrom register: withdrawLeg.
+	accountToTransferTo     register: depositLeg.! !
+
+!Transfer methodsFor: 'initialization' stamp: 'rb 6/5/2022 22:26:24'!
+initializeWith: aValue
+	
+	value := aValue.
+	
+	depositLeg   := TransferDeposit     new initializeWith: self.
+	withdrawLeg := TransferWithdraw new initializeWith: self.! !
+
+!Transfer methodsFor: 'initialization' stamp: 'rb 6/6/2022 00:23:21'!
+matchesDepositLeg: aTransaction
+
+	^depositLeg = aTransaction.! !
+
+!Transfer methodsFor: 'initialization' stamp: 'rb 6/6/2022 00:23:06'!
+matchesWithdrawLeg: aTransaction
+
+	^withdrawLeg = aTransaction.! !
+
+!Transfer methodsFor: 'initialization' stamp: 'rb 6/5/2022 22:49:25'!
+value
+
+	^value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -360,17 +389,94 @@ linkTransactions: transaction1 and: transaction2
 	transaction2 linkTo: transaction1.
 	! !
 
-!Transfer class methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 15:29:11'!
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 22:46:36'!
 transfer: aValue from: accountToTransferFrom to: accountToTransferTo
 
-	| depositTransaction withdrawTransaction |
+	| transaction |
 	
 	self assertThatAValueIsPositive: aValue.
 	
-	depositTransaction   := TransferDeposit    for: aValue.
-	withdrawTransaction := TransferWithdraw for: aValue.
+	transaction := self new initializeWith: aValue.
+	
+	transaction beRegisteredFrom: accountToTransferFrom to: accountToTransferTo.
+	"
+	| depositTransaction withdrawTransaction |
+	
+	depositTransaction   := TransferDepositEx    for: aValue.
+	withdrawTransaction := TransferWithdrawEx for: aValue.
 	
 	self linkTransactions: depositTransaction and: withdrawTransaction.
-
+	
 	accountToTransferFrom register: withdrawTransaction.
-	accountToTransferTo     register: depositTransaction.! !
+	accountToTransferTo     register: depositTransaction.
+	"! !
+
+
+!classDefinition: #TransferTransactions category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #TransferTransactions
+	instanceVariableNames: 'entireTransfer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferTransactions methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 22:51:30'!
+counterpart
+
+	self subclassResponsibility.! !
+
+!TransferTransactions methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 23:19:41'!
+effectOnTheBalance
+	
+	self subclassResponsibility.! !
+
+!TransferTransactions methodsFor: 'as yet unclassified' stamp: 'rb 6/6/2022 00:04:36'!
+hasAsItsCounterpart: aTransaction
+
+	self subclassResponsibility.! !
+
+!TransferTransactions methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 22:23:47'!
+initializeWith: aTransfer
+
+	entireTransfer := aTransfer.! !
+
+!TransferTransactions methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 22:50:18'!
+value
+
+	^entireTransfer value.! !
+
+
+!classDefinition: #TransferDeposit category: 'ServiciosFinancieros-Ejercicio'!
+TransferTransactions subclass: #TransferDeposit
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 23:20:22'!
+effectOnTheBalance
+	
+	^self value.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'rb 6/6/2022 00:28:13'!
+hasAsItsCounterpart: aTransaction
+
+	
+	^entireTransfer matchesWithdrawLeg: aTransaction.! !
+
+
+!classDefinition: #TransferWithdraw category: 'ServiciosFinancieros-Ejercicio'!
+TransferTransactions subclass: #TransferWithdraw
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'rb 6/5/2022 23:20:47'!
+effectOnTheBalance
+
+	^self value negated.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'rb 6/6/2022 01:01:13'!
+hasAsItsCounterpart: aTransaction
+
+	^entireTransfer matchesDepositLeg: aTransaction. ! !
