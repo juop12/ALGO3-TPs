@@ -5,6 +5,7 @@ TestCase subclass: #PortfolioTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
+
 !PortfolioTest methodsFor: 'tests' stamp: 'jms 6/6/2022 21:09:37'!
 test01
 
@@ -26,7 +27,7 @@ test02
 	
 	self assert: portfolio balance equals: 0 * peso.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/6/2022 21:28:19'!
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 00:24:22'!
 test03
 
 	| portfolio account1 |
@@ -35,20 +36,20 @@ test03
 	account1 := ReceptiveAccount new.
 	
 	Deposit register: 100 * peso on: account1. 
-	portfolio add: account1.
 	Withdraw register: 150 * peso on: account1.
+	portfolio add: account1.
 	
 	self assert: portfolio balance equals: -50 * peso.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/6/2022 21:18:21'!
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 00:24:16'!
 test04hasRegistered
 
 	| portfolio account1 deposit withdraw |
 	
 	portfolio := Portfolio new.
 	account1 := ReceptiveAccount new.
-	
-	portfolio add: account1.
+
+	portfolio add: account1.	
 	deposit := Deposit register: 100 * peso on: account1.
 	withdraw := Withdraw register: 100 * peso on: account1.
 
@@ -85,10 +86,10 @@ test06NowPortfoliosWithPortfolios
 	self assert: portfolio1 balance equals: 0 * peso.
 	self assert: portfolio2 balance equals: 0 * peso.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/6/2022 21:52:40'!
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 00:29:19'!
 test07NowPortfoliosWithPortfoliosAndMoney
 
-	| portfolio1 portfolio2 portfolio3 account1 account2 account3 account4 account5 |
+	| portfolio1 portfolio2 portfolio3 account1 account2 account3 account4 account5 deposit1 deposit2 deposit3 |
 	
 	portfolio1 := Portfolio new.
 	portfolio2 := Portfolio new.
@@ -99,12 +100,28 @@ test07NowPortfoliosWithPortfoliosAndMoney
 	account4 := ReceptiveAccount new.
 	account5 := ReceptiveAccount new.
 		
-	portfolio2 add: account1.
+	portfolio1 add: account1.
 	portfolio1 add: portfolio2.
-	Deposit register: 100 * peso on: account1. 
+	portfolio1 add: account2.
+	portfolio2 add: account3.
+	portfolio2 add: portfolio3.
+	portfolio2 add: account4.
+	portfolio3 add: account5.
 	
-	self assert: portfolio1 balance equals: 100 * peso.
-	self assert: portfolio2 balance equals: 100 * peso.! !
+	deposit1 := Deposit register: 100 * peso on: account1. 
+	deposit2 := Deposit register: 100 * peso on: account3. 
+	deposit3 := Deposit register: 100 * peso on: account5. 
+	
+	self assert: portfolio1 balance equals: 300 * peso.
+	self assert: portfolio2 balance equals: 200 * peso.
+	self assert: portfolio3 balance equals: 100 * peso.
+	
+	self assert: (portfolio1 hasRegistered: deposit3).
+	self assert: (portfolio2 hasRegistered: deposit3).
+	self assert: (portfolio3 hasRegistered: deposit3).
+
+	self assert: 1 equals: (portfolio1 transactionsOf: account5) size. 
+	self assert: ((portfolio1 transactionsOf: account3) includes: deposit2).! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
@@ -429,9 +446,10 @@ hasRegistered: aTransaction
 		ifFound: [ :aReceptiveAccount | ^true ]
 		ifNone: [ ^false ].! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/6/2022 21:42:22'!
+!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/7/2022 00:31:09'!
 transactionsOf: aReceptiveAccount 
-	
+	"Que pasa si le pasas otra wallet en vez de una receptive account ? Te va a tirar error transactions de does not understand. Esta bien ?"
+	"No es recursivo."
 	(wallet includes: aReceptiveAccount) ifFalse: [self error: 'No se encontro la cuenta en el portfolio'.].
 	
 	^aReceptiveAccount transactions.
