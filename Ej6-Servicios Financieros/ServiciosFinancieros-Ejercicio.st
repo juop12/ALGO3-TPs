@@ -1,127 +1,224 @@
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #PortfolioTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'portfolio_1 account_1 portfolio_2 portfolio_3 account_2 account_4 account_5 account_3 deposit_1 deposit_2 deposit_3'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/6/2022 21:09:37'!
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 18:44:22'!
 test01
 
-	| portfolio |
+	portfolio_1 add: account_1.
 	
-	portfolio := Portfolio new.
-	
-	self assert: portfolio balance equals: 0 * peso.! !
+	self should: [portfolio_1 add: account_1]
+		raise: Error
+		withExceptionDo: [ :anError | 
+				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/6/2022 21:09:32'!
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 18:06:59'!
 test02
 
-	| portfolio account1 |
+	self prepForTesting06y07y08.
 	
-	portfolio := Portfolio new.
-	account1 := ReceptiveAccount new.
-	
-	portfolio add: account1.
-	
-	self assert: portfolio balance equals: 0 * peso.! !
+	self should: [ portfolio_1 add: account_5 ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 00:24:22'!
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 18:44:33'!
 test03
-
-	| portfolio account1 |
 	
-	portfolio := Portfolio new.
-	account1 := ReceptiveAccount new.
+	self should: [ portfolio_1 add: portfolio_1 ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
+
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 19:46:54'!
+test03_5
 	
-	Deposit register: 100 * peso on: account1. 
-	Withdraw register: 150 * peso on: account1.
-	portfolio add: account1.
+	| portfolio_4 portfolio_5 |
 	
-	self assert: portfolio balance equals: -50 * peso.! !
-
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 00:24:16'!
-test04hasRegistered
-
-	| portfolio account1 deposit withdraw |
+	portfolio_4 := Portfolio new.
+	portfolio_5 := Portfolio new.
 	
-	portfolio := Portfolio new.
-	account1 := ReceptiveAccount new.
-
-	portfolio add: account1.	
-	deposit := Deposit register: 100 * peso on: account1.
-	withdraw := Withdraw register: 100 * peso on: account1.
-
-	self assert: (portfolio hasRegistered: deposit).
-	self assert: (portfolio hasRegistered: withdraw).! !
-
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/6/2022 21:43:19'!
-test05transactionCopy
-
-	| portfolio account deposit transactionsOfAccount |
+	portfolio_1 add: portfolio_2.
+	portfolio_2 add: portfolio_3.
+	portfolio_3 add: portfolio_4.
+	portfolio_4 add: portfolio_5.
+	portfolio_5 add: account_1.
 	
-	portfolio := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	portfolio add: account.
-	deposit := Deposit register: 100 * peso on: account.
-	transactionsOfAccount := portfolio transactionsOf: account.
+	self should: [ portfolio_5 add: portfolio_1 ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
 
-	self assert: 1 equals: transactionsOfAccount size. 
-	self assert: (transactionsOfAccount includes: deposit).! !
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 18:51:35'!
+test04
 
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/6/2022 21:48:39'!
-test06NowPortfoliosWithPortfolios
+	portfolio_1 add: account_1.
+	portfolio_1 add: portfolio_2.
+	portfolio_1 add: account_2.
+	portfolio_2 add: account_3.
+	
+	self should: [ portfolio_2 add: account_1 ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
 
-	| portfolio1 portfolio2 account |
-	
-	portfolio1 := Portfolio new.
-	portfolio2 := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	portfolio2 add: account.
-	portfolio1 add: portfolio2.
-	
-	self assert: portfolio1 balance equals: 0 * peso.
-	self assert: portfolio2 balance equals: 0 * peso.! !
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 19:51:52'!
+test06
 
-!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 00:29:19'!
-test07NowPortfoliosWithPortfoliosAndMoney
-
-	| portfolio1 portfolio2 portfolio3 account1 account2 account3 account4 account5 deposit1 deposit2 deposit3 |
+	portfolio_1 add: account_1.
+	portfolio_1 add: account_2.
+	portfolio_2 add: account_1.
+	portfolio_2 add: account_3.
 	
-	portfolio1 := Portfolio new.
-	portfolio2 := Portfolio new.
-	portfolio3 := Portfolio new.
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	account3 := ReceptiveAccount new.
-	account4 := ReceptiveAccount new.
-	account5 := ReceptiveAccount new.
+	self should: [ portfolio_1 add: portfolio_2 ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
+
+
+!PortfolioTest methodsFor: 'setup' stamp: 'jms 6/7/2022 17:30:03'!
+setUp
+
+	portfolio_1 := Portfolio new.
+	portfolio_2 := Portfolio new.
+	portfolio_3 := Portfolio new.
+	
+	account_1 := ReceptiveAccount new.
+	account_2 := ReceptiveAccount new.
+	account_3 := ReceptiveAccount new.
+	account_4 := ReceptiveAccount new.
+	account_5 := ReceptiveAccount new.
+	
+	deposit_1 := Deposit register: 100 * peso on: account_2. 
+	deposit_2 := Deposit register: 100 * peso on: account_3. 
+	deposit_3 := Deposit register: 100 * peso on: account_5. ! !
+
+
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:30:03'!
+test01PortfolioCanAddAnAccountWithZeroAsBalance
+	
+	portfolio_1 add: account_1.	
+	
+	self assert: 0* peso equals: portfolio_1 balance.! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:41:25'!
+test02TransactionsChangesBalanceValueInPortfolio
+	
+	portfolio_1 add: account_1.	
+	
+	self depositAHundredPesosOnAccount_1. 
+	self withdrawAHundredAndFiftyPesosOfAccount_1.
+	
+	self assert: -50 * peso equals: portfolio_1 balance.! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:41:26'!
+test03PortfolioKnowsRegisteredTransactionsOfAllTheAccountsItContains
+
+	| withdraw |
+
+	portfolio_1 add: account_1.	
+	
+	deposit_1 := self depositAHundredPesosOnAccount_1.
+	withdraw := self withdrawAHundredAndFiftyPesosOfAccount_1.
+
+	self assert: (portfolio_1 hasRegistered: deposit_1).
+	self assert: (portfolio_1 hasRegistered: withdraw).! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:39:23'!
+test04transactionCopy
+	
+	portfolio_1 add: account_1.	
+
+	deposit_1 := self depositAHundredPesosOnAccount_1.
+
+	self assert: 1 equals: portfolio_1 transactions size. 
+	self assert: (portfolio_1 transactions includes: deposit_1).! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:30:03'!
+test05NowPortfoliosWithPortfolios
+	
+	portfolio_2 add: account_1.
+	portfolio_1 add: portfolio_2.
+	
+	self assert: 0 * peso equals: portfolio_1 balance.
+	self assert: 0 * peso equals: portfolio_2 balance.! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:40:29'!
+test06NowPortfoliosWithPortfoliosAndMoney
 		
-	portfolio1 add: account1.
-	portfolio1 add: portfolio2.
-	portfolio1 add: account2.
-	portfolio2 add: account3.
-	portfolio2 add: portfolio3.
-	portfolio2 add: account4.
-	portfolio3 add: account5.
+	self prepForTesting06y07y08.
 	
-	deposit1 := Deposit register: 100 * peso on: account1. 
-	deposit2 := Deposit register: 100 * peso on: account3. 
-	deposit3 := Deposit register: 100 * peso on: account5. 
+	self assert: 300 * peso equals: portfolio_1 balance.
+	self assert: 200 * peso equals: portfolio_2 balance.
+	self assert: 100 * peso equals: portfolio_3 balance.
+	"tremendo!!"
 	
-	self assert: portfolio1 balance equals: 300 * peso.
-	self assert: portfolio2 balance equals: 200 * peso.
-	self assert: portfolio3 balance equals: 100 * peso.
 	
-	self assert: (portfolio1 hasRegistered: deposit3).
-	self assert: (portfolio2 hasRegistered: deposit3).
-	self assert: (portfolio3 hasRegistered: deposit3).
+	! !
 
-	self assert: 1 equals: (portfolio1 transactionsOf: account5) size. 
-	self assert: ((portfolio1 transactionsOf: account3) includes: deposit2).! !
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:40:29'!
+test07NowPortfoliosWithPortfoliosAndMoneyRegistered
+		
+	self prepForTesting06y07y08.
+	
+	self assert: (portfolio_1 hasRegistered: deposit_3).
+	self assert: (portfolio_1 hasRegistered: deposit_2).
+	self assert: (portfolio_1 hasRegistered: deposit_1).
+	
+	self assert: (portfolio_2 hasRegistered: deposit_3).
+	self assert: (portfolio_2 hasRegistered: deposit_2).
+	
+	self assert: (portfolio_3 hasRegistered: deposit_3).
+	"tremendo!!"
+	
+	
+	! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:40:29'!
+test08transactionCollectionNowPortfoliosWithPortfoliosAndMoney
+		
+	self prepForTesting06y07y08.
+
+	self assert: 3 equals: portfolio_1 transactions size.
+	self assert: (portfolio_1 transactions includes: deposit_1).
+	self assert: (portfolio_1 transactions includes: deposit_2).
+	self assert: (portfolio_1 transactions includes: deposit_3).
+
+	self assert: 2 equals: portfolio_2 transactions size.
+	self assert: (portfolio_2 transactions includes: deposit_2).
+	self assert: (portfolio_2 transactions includes: deposit_3).
+
+	self assert: 1 equals: portfolio_3 transactions size.
+	self assert: (portfolio_3 transactions includes: deposit_3).
+	"tremendo!!"
+	
+	
+	! !
+
+
+!PortfolioTest methodsFor: 'private' stamp: 'jms 6/7/2022 17:36:16'!
+depositAHundredPesosOnAccount_1
+
+	^ Deposit register: 100 * peso on: account_1.! !
+
+!PortfolioTest methodsFor: 'private' stamp: 'jms 6/7/2022 17:40:29'!
+prepForTesting06y07y08
+
+	portfolio_1 add: account_1.
+	portfolio_1 add: portfolio_2.
+	portfolio_1 add: account_2.
+	portfolio_2 add: account_3.
+	portfolio_2 add: portfolio_3.
+	portfolio_2 add: account_4.
+	portfolio_3 add: account_5! !
+
+!PortfolioTest methodsFor: 'private' stamp: 'jms 6/7/2022 17:41:25'!
+withdrawAHundredAndFiftyPesosOfAccount_1
+
+	^ Withdraw register: 150 * peso on: account_1! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
@@ -217,99 +314,79 @@ test07AccountKnowsItsTransactions
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #TransferTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'account01 account02'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferTest methodsFor: 'tests' stamp: 'rb 6/5/2022 15:34:51'!
+!TransferTest methodsFor: 'tests' stamp: 'jms 6/7/2022 15:19:33'!
 test01TransferDecreasesBalanceOnOneAccountAndDepositsItOnAnother
 
-	| account1 account2 |
+	Transfer transfer: 100 * peso from: account01 to: account02.
 	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
+	self assert: -100 * peso equals: account01 balance.
+	self assert:  100 * peso equals: account02 balance.! !
 
-	Transfer transfer: 100 * peso from: account1 to: account2.
-	
-	self assert: -100 * peso equals: account1 balance.
-	self assert:  100 * peso equals: account2 balance.! !
-
-!TransferTest methodsFor: 'tests' stamp: 'rb 6/5/2022 15:35:05'!
+!TransferTest methodsFor: 'tests' stamp: 'jms 6/7/2022 15:19:42'!
 test02TransferMovesMoneyFromOneAccountToTheOtherAndViceversa
 
-	| account1 account2 |
+	Transfer transfer: 100 * peso from: account01 to: account02.
+	Transfer transfer:   50 * peso from: account02 to: account01.
 	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
+	self assert: -50 * peso equals: account01 balance.
+	self assert:  50 * peso equals: account02 balance.! !
 
-	Transfer transfer: 100 * peso from: account1 to: account2.
-	Transfer transfer:   50 * peso from: account2 to: account1.
-	
-	self assert: -50 * peso equals: account1 balance.
-	self assert:  50 * peso equals: account2 balance.! !
-
-!TransferTest methodsFor: 'tests' stamp: 'jms 6/6/2022 20:53:53'!
+!TransferTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:06:03'!
 test03InATransactionTheDepositLegKnowsTheWithdrawLeg
-"cambiar el assert"
-	| account1 account2 transferencia |
-	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
 
-	transferencia := Transfer transfer: 100 * peso from: account1 to: account2.
-	
-	self assert: (account2 transactions last hasAsItsCounterpart: account1 transactions last).! !
+	| transfer |
 
-!TransferTest methodsFor: 'tests' stamp: 'jms 6/6/2022 20:49:59'!
+	transfer := Transfer transfer: 100 * peso from: account01 to: account02.
+	
+	self assert: transfer withdrawLeg equals: transfer depositLeg counterpart.
+	"self assert: (account2 transactions last hasAsItsCounterpart: account1 transactions last)."
+	
+	"Seguimos teniendo los msjs que hacen que pase el test comentado, los dejamos por las dudas por ahora."! !
+
+!TransferTest methodsFor: 'tests' stamp: 'jms 6/7/2022 17:05:44'!
 test04InATransactionTheWithdrawLegKnowsTheDepositLeg
 
-	| account1 account2 transferencia |
-	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
+	| transfer |
 
-	transferencia := Transfer transfer: 100 * peso from: account1 to: account2.
+	transfer := Transfer transfer: 100 * peso from: account01 to: account02.
 	
-	self assert: (account1 transactions last hasAsItsCounterpart: account2 transactions last).! !
+	self assert: transfer depositLeg equals: transfer withdrawLeg counterpart.! !
 
-!TransferTest methodsFor: 'tests' stamp: 'jms 6/6/2022 20:22:45'!
+!TransferTest methodsFor: 'tests' stamp: 'jms 6/7/2022 15:20:16'!
 test05TransferCannotMove0PesosFromOneAccountToAnother
 
-	| account1 account2 |
-	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-
-	self should: [Transfer transfer: 0 * peso from: account1 to: account2.]
+	self should: [Transfer transfer: 0 * peso from: account01 to: account02.]
 		raise: Error
 		withExceptionDo: [ :anError | 
 				self assert: Transfer canOnlyTransferPositiveAmountsErrorDescription equals: anError messageText ].! !
 
-!TransferTest methodsFor: 'tests' stamp: 'jms 6/6/2022 20:47:14'!
+!TransferTest methodsFor: 'tests' stamp: 'jms 6/7/2022 15:20:52'!
 test06TransferCannotMoveANegativeAmountFromOneAccountToAnother
 
-	| account1 account2 |
-	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-
-	self should: [Transfer transfer: -100 * peso from: account1 to: account2.]
+	self should: [Transfer transfer: -100 * peso from: account01 to: account02.]
 		raise: Error
 		withExceptionDo: [ :anError | 
 				self assert: Transfer canOnlyTransferPositiveAmountsErrorDescription equals: anError messageText ].! !
 
-!TransferTest methodsFor: 'tests' stamp: 'jms 6/6/2022 20:47:23'!
+!TransferTest methodsFor: 'tests' stamp: 'jms 6/7/2022 15:21:00'!
 test07TransferCannotMoveAnAmountFromAnAccountToItself
 
-	| account1 |
-	
-	account1 := ReceptiveAccount new.
-
-	self should: [Transfer transfer: 10 * peso from: account1 to: account1.]
+	self should: [Transfer transfer: 10 * peso from: account01 to: account01.]
 		raise: Error
 		withExceptionDo: [ :anError | 
 				self assert: Transfer anAccountCannotTransferAnAmountToItselfErrorDescription equals: anError messageText ].! !
+
+
+!TransferTest methodsFor: 'setup' stamp: 'jms 6/7/2022 15:19:16'!
+setUp
+
+	account01 :=	 ReceptiveAccount new.
+	account02 := ReceptiveAccount new.! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -414,27 +491,38 @@ for: aValue
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Portfolio
-	instanceVariableNames: 'wallet'
+	instanceVariableNames: 'wallet fatherPortfolio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'initialization' stamp: 'jms 6/6/2022 20:59:21'!
+!Portfolio methodsFor: 'error' stamp: 'jms 6/7/2022 17:56:03'!
+canNotAddAnAccountThatHasAlreadyBeenAdded
+
+	self error: self class canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription.! !
+
+
+!Portfolio methodsFor: 'initialization' stamp: 'jms 6/7/2022 19:07:32'!
 initialize
 
-	wallet := OrderedCollection new.! !
+	wallet := OrderedCollection new.
+	fatherPortfolio := nil.! !
 
 
-!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/6/2022 21:06:37'!
-add: aReceptiveAccount 
+!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/7/2022 19:08:30'!
+add: anAccountToBeAdded
+
+	self preAssertPortfolioDoesNotInclude: anAccountToBeAdded.
 	
-	wallet add: aReceptiveAccount.! !
+	anAccountToBeAdded assignFatherPortfolio: self.
+	wallet add: anAccountToBeAdded.! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/6/2022 21:08:53'!
+!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/7/2022 18:34:16'!
 balance
-	^wallet sum: [ :aReceptiveAccount | aReceptiveAccount balance ] ifEmpty: [ 0 ].! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/6/2022 21:26:46'!
+	^wallet sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 ].! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/7/2022 18:34:32'!
 hasRegistered: aTransaction 
 	"
 	wallet do: [ :aReceptiveAccount | (aReceptiveAccount hasRegistered: aTransaction) ifTrue: [^true]. ].
@@ -442,24 +530,90 @@ hasRegistered: aTransaction
 	^false.
 	"
 	wallet 
-		detect: [ :aReceptiveAccount | aReceptiveAccount hasRegistered: aTransaction ]
-		ifFound: [ :aReceptiveAccount | ^true ]
+		detect: [ :anAccount | anAccount hasRegistered: aTransaction ]
+		ifFound: [ :anAccount | ^true ]
 		ifNone: [ ^false ].! !
 
-!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/7/2022 00:31:09'!
-transactionsOf: aReceptiveAccount 
-	"Que pasa si le pasas otra wallet en vez de una receptive account ? Te va a tirar error transactions de does not understand. Esta bien ?"
-	"No es recursivo."
-	(wallet includes: aReceptiveAccount) ifFalse: [self error: 'No se encontro la cuenta en el portfolio'.].
+!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/7/2022 16:35:28'!
+transactions
+
+	| transactions |
+
+	transactions := OrderedCollection new.
+
+	wallet do: [ :anAccount | transactions addAll: anAccount transactions ].
 	
-	^aReceptiveAccount transactions.
+	^transactions.! !
+
+
+!Portfolio methodsFor: 'testing' stamp: 'jms 6/7/2022 20:10:08'!
+assertPortfolioDoesNotInclude: anAccountToBeAdded
+
+	self = anAccountToBeAdded ifTrue: [ self canNotAddAnAccountThatHasAlreadyBeenAdded ].
+
+	wallet do: [ :anAccount | anAccount assertAccountFrom: self isNotEqualTo: anAccountToBeAdded.			].	
+	! !
+
+
+!Portfolio methodsFor: 'private' stamp: 'jms 6/7/2022 18:57:41'!
+assignFatherPortfolio: aFatherPortfolio
+
+	fatherPortfolio := aFatherPortfolio.! !
+
+!Portfolio methodsFor: 'private' stamp: 'jms 6/7/2022 19:34:44'!
+getOldestFather
+
+	fatherPortfolio = nil ifTrue: [ ^self. ].
 	
-	"
-	wallet 
-		detect: [ :anElement | anElement = aReceptiveAccount ]
-		ifFound: [ :anElement | ^anElement transactions ]
-		ifNone: [ self error: 'No se encontro la cuenta en el portfolio'. ].
-	"! !
+	^fatherPortfolio getOldestFather.! !
+
+!Portfolio methodsFor: 'private' stamp: 'jms 6/7/2022 20:06:47'!
+preAssertPortfolioDoesNotInclude: anAccountToBeAdded
+
+	self getOldestFather assertPortfolioDoesNotInclude: anAccountToBeAdded.
+
+	(anAccountToBeAdded isKindOf: Portfolio) ifTrue: [
+			anAccountToBeAdded wallet do: [ :anAccount |
+					self preAssertPortfolioDoesNotInclude: anAccount.
+				].
+		]
+	
+	
+	"self getOldestFather assertPortfolioDoesNotInclude: anAccountToBeAdded."! !
+
+
+!Portfolio methodsFor: 'private - accessing' stamp: 'jms 6/7/2022 20:04:53'!
+wallet 
+
+	^wallet.! !
+
+
+!Portfolio methodsFor: 'private - recursion' stamp: 'jms 6/7/2022 18:42:29'!
+alreadyIncludesThisReceptiveAccount
+
+	self canNotAddAnAccountThatHasAlreadyBeenAdded.
+
+! !
+
+!Portfolio methodsFor: 'private - recursion' stamp: 'jms 6/7/2022 19:40:27'!
+assertAccountFrom: aPortfolio isNotEqualTo: anAccountToBeAdded
+	"Llamado recursivo."
+	"Lo llamas para el otro portfolio, por eso el self."
+
+	self assertPortfolioDoesNotInclude: anAccountToBeAdded.
+
+! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
+	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'error description' stamp: 'jms 6/7/2022 17:54:45'!
+canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription
+
+	^'Unable to add an account that has already been added.'.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -497,6 +651,22 @@ transactions
 
 	^ transactions copy! !
 
+
+!ReceptiveAccount methodsFor: 'private' stamp: 'jms 6/7/2022 18:57:09'!
+assignFatherPortfolio: aPortfolio
+	
+	self.! !
+
+
+!ReceptiveAccount methodsFor: 'private - recursion' stamp: 'jms 6/7/2022 18:42:23'!
+assertAccountFrom: aPortfolio isNotEqualTo: anAccount
+	"Caso base"
+	
+	self = anAccount 
+			ifTrue: [
+				aPortfolio alreadyIncludesThisReceptiveAccount.
+				].! !
+
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Transfer
@@ -520,6 +690,22 @@ initializeWith: aValue
 	withdrawLeg := TransferWithdraw new initializeWith: self.! !
 
 
+!Transfer methodsFor: 'accessing' stamp: 'jms 6/7/2022 15:14:01'!
+depositLeg
+
+	^depositLeg.! !
+
+!Transfer methodsFor: 'accessing' stamp: 'rb 6/5/2022 22:49:25'!
+value
+
+	^value! !
+
+!Transfer methodsFor: 'accessing' stamp: 'jms 6/7/2022 15:14:15'!
+withdrawLeg
+
+	^withdrawLeg! !
+
+
 !Transfer methodsFor: 'main protocol' stamp: 'rb 6/6/2022 00:23:21'!
 matchesDepositLeg: aTransaction
 
@@ -529,11 +715,6 @@ matchesDepositLeg: aTransaction
 matchesWithdrawLeg: aTransaction
 
 	^withdrawLeg = aTransaction.! !
-
-!Transfer methodsFor: 'main protocol' stamp: 'rb 6/5/2022 22:49:25'!
-value
-
-	^value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -604,6 +785,11 @@ initializeWith: aTransfer
 	entireTransfer := aTransfer.! !
 
 
+!TransferTransactions methodsFor: 'main protocol' stamp: 'jms 6/7/2022 15:22:44'!
+counterpart
+
+	self subclassResponsibility.! !
+
 !TransferTransactions methodsFor: 'main protocol' stamp: 'rb 6/5/2022 23:19:41'!
 effectOnTheBalance
 	
@@ -627,15 +813,19 @@ TransferTransactions subclass: #TransferDeposit
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
+!TransferDeposit methodsFor: 'main protocol' stamp: 'jms 6/7/2022 15:16:13'!
+counterpart
+
+	^entireTransfer withdrawLeg. ! !
+
 !TransferDeposit methodsFor: 'main protocol' stamp: 'rb 6/5/2022 23:20:22'!
 effectOnTheBalance
 	
 	^self value.! !
 
-!TransferDeposit methodsFor: 'main protocol' stamp: 'rb 6/6/2022 00:28:13'!
+!TransferDeposit methodsFor: 'main protocol' stamp: 'jms 6/7/2022 15:16:05'!
 hasAsItsCounterpart: aTransaction
 
-	
 	^entireTransfer matchesWithdrawLeg: aTransaction.! !
 
 
@@ -645,6 +835,11 @@ TransferTransactions subclass: #TransferWithdraw
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferWithdraw methodsFor: 'main protocol' stamp: 'jms 6/7/2022 15:15:51'!
+counterpart
+
+	^entireTransfer depositLeg. ! !
 
 !TransferWithdraw methodsFor: 'main protocol' stamp: 'rb 6/5/2022 23:20:47'!
 effectOnTheBalance
