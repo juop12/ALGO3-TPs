@@ -1,12 +1,12 @@
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #PortfolioTest
-	instanceVariableNames: 'portfolio_1 account_1 portfolio_2 portfolio_3 account_2 account_4 account_5 account_3 deposit_1 deposit_2 deposit_3'
+	instanceVariableNames: 'portfolio_1 account_1 portfolio_2 portfolio_3 account_2 account_4 account_5 account_3 deposit_1 deposit_2 deposit_3 portfolio_4 portfolio_5'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 18:44:22'!
-test01
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 20:33:37'!
+test01NoPodesAgregarLaCuenta2Veces
 
 	portfolio_1 add: account_1.
 	
@@ -15,8 +15,8 @@ test01
 		withExceptionDo: [ :anError | 
 				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
 
-!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 18:06:59'!
-test02
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 20:34:35'!
+test02NoAgregarCuentaAArbolPadreSiYaEstaEnSubArbol
 
 	self prepForTesting06y07y08.
 	
@@ -25,35 +25,16 @@ test02
 		withExceptionDo: [ :anError | 
 				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
 
-!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 18:44:33'!
-test03
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 20:35:56'!
+test03NoAgregarUnPortfolioASiMismo
 	
 	self should: [ portfolio_1 add: portfolio_1 ]
 		raise: Error
 		withExceptionDo: [ :anError | 
 				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
 
-!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 19:46:54'!
-test03_5
-	
-	| portfolio_4 portfolio_5 |
-	
-	portfolio_4 := Portfolio new.
-	portfolio_5 := Portfolio new.
-	
-	portfolio_1 add: portfolio_2.
-	portfolio_2 add: portfolio_3.
-	portfolio_3 add: portfolio_4.
-	portfolio_4 add: portfolio_5.
-	portfolio_5 add: account_1.
-	
-	self should: [ portfolio_5 add: portfolio_1 ]
-		raise: Error
-		withExceptionDo: [ :anError | 
-				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
-
-!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 18:51:35'!
-test04
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 20:36:05'!
+test04NoAgregarCuentaASubArbolSiYaEstaEnArbolPadre
 
 	portfolio_1 add: account_1.
 	portfolio_1 add: portfolio_2.
@@ -65,8 +46,22 @@ test04
 		withExceptionDo: [ :anError | 
 				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
 
-!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 19:51:52'!
-test06
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 20:41:28'!
+test05NoAgregarPortfolioAUnSubArbolSiYaEstaEnArbolPadre
+	
+	portfolio_1 add: portfolio_2.
+	portfolio_2 add: portfolio_3.
+	portfolio_3 add: portfolio_4.
+	portfolio_4 add: portfolio_5.
+	portfolio_5 add: account_1.
+	
+	self should: [ portfolio_5 add: portfolio_2 ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
+
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 20:42:28'!
+test06NoAgregarPortfolioSiContieneUnaCuentaQueYaEstaEnElPrimerPortfolio
 
 	portfolio_1 add: account_1.
 	portfolio_1 add: account_2.
@@ -78,13 +73,52 @@ test06
 		withExceptionDo: [ :anError | 
 				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].! !
 
+!PortfolioTest methodsFor: 'extra - tests' stamp: 'jms 6/7/2022 21:14:21'!
+test07PrueboOtroCaso
 
-!PortfolioTest methodsFor: 'setup' stamp: 'jms 6/7/2022 17:30:03'!
+	| account_6 account_7 account_8 account_9 |
+	
+	account_6 := ReceptiveAccount new.
+	account_7 := ReceptiveAccount new.
+	account_8 := ReceptiveAccount new.
+	account_9 := ReceptiveAccount new.
+	
+	"portfolioCon3ReceptiveAccountsY2PortfoliosDe2ReceptiveAccountsY"
+	portfolio_1 add: account_1.
+	portfolio_1 add: portfolio_2.
+	portfolio_1 add: account_2.
+	portfolio_1 add: portfolio_3.
+	portfolio_1 add: account_3.
+	
+	portfolio_2 add: account_4.
+	portfolio_2 add: portfolio_4.
+	portfolio_2 add: account_5.
+	
+	portfolio_3 add: account_7.
+	portfolio_3 add: portfolio_5.
+	portfolio_3 add: account_8.
+	
+	portfolio_4 add: account_6.
+	
+	portfolio_5 add: account_9.
+	
+	self should: [ portfolio_5 add: portfolio_4 ]
+		raise: Error
+		withExceptionDo: [ :anError | 
+				self assert: Portfolio canNotAddAnAccountThatHasAlreadyBeenAddedErrorDescription equals: anError messageText ].
+			
+			
+			! !
+
+
+!PortfolioTest methodsFor: 'setup' stamp: 'jms 6/7/2022 20:27:26'!
 setUp
 
 	portfolio_1 := Portfolio new.
 	portfolio_2 := Portfolio new.
 	portfolio_3 := Portfolio new.
+	portfolio_4 := Portfolio new.
+	portfolio_5 := Portfolio new.
 	
 	account_1 := ReceptiveAccount new.
 	account_2 := ReceptiveAccount new.
@@ -567,16 +601,17 @@ getOldestFather
 	
 	^fatherPortfolio getOldestFather.! !
 
-!Portfolio methodsFor: 'private' stamp: 'jms 6/7/2022 20:06:47'!
+!Portfolio methodsFor: 'private' stamp: 'jms 6/7/2022 21:32:06'!
 preAssertPortfolioDoesNotInclude: anAccountToBeAdded
 
 	self getOldestFather assertPortfolioDoesNotInclude: anAccountToBeAdded.
 
+	" Iterar por la wallet de la accountToBeAdded si es un Portfolio "
 	(anAccountToBeAdded isKindOf: Portfolio) ifTrue: [
 			anAccountToBeAdded wallet do: [ :anAccount |
 					self preAssertPortfolioDoesNotInclude: anAccount.
 				].
-		]
+			].
 	
 	
 	"self getOldestFather assertPortfolioDoesNotInclude: anAccountToBeAdded."! !
