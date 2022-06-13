@@ -1,312 +1,294 @@
 !classDefinition: #AANewTests category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #AANewTests
-	instanceVariableNames: ''
+	instanceVariableNames: 'aReportToCompareWith'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 18:32:07'!
+!AANewTests methodsFor: 'setup' stamp: 'JMS 6/12/2022 20:55:54'!
+setUp
+
+	aReportToCompareWith := OrderedCollection new.! !
+
+
+!AANewTests methodsFor: 'tests - account summary' stamp: 'JMS 6/12/2022 21:29:41'!
 test01AReceptiveAccountCanGiveOutASummaryWhenItHasNoTransactionsMade
-
-	| report |
 	
-	report := ReceptiveAccount new accountSummary.
-	
-	self assert: 'This account has no transactions' equals: (report at: 1).! !
+	| aReport |
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 18:30:47'!
+	aReportToCompareWith add: 'Balance = 0 * pesos'.
+
+	aReport := AccountSummary new reportOf: ReceptiveAccount new.
+	
+	self assert: aReportToCompareWith equals: aReport.! !
+
+!AANewTests methodsFor: 'tests - account summary' stamp: 'JMS 6/12/2022 21:36:07'!
 test02AReceptiveAccountCanGiveOutASummaryWhenItHasAnOnlyTransactionThatIsADeposit
 
-	| anAccount report aReportToCompare |
+	| anAccount aReport |
 	
 	anAccount := ReceptiveAccount new.
-	
-	aReportToCompare := OrderedCollection with: 'Depósito por 100 * pesos' with: 'Balance = 100 * pesos'.
+	aReportToCompareWith addAll: {'Depósito por 100 * pesos'. 'Balance = 100 * pesos'}.
 	
 	Deposit register: 100 * peso on: anAccount.
 	
-	report := anAccount accountSummary.
+	aReport := AccountSummary new reportOf: anAccount.
 	
-	self assert: aReportToCompare equals: report.! !
+	self assert: aReportToCompareWith equals: aReport.! !
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 18:30:56'!
+!AANewTests methodsFor: 'tests - account summary' stamp: 'JMS 6/12/2022 21:36:11'!
 test03AReceptiveAccountCanGiveOutASummaryWhenItHasAnOnlyTransactionThatIsAWithdraw
 
-	| anAccount report aReportToCompare |
+	| anAccount aReport |
 	
 	anAccount := ReceptiveAccount new.
-	
-	aReportToCompare := OrderedCollection with: 'Extracción por 100 * pesos' with: 'Balance = -100 * pesos'.
+	aReportToCompareWith addAll: {'Extracción por 100 * pesos'. 'Balance = -100 * pesos'}.
 	
 	Withdraw register: 100 * peso on: anAccount.
 	
-	report := anAccount accountSummary.
+	aReport := AccountSummary new reportOf: anAccount.
 
-	self assert: aReportToCompare equals: report.! !
+	self assert: aReportToCompareWith equals: aReport.! !
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 18:31:04'!
+!AANewTests methodsFor: 'tests - account summary' stamp: 'JMS 6/12/2022 21:36:14'!
 test04AReceptiveAccountCanGiveOutASummaryWhenItHasDifferentTransactionsMade
 
-	| anAccount report aReportToCompare |
+	| anAccount aReport |
 	
 	anAccount := ReceptiveAccount new.
-	
-	aReportToCompare := OrderedCollection 
-								with: 'Depósito por 100 * pesos' 
-								with: 'Extracción por 40 * pesos'
-								with: 'Balance = 60 * pesos'.
+	aReportToCompareWith addAll: {'Depósito por 100 * pesos'. 'Extracción por 40 * pesos'. 'Balance = 60 * pesos'}.
 	
 	Deposit    register: 100 * peso on: anAccount.
 	Withdraw register: 40 * peso on: anAccount.
 	
-	report := anAccount accountSummary.
+	aReport := AccountSummary new reportOf: anAccount.
 
-	self assert: aReportToCompare equals: report.! !
+	self assert: aReportToCompareWith equals: aReport.! !
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 18:36:19'!
+!AANewTests methodsFor: 'tests - account summary' stamp: 'JMS 6/12/2022 21:36:18'!
 test05AReceptiveAccountCanGiveOutASummaryWhenItHasTransferedMoneyToAnotherAccount
 
-	| anAccountToTransferMoneyFrom anAccountToTransferMoneyTo report aReportToCompare |
+	| anAccountToTransferMoneyFrom aReport |
 	
 	anAccountToTransferMoneyFrom := ReceptiveAccount new.
-	anAccountToTransferMoneyTo     := ReceptiveAccount new.
+	aReportToCompareWith addAll: {'Salida por transferencia de 100 * pesos'. 'Balance = -100 * pesos'}.
 	
-	aReportToCompare := OrderedCollection 
-								with: 'Salida por transferencia de 100 * pesos' 
-								with: 'Balance = -100 * pesos'.
+	Transfer amount: 100 * peso from: anAccountToTransferMoneyFrom to: ReceptiveAccount new.
 	
-	Transfer amount: 100 * peso from: anAccountToTransferMoneyFrom to: anAccountToTransferMoneyTo.
-	
-	report := anAccountToTransferMoneyFrom accountSummary.
+	aReport := AccountSummary new reportOf: anAccountToTransferMoneyFrom.
 
-	self assert: aReportToCompare equals: report.! !
+	self assert: aReportToCompareWith equals: aReport.
+	! !
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 18:36:27'!
+!AANewTests methodsFor: 'tests - account summary' stamp: 'JMS 6/12/2022 21:36:24'!
 test06AReceptiveAccountCanGiveOutASummaryWhenItHasBeenTransferedMoneyFromAnotherAccount
 
-	| anAccountToTransferMoneyFrom anAccountToTransferMoneyTo report aReportToCompare |
-	
-	anAccountToTransferMoneyFrom := ReceptiveAccount new.
-	anAccountToTransferMoneyTo     := ReceptiveAccount new.
-	
-	aReportToCompare := OrderedCollection 
-								with: 'Entrada por transferencia de 100 * pesos' 
-								with: 'Balance = 100 * pesos'.
-	
-	Transfer amount: 100 * peso from: anAccountToTransferMoneyFrom to: anAccountToTransferMoneyTo.
-	
-	report := anAccountToTransferMoneyTo accountSummary.
+	| anAccountToTransferMoneyTo aReport |
 
-	self assert: aReportToCompare equals: report.! !
-
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 20:53:39'!
-test07AReceptiveAccountCanGiveOutASummaryWhenItHasTransferedAndBeenTransferedMoneyFromAnotherAccount
-
-	| firstAccount secondAccount report aReportToCompare |
+	anAccountToTransferMoneyTo := ReceptiveAccount new.
+	aReportToCompareWith addAll: {'Entrada por transferencia de 100 * pesos'. 'Balance = 100 * pesos'}.
 	
-	firstAccount      := ReceptiveAccount new.
-	secondAccount := ReceptiveAccount new.
+	Transfer amount: 100 * peso from: ReceptiveAccount new to: anAccountToTransferMoneyTo.
 	
-	aReportToCompare := OrderedCollection 
-								with: 'Entrada por transferencia de 100 * pesos'
-								with: 'Salida por transferencia de 40 * pesos'
-								with: 'Balance = 60 * pesos'.
-	
-	Transfer amount: 100 * peso from: secondAccount to: firstAccount.
-	Transfer amount:   40 * peso from: firstAccount to: secondAccount.
-	
-	report := firstAccount accountSummary.
+	aReport := AccountSummary new reportOf: anAccountToTransferMoneyTo.
 
-	self assert: aReportToCompare equals: report.! !
+	self assert: aReportToCompareWith equals: aReport.! !
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 18:37:48'!
-test08AReceptiveAccountCanGiveOutASummaryWhenItHasMultipleTransactionsMade
+!AANewTests methodsFor: 'tests - account summary' stamp: 'JMS 6/12/2022 21:36:32'!
+test07AReceptiveAccountCanGiveOutASummaryWhenItHasMultipleTransactionsMade
 
-	| firstAccount secondAccount report aReportToCompare |
-	
-	firstAccount      := ReceptiveAccount new.
-	secondAccount := ReceptiveAccount new.
-	
-	aReportToCompare := OrderedCollection 
-								with: 'Depósito por 100 * pesos' 
-								with: 'Extracción por 50 * pesos'
-								with: 'Salida por transferencia de 20 * pesos'
-								with: 'Entrada por transferencia de 30 * pesos'
-								with: 'Balance = 60 * pesos'.
-	
-	Deposit    register: 100 * peso on: firstAccount.
-	Withdraw register:  50 * peso on: firstAccount.
-	Transfer amount:    20 * peso from: firstAccount to: secondAccount.
-	Transfer amount:    30 * peso from: secondAccount to: firstAccount.
-	report := firstAccount accountSummary.
-
-	self assert: aReportToCompare equals: report.! !
-
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 18:41:38'!
-test09APortfolioCanGiveOutASummaryWhenItHasNoTransactionsMade
-
-	| report |
-	
-	report := Portfolio new accountSummary.
-	
-	self assert: 'This account has no transactions' equals: (report at: 1).! !
-
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 18:46:10'!
-test10APortfolioCanGiveOutASummaryWhenItHasAnOnlyTransactionThatIsADeposit
-
-	| aPortfolio anAccount report aReportToCompare |
+	| anAccount aReport |
 	
 	anAccount := ReceptiveAccount new.
-	aPortfolio  := Portfolio with: anAccount.
-	
-	aReportToCompare := OrderedCollection with: 'Depósito por 100 * pesos' with: 'Balance = 100 * pesos'.
-	
-	Deposit register: 100 * peso on: anAccount.
-	
-	report := aPortfolio accountSummary.
-	
-	self assert: aReportToCompare equals: report.! !
-
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 19:46:50'!
-test11APortfolioCanGiveOutASummaryWhenItHasAnOnlyTransactionThatIsAWithdraw
-
-	| aPortfolio anAccount report aReportToCompare |
-	
-	anAccount := ReceptiveAccount new.
-	aPortfolio  := Portfolio with: anAccount.
-	
-	aReportToCompare := OrderedCollection with: 'Extracción por 100 * pesos' with: 'Balance = -100 * pesos'.
-	
-	Withdraw register: 100 * peso on: anAccount.
-	
-	report := aPortfolio accountSummary.
-	
-	self assert: aReportToCompare equals: report.! !
-
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 19:56:54'!
-test12APortfolioCanGiveOutASummaryWhenItHasDifferentTransactionsMade
-
-	| aPortfolio anAccount report aReportToCompare |
-	
-	anAccount := ReceptiveAccount new.
-	aPortfolio  := Portfolio with: anAccount.
-	
-	aReportToCompare := OrderedCollection 
-								with: 'Depósito por 100 * pesos' 
-								with: 'Extracción por 40 * pesos'
-								with: 'Balance = 60 * pesos'.
+	aReportToCompareWith addAll: {
+				'Depósito por 100 * pesos'. 'Extracción por 50 * pesos'.
+				'Salida por transferencia de 20 * pesos'. 
+				'Entrada por transferencia de 30 * pesos'. 'Balance = 60 * pesos'
+				}.
 	
 	Deposit    register: 100 * peso on: anAccount.
-	Withdraw register: 40 * peso on: anAccount.
+	Withdraw register:   50 * peso on: anAccount.
+	Transfer amount:    20 * peso from: anAccount to: ReceptiveAccount new.
+	Transfer amount:    30 * peso from: ReceptiveAccount new to: anAccount.
 	
-	report := aPortfolio accountSummary.
-	
-	self assert: aReportToCompare equals: report.! !
+	aReport := AccountSummary new reportOf: anAccount.
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 20:13:01'!
-test13APortfolioCanGiveOutASummaryWhenItHasDifferentTransactionsMadeOnDifferentAccountsContainedWithinIt
+	self assert: aReportToCompareWith equals: aReport.! !
 
-	| aPortfolio firstAccount secondAccount report aReportToCompare |
+!AANewTests methodsFor: 'tests - account summary' stamp: 'JMS 6/12/2022 21:32:55'!
+test08APortfolioCanGiveOutASummaryWhenItHasNoTransactionsMade
 	
-	firstAccount      := ReceptiveAccount new.
-	secondAccount := ReceptiveAccount new.
-	aPortfolio  := Portfolio with: firstAccount with: secondAccount.
+	| aReport |
 	
-	aReportToCompare := OrderedCollection 
-								with: 'Depósito por 100 * pesos' 
-								with: 'Extracción por 40 * pesos'
-								with: 'Balance = 60 * pesos'.
+	aReportToCompareWith add: 'Balance = 0 * pesos'.
 	
-	Deposit    register: 100 * peso on: firstAccount .
-	Withdraw register:  40 * peso on: secondAccount .
-	
-	report := aPortfolio accountSummary.
-	
-	self assert: aReportToCompare equals: report.! !
+	aReport := AccountSummary new reportOf: Portfolio new.
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 20:49:52'!
-test14APortfolioCanGiveOutASummaryWhenAnAccountContainedWithinItHasTransferedeMoneyToAnotherAccount
-	| aPortfolio anAccountToTransferMoneyFrom anAccountToTransferMoneyTo report aReportToCompare |
-	
-	anAccountToTransferMoneyFrom := ReceptiveAccount new.
-	anAccountToTransferMoneyTo     := ReceptiveAccount new.
-	aPortfolio  := Portfolio with: anAccountToTransferMoneyFrom.
-	
-	aReportToCompare := OrderedCollection 
-								with: 'Salida por transferencia de 100 * pesos'
-								with: 'Balance = -100 * pesos'.
-	
-	Transfer amount: 100 * peso from: anAccountToTransferMoneyFrom to: anAccountToTransferMoneyTo.
-	
-	report := aPortfolio accountSummary.
-	
-	self assert: aReportToCompare equals: report.! !
+	self assert: aReportToCompareWith equals: aReport.! !
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 20:53:07'!
-test15APortfolioCanGiveOutASummaryWhenAnAccountContainedWithinItHasBeenTransferedMoneyFromAnotherAccount
-	| aPortfolio anAccountToTransferMoneyFrom anAccountToTransferMoneyTo report aReportToCompare |
+!AANewTests methodsFor: 'tests - account summary' stamp: 'JMS 6/12/2022 21:36:43'!
+test09APortfolioCanGiveOutASummaryWhenAPortfolioContainedWithinTheFirstPortfolioContainsAccountsThatHaveMultipleTransactionsMade
+	| rootPortfolio secondPortfolioContainedInRootPortfolio firstAccountInRootPortfolio secondAccountInSecondPortfolio aReport |
 	
-	anAccountToTransferMoneyFrom := ReceptiveAccount new.
-	anAccountToTransferMoneyTo     := ReceptiveAccount new.
-	aPortfolio  := Portfolio with: anAccountToTransferMoneyTo.
+	firstAccountInRootPortfolio    								 := ReceptiveAccount new.
+	secondAccountInSecondPortfolio  								 := ReceptiveAccount new.
+	secondPortfolioContainedInRootPortfolio  		:= Portfolio with: secondAccountInSecondPortfolio.
+	rootPortfolio := Portfolio with: firstAccountInRootPortfolio with: secondPortfolioContainedInRootPortfolio.
 	
-	aReportToCompare := OrderedCollection 
-								with: 'Entrada por transferencia de 100 * pesos'
-								with: 'Balance = 100 * pesos'.
-	
-	Transfer amount: 100 * peso from: anAccountToTransferMoneyFrom to: anAccountToTransferMoneyTo.
-	
-	report := aPortfolio accountSummary.
-	
-	self assert: aReportToCompare equals: report.! !
+	aReportToCompareWith addAll: {
+				'Depósito por 100 * pesos'. 'Extracción por 50 * pesos'.
+				'Salida por transferencia de 40 * pesos'.
+				'Depósito por 100 * pesos'. 'Extracción por 40 * pesos'.
+				'Entrada por transferencia de 50 * pesos'.
+				'Balance = 120 * pesos'.
+				}.
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 21:12:03'!
-test16APortfolioCanGiveOutASummaryWhenAccountsContainedWithinItHaveTransferedMoney
-	| aPortfolio anAccountToTransferMoneyFrom anAccountToTransferMoneyTo anAuxiliariAccount report aReportToCompare |
+	Deposit register:  100 * peso on: firstAccountInRootPortfolio.
+	Withdraw register: 50 * peso on: firstAccountInRootPortfolio.
 	
-	anAccountToTransferMoneyFrom := ReceptiveAccount new.
-	anAccountToTransferMoneyTo     := ReceptiveAccount new.
-	anAuxiliariAccount                        := ReceptiveAccount new.
-	aPortfolio  := Portfolio with: anAccountToTransferMoneyTo with:anAccountToTransferMoneyFrom.
+	Deposit register:  100 * peso on: secondAccountInSecondPortfolio.
+	Withdraw	 register: 40 * peso on: secondAccountInSecondPortfolio.
 	
-	aReportToCompare := OrderedCollection 
-								with: 'Entrada por transferencia de 100 * pesos'
-								with: 'Salida por transferencia de 40 * pesos'
-								with: 'Balance = 60 * pesos'.
+	Transfer amount: 40 * peso from: firstAccountInRootPortfolio to: ReceptiveAccount new.
+	Transfer amount: 50 * peso from: ReceptiveAccount new to: secondAccountInSecondPortfolio.
+	
+	aReport := AccountSummary new reportOf: rootPortfolio.
 
-	Transfer amount: 100  * peso from: anAuxiliariAccount to: anAccountToTransferMoneyTo.	
-	Transfer amount:   40 * peso from: anAccountToTransferMoneyFrom to: anAuxiliariAccount.
+	self assert: aReportToCompareWith equals: aReport.! !
 
-	
-	report := aPortfolio accountSummary.
-	
-	self assert: aReportToCompare equals: report.! !
 
-!AANewTests methodsFor: 'tests' stamp: 'rb 6/11/2022 21:24:34'!
-test17APortfolioCanGiveOutASummaryWhenAccountsContainedWithinItHaveMultipleTransactionsMade
-	| aPortfolio firstAccount secondAccount anAuxiliariAccount report aReportToCompare |
+!AANewTests methodsFor: 'tests - transfer net' stamp: 'JMS 6/12/2022 21:55:40'!
+test10IgnoraDepositYWithdraw
 	
-	firstAccount      := ReceptiveAccount new.
-	secondAccount := ReceptiveAccount new.
-	anAuxiliariAccount := ReceptiveAccount new.
-	aPortfolio  := Portfolio with: firstAccount with: secondAccount.
+	| anAccount aReport |
 	
-	aReportToCompare := OrderedCollection 
-								with: 'Depósito por 100 * pesos'
-								with: 'Salida por transferencia de 40 * pesos'
-								with: 'Extracción por 30 * pesos'
-								with: 'Entrada por transferencia de 50 * pesos'
-								with: 'Balance = 80 * pesos'.
+	anAccount := ReceptiveAccount new.
+	
+	Deposit register:    100 * peso on: anAccount.
+	Withdraw register: 200 * peso on: anAccount.
 
-	Deposit    register: 100 * peso on: firstAccount.
-	Withdraw	 register: 30 * peso on: secondAccount.
+	aReport := TransferNet new reportOf: anAccount.
 	
-	Transfer amount: 40 * peso from: firstAccount to: anAuxiliariAccount.
-	Transfer amount: 50 * peso from: anAuxiliariAccount to: secondAccount.
-		
-	report := aPortfolio accountSummary.
+	self assert: 0 * peso equals: aReport.! !
+
+!AANewTests methodsFor: 'tests - transfer net' stamp: 'JMS 6/12/2022 21:56:26'!
+test11entrada
+
+	| anAccountToTransferMoneyTo aReport |
 	
-	self assert: aReportToCompare equals: report.! !
+	anAccountToTransferMoneyTo := ReceptiveAccount new.
+	
+	Transfer amount: 100 * peso from: ReceptiveAccount new to: anAccountToTransferMoneyTo.
+	
+	aReport := TransferNet new reportOf: anAccountToTransferMoneyTo.
+	
+	self assert: 100 * peso equals: aReport.! !
+
+!AANewTests methodsFor: 'tests - transfer net' stamp: 'JMS 6/12/2022 21:57:21'!
+test12salida
+
+	| anAccountToTransferMoneyFrom aReport |
+	
+	anAccountToTransferMoneyFrom 	:= ReceptiveAccount new.
+	
+	Transfer amount: 100 * peso from: anAccountToTransferMoneyFrom to: ReceptiveAccount new.
+	
+	aReport := TransferNet new reportOf: anAccountToTransferMoneyFrom.
+	
+	self assert: -100 * peso equals: aReport.! !
+
+!AANewTests methodsFor: 'tests - transfer net' stamp: 'JMS 6/12/2022 21:57:56'!
+test13entradaYsalida
+
+	| anAccount aReport |
+	
+	anAccount := ReceptiveAccount new.
+	
+	Transfer amount: 100 * peso from: anAccount to: ReceptiveAccount new.
+	Transfer amount:   50 * peso from: ReceptiveAccount new to: anAccount.
+	
+	aReport := TransferNet new reportOf: anAccount.
+	
+	self assert: -50 * peso equals: aReport.! !
+
+!AANewTests methodsFor: 'tests - transfer net' stamp: 'JMS 6/12/2022 21:58:38'!
+test14conWithdrawYDepositoParaIgnorar
+
+	| anAccount aReport |
+	
+	anAccount := ReceptiveAccount new.
+
+	Deposit register:    200 * peso on: anAccount.
+	Withdraw register: 100 * peso on: anAccount.
+	Transfer amount:  100 * peso from: anAccount to: ReceptiveAccount new.
+	Transfer amount:    50 * peso from: ReceptiveAccount new to: anAccount.
+	
+	aReport := TransferNet new reportOf: anAccount.
+	
+	self assert: -50 * peso equals: aReport.
+	self assert:  50 * peso equals: anAccount balance.! !
+
+!AANewTests methodsFor: 'tests - transfer net' stamp: 'JMS 6/12/2022 21:59:19'!
+test15PortfolioIgnoraDepositYWithdraw
+
+	| aPortfolio anAccountInPortfolio aReport |
+	
+	anAccountInPortfolio := ReceptiveAccount new.	
+	aPortfolio := Portfolio with: anAccountInPortfolio.
+	
+	Deposit register:    100 * peso on: anAccountInPortfolio.
+	Withdraw register: 200 * peso on: anAccountInPortfolio.
+	
+	aReport := TransferNet new reportOf: aPortfolio.
+	
+	self assert: 0 * peso equals: aReport.! !
+
+!AANewTests methodsFor: 'tests - transfer net' stamp: 'JMS 6/12/2022 22:00:23'!
+test16PortfolioConWithdrawYDepositarParaIgnorar
+
+	| aPortfolio anAccountInPortfolio aReport |
+	
+	anAccountInPortfolio := ReceptiveAccount new.
+	aPortfolio := Portfolio with: anAccountInPortfolio.
+	
+	Deposit register:    200 * peso on: anAccountInPortfolio.	
+	Withdraw register: 100 * peso on: anAccountInPortfolio.
+	Transfer amount:  100 * peso from: anAccountInPortfolio to: ReceptiveAccount new.
+	Transfer amount:    50 * peso from: ReceptiveAccount new to: anAccountInPortfolio.
+	
+	aReport := TransferNet new reportOf: aPortfolio.
+	
+	self assert: -50 * peso equals: aReport.
+	self assert:  50 * peso equals: aPortfolio balance.! !
+
+!AANewTests methodsFor: 'tests - transfer net' stamp: 'JMS 6/12/2022 22:03:12'!
+test17PortfolioConPortfolio
+
+	| rootPortfolio secondPortfolioContainedInRootPortfolio firstAccountInRootPortfolio secondAccountInSecondPortfolio aReportOfRootPortfolio aReportOfSecondPortfolio |
+	
+	firstAccountInRootPortfolio  								 := ReceptiveAccount new.
+	secondAccountInSecondPortfolio  								 := ReceptiveAccount new.
+	secondPortfolioContainedInRootPortfolio  		:= Portfolio with: secondAccountInSecondPortfolio.
+	rootPortfolio := Portfolio with: firstAccountInRootPortfolio with: secondPortfolioContainedInRootPortfolio.
+	
+	Deposit register:  100 * peso on: firstAccountInRootPortfolio.
+	Withdraw register: 50 * peso on: firstAccountInRootPortfolio.
+	
+	Deposit register:  100 * peso on: secondAccountInSecondPortfolio.
+	Withdraw	 register: 40 * peso on: secondAccountInSecondPortfolio.
+	
+	Transfer amount: 100 * peso from: firstAccountInRootPortfolio to: ReceptiveAccount new.
+	Transfer amount:   50 * peso from: ReceptiveAccount new to: firstAccountInRootPortfolio.
+	
+	Transfer amount: 100 * peso from: secondAccountInSecondPortfolio to: ReceptiveAccount new.
+	Transfer amount:   50 * peso from: ReceptiveAccount new to: secondAccountInSecondPortfolio.
+	
+	aReportOfRootPortfolio := TransferNet new reportOf: rootPortfolio.
+	aReportOfSecondPortfolio := TransferNet new reportOf: secondPortfolioContainedInRootPortfolio.
+	
+	self assert: -100 * peso equals: aReportOfRootPortfolio.
+	self assert:   -50 * peso equals: aReportOfSecondPortfolio.
+	self assert:    10 * peso equals: rootPortfolio balance.! !
 
 
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Solucion'!
@@ -620,7 +602,7 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:07:03'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:07:03'!
 test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAccount
 
 	| destinationAccount originAccount |
@@ -636,7 +618,7 @@ test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAcco
 	self assert: 8 * peso equals: originAccount balance.
 	self assert: 12 * peso equals: destinationAccount balance.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:12:28'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:12:28'!
 test02ATransferKnowsItsValue
 
 	| destinationAccount originAccount transfer |
@@ -651,7 +633,7 @@ test02ATransferKnowsItsValue
 	
 	self assert: 2 * peso equals: transfer value.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:44'!
 test03DepositLegKnowsItsWithdrawCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -666,7 +648,7 @@ test03DepositLegKnowsItsWithdrawCounterpart
 	
 	self assert: transfer withdrawLeg equals: transfer depositLeg withdrawLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:51'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:51'!
 test04WithdrawLegKnowsItsDepositCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -681,7 +663,7 @@ test04WithdrawLegKnowsItsDepositCounterpart
 	
 	self assert: transfer depositLeg equals: transfer withdrawLeg depositLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:36'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:36'!
 test05OriginAndDestinationAccountsCannotBeTheSame
 
 	| originAccount |
@@ -697,7 +679,7 @@ test05OriginAndDestinationAccountsCannotBeTheSame
 		]
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:44'!
 test06CannotTransferAZeroAmount
 
 	| originAccount destinationAccount |
@@ -724,10 +706,16 @@ Object subclass: #Account
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!Account methodsFor: 'main protocol' stamp: 'rb 6/10/2022 17:36:44'!
-accountSummary
-	
-	self subclassResponsibility.! !
+!Account methodsFor: 'composition' stamp: 'LL 7/8/2021 21:45:50'!
+addedTo: aPortfolio
+
+	self subclassResponsibility! !
+
+!Account methodsFor: 'composition' stamp: 'LL 7/8/2021 21:46:48'!
+isComposedBy: anAccount
+
+	self subclassResponsibility! !
+
 
 !Account methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 12:23:40'!
 balance
@@ -745,17 +733,6 @@ transactions
 	self subclassResponsibility ! !
 
 
-!Account methodsFor: 'composition' stamp: 'LL 7/8/2021 21:45:50'!
-addedTo: aPortfolio
-
-	self subclassResponsibility! !
-
-!Account methodsFor: 'composition' stamp: 'LL 7/8/2021 21:46:48'!
-isComposedBy: anAccount
-
-	self subclassResponsibility! !
-
-
 !Account methodsFor: 'private' stamp: 'HAW 5/25/2019 12:23:27'!
 addTransactionsTo: aCollectionOfTransactions
 
@@ -768,51 +745,6 @@ Account subclass: #Portfolio
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
-
-!Portfolio methodsFor: 'initialization' stamp: 'HAW 5/25/2019 12:03:18'!
-initialize
-
-	accounts := OrderedCollection new.
-	parents := OrderedCollection new.! !
-
-
-!Portfolio methodsFor: 'main protocol' stamp: 'rb 6/11/2022 17:11:11'!
-accountSummary
-
-	| transactionsDescriptions aaa|
-
-	self transactions isEmpty ifTrue: [ ^ OrderedCollection with: 'This account has no transactions' ].
-
-	transactionsDescriptions := OrderedCollection new.
-	
-	self transactions do: [ :aTransaction | transactionsDescriptions add: (aTransaction transactionDescription) ].
-	
-	aaa := self balance.
-	
-	transactionsDescriptions add: ('Balance = ', aaa asString).
-	
-	^transactionsDescriptions.! !
-
-!Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:19:36'!
-balance
-	
-	^accounts sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 ]! !
-
-!Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:28:29'!
-hasRegistered: aTransaction
-
-	^accounts anySatisfy: [ :anAccount | anAccount hasRegistered: aTransaction ]! !
-
-!Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:38:32'!
-transactions
-	
-	| transactions |
-	
-	transactions := OrderedCollection new.
-	accounts do: [ :anAccount | anAccount addTransactionsTo: transactions ].
-	
-	^transactions ! !
-
 
 !Portfolio methodsFor: 'accounts management' stamp: 'HAW 5/25/2019 11:49:20'!
 accountsIncludes: anAccount
@@ -837,12 +769,6 @@ add: accountToAdd
 	accounts add: accountToAdd.
 	accountToAdd addedTo: self 
 	! !
-
-
-!Portfolio methodsFor: 'private' stamp: 'HAW 5/25/2019 11:42:55'!
-addTransactionsTo: aCollectionOfTransactions
-
-	accounts do: [ :anAccount | anAccount addTransactionsTo: aCollectionOfTransactions ]! !
 
 
 !Portfolio methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:17:31'!
@@ -888,6 +814,40 @@ signalCanNotAddAccount
 	
 	self error: self class canNotAddAccountErrorMessage! !
 
+
+!Portfolio methodsFor: 'initialization' stamp: 'HAW 5/25/2019 12:03:18'!
+initialize
+
+	accounts := OrderedCollection new.
+	parents := OrderedCollection new.! !
+
+
+!Portfolio methodsFor: 'main protocol' stamp: 'JMS 6/12/2022 20:53:18'!
+balance
+	
+	^accounts sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 * peso ]! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:28:29'!
+hasRegistered: aTransaction
+
+	^accounts anySatisfy: [ :anAccount | anAccount hasRegistered: aTransaction ]! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:38:32'!
+transactions
+	
+	| transactions |
+	
+	transactions := OrderedCollection new.
+	accounts do: [ :anAccount | anAccount addTransactionsTo: transactions ].
+	
+	^transactions ! !
+
+
+!Portfolio methodsFor: 'private' stamp: 'HAW 5/25/2019 11:42:55'!
+addTransactionsTo: aCollectionOfTransactions
+
+	accounts do: [ :anAccount | anAccount addTransactionsTo: aCollectionOfTransactions ]! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Solucion'!
@@ -922,6 +882,17 @@ Account subclass: #ReceptiveAccount
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
+!ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:03:32'!
+addedTo: aPortfolio 
+	
+	! !
+
+!ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 11:54:51'!
+isComposedBy: anAccount
+
+	^self = anAccount ! !
+
+
 !ReceptiveAccount methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 18:35'!
 initialize
 
@@ -929,28 +900,11 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'rb 6/11/2022 17:10:06'!
-accountSummary
-
-	| transactionsDescriptions aaa|
-
-	self transactions isEmpty ifTrue: [ ^ OrderedCollection with: 'This account has no transactions' ].
-
-	transactionsDescriptions := OrderedCollection new.
-	
-	self transactions do: [ :aTransaction | transactionsDescriptions add: (aTransaction transactionDescription) ].
-	
-	aaa := self balance.
-	
-	transactionsDescriptions add: ('Balance = ', aaa asString).
-	
-	^transactionsDescriptions.! !
-
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'rb 6/11/2022 17:23:48'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'JMS 6/12/2022 20:53:22'!
 balance
 
 	^transactions 
-		inject: 0
+		inject: 0 * peso
 		into: [ :currentBalance :transaction | transaction affectBalance: currentBalance ]! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/21/2019 18:55:56'!
@@ -976,17 +930,6 @@ addTransactionsTo: aCollectionOfTransactions
 
 	aCollectionOfTransactions addAll: transactions ! !
 
-
-!ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:03:32'!
-addedTo: aPortfolio 
-	
-	! !
-
-!ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 11:54:51'!
-isComposedBy: anAccount
-
-	^self = anAccount ! !
-
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #AccountTransaction
@@ -1007,10 +950,21 @@ affectBalance: aBalance
 	self subclassResponsibility ! !
 
 
-!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'rb 6/11/2022 16:30:06'!
+!AccountTransaction methodsFor: 'transfer net' stamp: 'JMS 6/12/2022 17:32:43'!
+affectTransferNet: aBalance
+	
+	^aBalance.! !
+
+
+!AccountTransaction methodsFor: 'private' stamp: 'rb 6/11/2022 16:30:06'!
 transactionDescription
 
 	self subclassResponsibility.! !
+
+!AccountTransaction methodsFor: 'private' stamp: 'JMS 6/12/2022 22:16:48'!
+transactionDescription: reporte
+
+	reporte transactionDescription: self.! !
 
 
 !classDefinition: #Deposit category: 'ServiciosFinancieros-Solucion'!
@@ -1019,6 +973,12 @@ AccountTransaction subclass: #Deposit
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
+
+!Deposit methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:25:02'!
+affectBalance: aBalance
+
+	^aBalance + value ! !
+
 
 !Deposit methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 18:45'!
 initializeFor: aValue
@@ -1032,16 +992,10 @@ value
 	^ value! !
 
 
-!Deposit methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:25:02'!
-affectBalance: aBalance
-
-	^aBalance + value ! !
-
-
-!Deposit methodsFor: 'as yet unclassified' stamp: 'rb 6/11/2022 16:34:46'!
+!Deposit methodsFor: 'private' stamp: 'JMS 6/12/2022 16:58:09'!
 transactionDescription
 
-	^('Depósito por ',(self value asString))! !
+	^'Depósito por ', self value asString.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1073,16 +1027,22 @@ AccountTransaction subclass: #TransferLeg
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferLeg methodsFor: 'value' stamp: 'LL 9/20/2020 22:27:32'!
-value
-
-	^transfer value! !
-
-
 !TransferLeg methodsFor: 'initialization' stamp: 'LL 9/20/2020 22:28:14'!
 initializeWith: aTransfer
 
 	transfer := aTransfer! !
+
+
+!TransferLeg methodsFor: 'transfer net' stamp: 'JMS 6/12/2022 17:39:17'!
+affectTransferNet: aBalance
+
+	^self affectBalance: aBalance.! !
+
+
+!TransferLeg methodsFor: 'value' stamp: 'LL 9/20/2020 22:27:32'!
+value
+
+	^transfer value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1120,10 +1080,10 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'rb 6/11/2022 17:46:47'!
+!TransferDepositLeg methodsFor: 'private' stamp: 'JMS 6/12/2022 16:58:04'!
 transactionDescription
 
-	^('Entrada por transferencia de ',(self value asString))! !
+	^'Entrada por transferencia de ', self value asString.! !
 
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros-Solucion'!
@@ -1145,10 +1105,10 @@ affectBalance: aBalance
 	^aBalance + self value negated! !
 
 
-!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'rb 6/11/2022 17:47:08'!
+!TransferWithdrawLeg methodsFor: 'private' stamp: 'JMS 6/12/2022 16:57:57'!
 transactionDescription
 
-	^('Salida por transferencia de ',(self value asString))! !
+	^'Salida por transferencia de ', self value asString.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Solucion'!
@@ -1157,6 +1117,12 @@ AccountTransaction subclass: #Withdraw
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
+
+!Withdraw methodsFor: 'balance' stamp: 'rb 6/11/2022 17:23:19'!
+affectBalance: aBalance
+
+	^aBalance +  value negated! !
+
 
 !Withdraw methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 18:46'!
 initializeFor: aValue
@@ -1170,16 +1136,10 @@ value
 	^ value! !
 
 
-!Withdraw methodsFor: 'balance' stamp: 'rb 6/11/2022 17:23:19'!
-affectBalance: aBalance
-
-	^aBalance +  value negated! !
-
-
-!Withdraw methodsFor: 'as yet unclassified' stamp: 'rb 6/11/2022 16:41:51'!
+!Withdraw methodsFor: 'private' stamp: 'JMS 6/12/2022 16:57:44'!
 transactionDescription
 
-	^('Extracción por ',(self value asString))! !
+	^'Extracción por ', self value asString.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1202,6 +1162,59 @@ register: aValue on: account
 	account register: transaction.
 		
 	^ transaction! !
+
+
+!classDefinition: #Report category: 'ServiciosFinancieros-Solucion'!
+Object subclass: #Report
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!Report methodsFor: 'main protocol' stamp: 'JMS 6/12/2022 21:41:55'!
+reportOf: anAccount
+
+	self subclassResponsibility.! !
+
+
+!classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
+Report subclass: #AccountSummary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!AccountSummary methodsFor: 'main protocol' stamp: 'JMS 6/12/2022 21:38:21'!
+reportOf: anAccount
+
+	"generateSummaryOf: anAccount"
+
+	| aReport |
+	
+	aReport := OrderedCollection new.
+	
+	anAccount transactions do: [ :aTransaction | aReport add: aTransaction transactionDescription ].
+
+	aReport add: ('Balance = ', anAccount balance asString).
+	
+	^aReport.
+! !
+
+
+!classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
+Report subclass: #TransferNet
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!TransferNet methodsFor: 'main protocol' stamp: 'JMS 6/12/2022 21:55:50'!
+reportOf: anAccount
+
+	^anAccount transactions 
+		inject: 0
+		into: [ :currentBalance :transaction | transaction affectTransferNet: currentBalance ].
+	! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Solucion'!
