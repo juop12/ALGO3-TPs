@@ -498,8 +498,8 @@ test12ATransferNetReportCanBeGeneratedFromAReceptiveAccountWhenItHasTransferedMo
 	
 	self assertTransferNetReportEquals: -100 * peso.! !
 
-!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 21:35:38'!
-test13entradaYsalida
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/15/2022 00:06:34'!
+test13ATransferNetReportCanBeGeneratedFromAReceptiveAccountWhenItHasTransferedAndBeenTransferedMoneyFromAnotherAccount
 
 	| anAccount |
 	
@@ -562,8 +562,8 @@ test16ATransferNetReportCanBeGeneratedFromAPortfolioWhenItHasMultipleTransaction
 	self assertTransferNetReportEquals: -50 * peso.
 	self assert: 50 * peso equals: aPortfolio balance.! !
 
-!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 22:28:00'!
-test17ATransferNetReportCanBeGeneratedFromAPortfolioWhenItHas
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/15/2022 00:07:41'!
+test17ATransferNetReportCanBeGeneratedFromAPortfolioWhenItContainsAHierarchyOfPortfoliosWithEachHavingMultipleTransactionsMade
 
 	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInRootPortfolio secondAccountIncludedInSecondPortfolio |
 	
@@ -594,8 +594,8 @@ test17ATransferNetReportCanBeGeneratedFromAPortfolioWhenItHas
 	self assertTransferNetReportEquals: -50 * peso.! !
 
 
-!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:23'!
-test18Vacio
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/15/2022 00:08:43'!
+test18APortfolioTreeCanBeGeneratedFromAnEmptyPortfolio
 	
 	| aPortfolio |
 	
@@ -605,8 +605,8 @@ test18Vacio
 	self createPortfolioTreePrinterReportOf: aPortfolio.
 	self assertReportEqualsWhatIsExpected.! !
 
-!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:27'!
-test19ConUnaCuenta
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/15/2022 00:09:38'!
+test19APortfolioTreeCanBeGeneratedFromAPortfolioWhenItOnlyContainsAnEmptyReceptiveAccount
 	
 	| aPortfolio anAccountIncludedInPortfolio |
 	
@@ -620,8 +620,8 @@ test19ConUnaCuenta
 	self createPortfolioTreePrinterReportOf: aPortfolio.
 	self assertReportEqualsWhatIsExpected.! !
 
-!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:32'!
-test20ConUnPortfolio
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/15/2022 00:10:12'!
+test20APortfolioTreeCanBeGeneratedFromAPortfolioWhenItOnlyContainsAnEmptyPortfolio
 	
 	| rootPortfolio secondPortfolioIncludedInRootPortfolio |
 	
@@ -635,8 +635,8 @@ test20ConUnPortfolio
 	self createPortfolioTreePrinterReportOf: rootPortfolio.
 	self assertReportEqualsWhatIsExpected.! !
 
-!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:36'!
-test21ConUnaCuentaYUnPortfolio
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/15/2022 00:10:49'!
+test21APortfolioTreeCanBeGeneratedFromAPortfolioWhenItContainsAnEmptyPortfolioAndAnEmptyReceptiveAccount
 
 	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInRootPortfolio |
 	
@@ -652,8 +652,8 @@ test21ConUnaCuentaYUnPortfolio
 	self createPortfolioTreePrinterReportOf: rootPortfolio.
 	self assertReportEqualsWhatIsExpected.! !
 
-!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:45'!
-test22Con2NivelesDeIndentacion
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/15/2022 00:11:17'!
+test22APortfolioTreeCanBeGeneratedFromAPortfolioWhenItContainsAPortfolioThatIsNotEmpty
 	
 	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInSecondPortfolio secondAccountIncludedInSecondPortfolio |
 	
@@ -671,8 +671,8 @@ test22Con2NivelesDeIndentacion
 	self createPortfolioTreePrinterReportOf: rootPortfolio.
 	self assertReportEqualsWhatIsExpected.! !
 
-!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:49'!
-test23Con2NivelesDeIndentacionYVuelveParaAtras
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/15/2022 00:11:48'!
+test23APortfolioTreeCanBeGeneratedFromAPortfolioWhenItContainsAPortfolioThatIsNotEmptyAndAReceptiveAccount
 	
 	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInRootPortfolio secondAccountIncludedInSecondPortfolio thirdAccountIncludedInSecondPortfolio |
 	
@@ -693,8 +693,8 @@ test23Con2NivelesDeIndentacionYVuelveParaAtras
 	self assertReportEqualsWhatIsExpected.! !
 
 
-!ReportTest methodsFor: 'tests4 - portfolio detailed tree printer' stamp: 'jms 6/14/2022 21:46:20'!
-test24Vacio
+!ReportTest methodsFor: 'tests4 - portfolio detailed tree printer' stamp: 'jms 6/15/2022 00:12:36'!
+test24APortfolioDetailedTreeCanBeGeneratedFromAnEmptyPortfolio
 	
 	| aPortfolio |
 	
@@ -706,8 +706,8 @@ test24Vacio
 	self createPortfolioDetailedTreePrinterReportOf: aPortfolio.
 	self assertReportEqualsWhatIsExpected.! !
 
-!ReportTest methodsFor: 'tests4 - portfolio detailed tree printer' stamp: 'jms 6/14/2022 21:46:45'!
-test25ConUnaCuentaConTransacciones
+!ReportTest methodsFor: 'tests4 - portfolio detailed tree printer' stamp: 'jms 6/15/2022 00:13:15'!
+test25APortfolioDetailedTreeCanBeGeneratedFromAPortfolioWhenItContainsAReceptiveAccountWithMultipleTransactionsMade
 	
 	| aPortfolio anAccount |
 	
@@ -731,8 +731,8 @@ test25ConUnaCuentaConTransacciones
 	self createPortfolioDetailedTreePrinterReportOf: aPortfolio.
 	self assertReportEqualsWhatIsExpected.! !
 
-!ReportTest methodsFor: 'tests4 - portfolio detailed tree printer' stamp: 'jms 6/14/2022 21:47:03'!
-test26Con2NivelesDeIndentacionYVuelveParaAtras
+!ReportTest methodsFor: 'tests4 - portfolio detailed tree printer' stamp: 'jms 6/15/2022 00:14:15'!
+test26APortfolioDetailedTreeCanBeGeneratedFromAPortfolioWhenItContainsAReceptiveAccountWithMultipleTransactionsMadeAndAPortfolioThatContainsReceptiveAccountsWithMultipleTransactionsMade
 	
 	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInRootPortfolio secondAccountIncludedInSecondPortfolio thirdAccountIncludedInSecondPortfolio |
 	
