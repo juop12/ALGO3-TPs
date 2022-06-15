@@ -304,62 +304,61 @@ test07AccountKnowsItsTransactions
 
 !classDefinition: #ReportTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #ReportTest
-	instanceVariableNames: 'aReportToCompareWith accountSummary transferNet'
+	instanceVariableNames: 'aReportToCompareWith accountSummary transferNet portfolioTreePrinter portfolioDetailedTreePrinter aReportToBeCompared'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!ReportTest methodsFor: 'setup' stamp: 'JMS 6/13/2022 20:14:26'!
+!ReportTest methodsFor: 'setup' stamp: 'jms 6/14/2022 21:48:54'!
 setUp
 
 	aReportToCompareWith := OrderedCollection new.
-	accountSummary := AccountSummary new.
-	transferNet := TransferNet new.! !
-
-
-!ReportTest methodsFor: 'tests - account summary' stamp: 'JMS 6/13/2022 20:14:41'!
-test01AReceptiveAccountCanGiveOutASummaryWhenItHasNoTransactionsMade
+	aReportToBeCompared := nil.
 	
-	| aReport |
+	accountSummary := AccountSummary new.
+	transferNet := TransferNet new.
+	portfolioTreePrinter := PortfolioTreePrinter new.
+	portfolioDetailedTreePrinter := PortfolioDetailedTreePrinter new.! !
+
+
+!ReportTest methodsFor: 'tests1 - account summary' stamp: 'jms 6/14/2022 22:13:52'!
+test01ASummaryCanBeGeneratedFromAReceptiveAccountWhenItHasNoTransactionsMade
 
 	aReportToCompareWith add: 'Balance = 0 * pesos'.
 
-	aReport := accountSummary reportOf: ReceptiveAccount new.
-	
-	self assert: aReportToCompareWith equals: aReport.! !
+	self createAccountSummaryReportOf: ReceptiveAccount new.
+	self assertReportEqualsWhatIsExpected.! !
 
-!ReportTest methodsFor: 'tests - account summary' stamp: 'JMS 6/13/2022 20:14:49'!
-test02AReceptiveAccountCanGiveOutASummaryWhenItHasAnOnlyTransactionThatIsADeposit
+!ReportTest methodsFor: 'tests1 - account summary' stamp: 'jms 6/14/2022 22:14:00'!
+test02ASummaryCanBeGeneratedFromAReceptiveAccountWhenItHasAnOnlyTransactionThatIsADeposit
 
-	| anAccount aReport |
+	| anAccount |
 	
 	anAccount := ReceptiveAccount new.
 	aReportToCompareWith addAll: {'Depósito por 100 * pesos'. 'Balance = 100 * pesos'}.
 	
 	Deposit register: 100 * peso on: anAccount.
 	
-	aReport := accountSummary reportOf: anAccount.
-	
-	self assert: aReportToCompareWith equals: aReport.! !
+	self createAccountSummaryReportOf: anAccount.
+	self assertReportEqualsWhatIsExpected.! !
 
-!ReportTest methodsFor: 'tests - account summary' stamp: 'JMS 6/13/2022 20:14:59'!
-test03AReceptiveAccountCanGiveOutASummaryWhenItHasAnOnlyTransactionThatIsAWithdraw
+!ReportTest methodsFor: 'tests1 - account summary' stamp: 'jms 6/14/2022 22:14:07'!
+test03ASummaryCanBeGeneratedFromAReceptiveAccountWhenItHasAnOnlyTransactionThatIsAWithdraw
 
-	| anAccount aReport |
+	| anAccount |
 	
 	anAccount := ReceptiveAccount new.
 	aReportToCompareWith addAll: {'Extracción por 100 * pesos'. 'Balance = -100 * pesos'}.
 	
 	Withdraw register: 100 * peso on: anAccount.
 	
-	aReport := accountSummary reportOf: anAccount.
+	self createAccountSummaryReportOf: anAccount.
+	self assertReportEqualsWhatIsExpected.! !
 
-	self assert: aReportToCompareWith equals: aReport.! !
+!ReportTest methodsFor: 'tests1 - account summary' stamp: 'jms 6/14/2022 22:14:16'!
+test04ASummaryCanBeGeneratedFromAReceptiveAccountWhenItHasDifferentTransactionsMade
 
-!ReportTest methodsFor: 'tests - account summary' stamp: 'JMS 6/13/2022 20:15:12'!
-test04AReceptiveAccountCanGiveOutASummaryWhenItHasDifferentTransactionsMade
-
-	| anAccount aReport |
+	| anAccount |
 	
 	anAccount := ReceptiveAccount new.
 	aReportToCompareWith addAll: {'Depósito por 100 * pesos'. 'Extracción por 40 * pesos'. 'Balance = 60 * pesos'}.
@@ -367,49 +366,48 @@ test04AReceptiveAccountCanGiveOutASummaryWhenItHasDifferentTransactionsMade
 	Deposit    register: 100 * peso on: anAccount.
 	Withdraw register: 40 * peso on: anAccount.
 	
-	aReport := accountSummary reportOf: anAccount.
+	self createAccountSummaryReportOf: anAccount.
+	self assertReportEqualsWhatIsExpected.! !
 
-	self assert: aReportToCompareWith equals: aReport.! !
+!ReportTest methodsFor: 'tests1 - account summary' stamp: 'jms 6/14/2022 22:14:32'!
+test05ASummaryCanBeGeneratedFromAReceptiveAccountWhenItHasTransferedMoneyToAnotherAccount
 
-!ReportTest methodsFor: 'tests - account summary' stamp: 'JMS 6/13/2022 20:15:22'!
-test05AReceptiveAccountCanGiveOutASummaryWhenItHasTransferedMoneyToAnotherAccount
-
-	| anAccountToTransferMoneyFrom aReport |
+	| anAccountToTransferMoneyFrom |
 	
 	anAccountToTransferMoneyFrom := ReceptiveAccount new.
 	aReportToCompareWith addAll: {'Salida por transferencia de 100 * pesos'. 'Balance = -100 * pesos'}.
 	
 	Transfer amount: 100 * peso from: anAccountToTransferMoneyFrom to: ReceptiveAccount new.
 	
-	aReport := accountSummary reportOf: anAccountToTransferMoneyFrom.
-
-	self assert: aReportToCompareWith equals: aReport.
+	self createAccountSummaryReportOf: anAccountToTransferMoneyFrom.
+	self assertReportEqualsWhatIsExpected.
 	! !
 
-!ReportTest methodsFor: 'tests - account summary' stamp: 'JMS 6/13/2022 20:15:29'!
-test06AReceptiveAccountCanGiveOutASummaryWhenItHasBeenTransferedMoneyFromAnotherAccount
+!ReportTest methodsFor: 'tests1 - account summary' stamp: 'jms 6/14/2022 22:14:46'!
+test06ASummaryCanBeGeneratedFromAReceptiveAccountWhenItHasBeenTransferedMoneyFromAnotherAccount
 
-	| anAccountToTransferMoneyTo aReport |
+	| anAccountToTransferMoneyTo |
 
 	anAccountToTransferMoneyTo := ReceptiveAccount new.
 	aReportToCompareWith addAll: {'Entrada por transferencia de 100 * pesos'. 'Balance = 100 * pesos'}.
 	
 	Transfer amount: 100 * peso from: ReceptiveAccount new to: anAccountToTransferMoneyTo.
 	
-	aReport := accountSummary reportOf: anAccountToTransferMoneyTo.
+	self createAccountSummaryReportOf: anAccountToTransferMoneyTo.
+	self assertReportEqualsWhatIsExpected.! !
 
-	self assert: aReportToCompareWith equals: aReport.! !
+!ReportTest methodsFor: 'tests1 - account summary' stamp: 'jms 6/14/2022 22:15:36'!
+test07ASummaryCanBeGeneratedFromAReceptiveAccountWhenItHasMultipleTransactionsMade
 
-!ReportTest methodsFor: 'tests - account summary' stamp: 'JMS 6/13/2022 20:15:53'!
-test07AReceptiveAccountCanGiveOutASummaryWhenItHasMultipleTransactionsMade
-
-	| anAccount aReport |
+	| anAccount |
 	
 	anAccount := ReceptiveAccount new.
 	aReportToCompareWith addAll: {
-				'Depósito por 100 * pesos'. 'Extracción por 50 * pesos'.
+				'Depósito por 100 * pesos'. 
+				'Extracción por 50 * pesos'.
 				'Salida por transferencia de 20 * pesos'. 
-				'Entrada por transferencia de 30 * pesos'. 'Balance = 60 * pesos'
+				'Entrada por transferencia de 30 * pesos'. 
+				'Balance = 60 * pesos'.
 				}.
 	
 	Deposit    register: 100 * peso on: anAccount.
@@ -417,136 +415,107 @@ test07AReceptiveAccountCanGiveOutASummaryWhenItHasMultipleTransactionsMade
 	Transfer  amount:   20 * peso from: anAccount to: ReceptiveAccount new.
 	Transfer  amount:   30 * peso from: ReceptiveAccount new to: anAccount.
 	
-	aReport := accountSummary reportOf: anAccount.
+	self createAccountSummaryReportOf: anAccount.
+	self assertReportEqualsWhatIsExpected.! !
 
-	self assert: aReportToCompareWith equals: aReport.! !
-
-!ReportTest methodsFor: 'tests - account summary' stamp: 'JMS 6/13/2022 20:16:01'!
-test08APortfolioCanGiveOutASummaryWhenItHasNoTransactionsMade
-	
-	| aReport |
+!ReportTest methodsFor: 'tests1 - account summary' stamp: 'jms 6/14/2022 22:15:55'!
+test08ASummaryCanBeGeneratedFromAPortfolioWhenItHasNoTransactionsMade
 	
 	aReportToCompareWith add: 'Balance = 0 * pesos'.
 	
-	aReport := accountSummary reportOf: Portfolio new.
+	self createAccountSummaryReportOf: Portfolio new.
+	self assertReportEqualsWhatIsExpected.! !
 
-	self assert: aReportToCompareWith equals: aReport.! !
-
-!ReportTest methodsFor: 'tests - account summary' stamp: 'JMS 6/13/2022 20:16:28'!
-test09APortfolioCanGiveOutASummaryWhenAPortfolioContainedWithinTheFirstPortfolioContainsAccountsThatHaveMultipleTransactionsMade
-	| rootPortfolio secondPortfolioContainedInRootPortfolio firstAccountInRootPortfolio secondAccountInSecondPortfolio aReport |
+!ReportTest methodsFor: 'tests1 - account summary' stamp: 'jms 6/14/2022 22:16:07'!
+test09ASummaryCanBeGeneratedFromAPortfolioWhenAPortfolioContainedWithinTheFirstPortfolioContainsAccountsThatHaveMultipleTransactionsMade
+	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInRootPortfolio secondAccountIncludedInSecondPortfolio |
 	
-	firstAccountInRootPortfolio    								 := ReceptiveAccount new.
-	secondAccountInSecondPortfolio  								 := ReceptiveAccount new.
-	secondPortfolioContainedInRootPortfolio  		:= Portfolio with: secondAccountInSecondPortfolio.
-	rootPortfolio := Portfolio with: firstAccountInRootPortfolio with: secondPortfolioContainedInRootPortfolio.
+	firstAccountIncludedInRootPortfolio    									:= ReceptiveAccount new.
+	secondAccountIncludedInSecondPortfolio  									:= ReceptiveAccount new.
+	secondPortfolioIncludedInRootPortfolio  									:= Portfolio with: secondAccountIncludedInSecondPortfolio.
+	rootPortfolio := Portfolio with: firstAccountIncludedInRootPortfolio with: secondPortfolioIncludedInRootPortfolio.
 	
 	aReportToCompareWith addAll: {
-				'Depósito por 100 * pesos'. 'Extracción por 50 * pesos'.
+				'Depósito por 100 * pesos'. 
+				'Extracción por 50 * pesos'.
 				'Salida por transferencia de 40 * pesos'.
-				'Depósito por 100 * pesos'. 'Extracción por 40 * pesos'.
+				'Depósito por 100 * pesos'. 
+				'Extracción por 40 * pesos'.
 				'Entrada por transferencia de 50 * pesos'.
 				'Balance = 120 * pesos'.
 				}.
 
-	Deposit register:  100 * peso on: firstAccountInRootPortfolio.
-	Withdraw register: 50 * peso on: firstAccountInRootPortfolio.
+	Deposit register:  100 * peso on: firstAccountIncludedInRootPortfolio.
+	Withdraw register: 50 * peso on: firstAccountIncludedInRootPortfolio.
 	
-	Deposit register:  100 * peso on: secondAccountInSecondPortfolio.
-	Withdraw	 register: 40 * peso on: secondAccountInSecondPortfolio.
+	Deposit register:  100 * peso on: secondAccountIncludedInSecondPortfolio.
+	Withdraw	 register: 40 * peso on: secondAccountIncludedInSecondPortfolio.
 	
-	Transfer amount: 40 * peso from: firstAccountInRootPortfolio to: ReceptiveAccount new.
-	Transfer amount: 50 * peso from: ReceptiveAccount new to: secondAccountInSecondPortfolio.
+	Transfer amount: 40 * peso from: firstAccountIncludedInRootPortfolio to: ReceptiveAccount new.
+	Transfer amount: 50 * peso from: ReceptiveAccount new to: secondAccountIncludedInSecondPortfolio.
 	
-	aReport := accountSummary reportOf: rootPortfolio.
-
-	self assert: aReportToCompareWith equals: aReport.! !
-
+	self createAccountSummaryReportOf: rootPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
 
 
-!ReportTest methodsFor: 'tests - portfolio tree printer' stamp: 'JMS 6/13/2022 21:50:59'!
-test18
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 22:17:08'!
+test10ATransferNetReportCanBeGeneratedFromAReceptiveAccountWhenItHasNoTranfersMade
 	
-	| aPortfolio aReport |
-	
-	aPortfolio := ReceptiveAccount new.
-	aReportToCompareWith add: 'Balance = 0 * pesos'.
-	
-	aReport := PortfolioTreePrinter new reportOf: aPortfolio.
-	
-	self assert: aReportToCompareWith equals: aReport.! !
-
-!ReportTest methodsFor: 'tests - portfolio tree printer' stamp: 'JMS 6/13/2022 21:51:12'!
-test19
-	
-	| aPortfolio aReport |
-	
-	aPortfolio := ReceptiveAccount new.
-	aReportToCompareWith addAll: {}.
-	
-	aReport := PortfolioTreePrinter new reportOf: aPortfolio.
-	
-	self assert: aReportToCompareWith equals: aReport.! !
-
-
-!ReportTest methodsFor: 'tests - transfer net' stamp: 'JMS 6/13/2022 20:17:38'!
-test10IgnoraDepositYWithdraw
-	
-	| anAccount aReport |
+	| anAccount |
 	
 	anAccount := ReceptiveAccount new.
 	
 	Deposit register:    100 * peso on: anAccount.
 	Withdraw register: 200 * peso on: anAccount.
 
-	aReport := transferNet reportOf: anAccount.
+	self createTransferNetReportOf: anAccount.
 	
-	self assert: 0 * peso equals: aReport.! !
+	self assertTransferNetReportEquals: 0 * peso.! !
 
-!ReportTest methodsFor: 'tests - transfer net' stamp: 'JMS 6/13/2022 20:17:47'!
-test11entrada
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 22:20:02'!
+test11ATransferNetReportCanBeGeneratedFromAReceptiveAccountWhenItHasBeenTransferedMoneyFromAnotherAccount
 
-	| anAccountToTransferMoneyTo aReport |
+	| anAccountToTransferMoneyTo |
 	
 	anAccountToTransferMoneyTo := ReceptiveAccount new.
 	
 	Transfer amount: 100 * peso from: ReceptiveAccount new to: anAccountToTransferMoneyTo.
 	
-	aReport := transferNet reportOf: anAccountToTransferMoneyTo.
+	self createTransferNetReportOf: anAccountToTransferMoneyTo.
 	
-	self assert: 100 * peso equals: aReport.! !
+	self assertTransferNetReportEquals: 100 * peso.! !
 
-!ReportTest methodsFor: 'tests - transfer net' stamp: 'JMS 6/13/2022 20:18:07'!
-test12salida
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 22:20:14'!
+test12ATransferNetReportCanBeGeneratedFromAReceptiveAccountWhenItHasTransferedMoneyToAnotherAccount
 
-	| anAccountToTransferMoneyFrom aReport |
+	| anAccountToTransferMoneyFrom |
 	
 	anAccountToTransferMoneyFrom 	:= ReceptiveAccount new.
 	
 	Transfer amount: 100 * peso from: anAccountToTransferMoneyFrom to: ReceptiveAccount new.
 	
-	aReport := transferNet reportOf: anAccountToTransferMoneyFrom.
+	self createTransferNetReportOf: anAccountToTransferMoneyFrom.
 	
-	self assert: -100 * peso equals: aReport.! !
+	self assertTransferNetReportEquals: -100 * peso.! !
 
-!ReportTest methodsFor: 'tests - transfer net' stamp: 'JMS 6/13/2022 20:19:11'!
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 21:35:38'!
 test13entradaYsalida
 
-	| anAccount aReport |
+	| anAccount |
 	
 	anAccount := ReceptiveAccount new.
 	
 	Transfer amount: 100 * peso from: anAccount to: ReceptiveAccount new.
 	Transfer amount:   50 * peso from: ReceptiveAccount new to: anAccount.
 	
-	aReport := transferNet reportOf: anAccount.
+	self createTransferNetReportOf: anAccount.
 	
-	self assert: -50 * peso equals: aReport.! !
+	self assertTransferNetReportEquals: -50 * peso.! !
 
-!ReportTest methodsFor: 'tests - transfer net' stamp: 'JMS 6/13/2022 20:19:39'!
-test14conWithdrawYDepositoParaIgnorar
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 22:24:58'!
+test14ATransferNetReportCanBeGeneratedFromAReceptiveAccountWhenItHasMultipleTransactionsMade
 
-	| anAccount aReport |
+	| anAccount |
 	
 	anAccount := ReceptiveAccount new.
 
@@ -555,72 +524,282 @@ test14conWithdrawYDepositoParaIgnorar
 	Transfer  amount: 100 * peso from: anAccount to: ReceptiveAccount new.
 	Transfer  amount:   50 * peso from: ReceptiveAccount new to: anAccount.
 	
-	aReport := transferNet reportOf: anAccount.
+	self createTransferNetReportOf: anAccount.
 	
-	self assert: -50 * peso equals: aReport.
-	self assert:  50 * peso equals: anAccount balance.! !
+	self assertTransferNetReportEquals: -50 * peso.
+	self assert: 50 * peso equals: anAccount balance.! !
 
-!ReportTest methodsFor: 'tests - transfer net' stamp: 'JMS 6/13/2022 20:20:04'!
-test15PortfolioIgnoraDepositYWithdraw
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 22:26:38'!
+test15ATransferNetReportCanBeGeneratedFromAPortfolioWhenItHasNoTransfersMade
 
-	| aPortfolio anAccountInPortfolio aReport |
+	| aPortfolio anAccountIncludedInPortfolio |
 	
-	anAccountInPortfolio := ReceptiveAccount new.	
-	aPortfolio := Portfolio with: anAccountInPortfolio.
+	anAccountIncludedInPortfolio := ReceptiveAccount new.	
+	aPortfolio := Portfolio with: anAccountIncludedInPortfolio.
 	
-	Deposit register:    100 * peso on: anAccountInPortfolio.
-	Withdraw register: 200 * peso on: anAccountInPortfolio.
+	Deposit register:    100 * peso on: anAccountIncludedInPortfolio.
+	Withdraw register: 200 * peso on: anAccountIncludedInPortfolio.
 	
-	aReport := transferNet reportOf: aPortfolio.
+	self createTransferNetReportOf: aPortfolio.
 	
-	self assert: 0 * peso equals: aReport.! !
+	self assertTransferNetReportEquals: 0 * peso.! !
 
-!ReportTest methodsFor: 'tests - transfer net' stamp: 'JMS 6/13/2022 20:20:50'!
-test16PortfolioConWithdrawYDepositarParaIgnorar
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 22:27:37'!
+test16ATransferNetReportCanBeGeneratedFromAPortfolioWhenItHasMultipleTransactionsMade
 
-	| aPortfolio anAccountInPortfolio aReport |
+	| aPortfolio anAccountIncludedInPortfolio |
 	
-	anAccountInPortfolio := ReceptiveAccount new.
-	aPortfolio := Portfolio with: anAccountInPortfolio.
+	anAccountIncludedInPortfolio := ReceptiveAccount new.
+	aPortfolio := Portfolio with: anAccountIncludedInPortfolio.
 	
-	Deposit    register: 200 * peso on: anAccountInPortfolio.	
-	Withdraw register: 100 * peso on: anAccountInPortfolio.
-	Transfer  amount: 100 * peso from: anAccountInPortfolio to: ReceptiveAccount new.
-	Transfer  amount:   50 * peso from: ReceptiveAccount new to: anAccountInPortfolio.
+	Deposit    register: 200 * peso on: anAccountIncludedInPortfolio.	
+	Withdraw register: 100 * peso on: anAccountIncludedInPortfolio.
+	Transfer  amount: 100 * peso from: anAccountIncludedInPortfolio to: ReceptiveAccount new.
+	Transfer  amount:   50 * peso from: ReceptiveAccount new to: anAccountIncludedInPortfolio.
 	
-	aReport := transferNet reportOf: aPortfolio.
+	self createTransferNetReportOf: aPortfolio.
 	
-	self assert: -50 * peso equals: aReport.
-	self assert:  50 * peso equals: aPortfolio balance.! !
+	self assertTransferNetReportEquals: -50 * peso.
+	self assert: 50 * peso equals: aPortfolio balance.! !
 
-!ReportTest methodsFor: 'tests - transfer net' stamp: 'JMS 6/13/2022 20:21:20'!
-test17PortfolioConPortfolio
+!ReportTest methodsFor: 'tests2 - transfer net' stamp: 'jms 6/14/2022 22:28:00'!
+test17ATransferNetReportCanBeGeneratedFromAPortfolioWhenItHas
 
-	| rootPortfolio secondPortfolioContainedInRootPortfolio firstAccountInRootPortfolio secondAccountInSecondPortfolio aReportOfRootPortfolio aReportOfSecondPortfolio |
+	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInRootPortfolio secondAccountIncludedInSecondPortfolio |
 	
-	firstAccountInRootPortfolio  								 := ReceptiveAccount new.
-	secondAccountInSecondPortfolio  								 := ReceptiveAccount new.
-	secondPortfolioContainedInRootPortfolio  		:= Portfolio with: secondAccountInSecondPortfolio.
-	rootPortfolio := Portfolio with: firstAccountInRootPortfolio with: secondPortfolioContainedInRootPortfolio.
+	firstAccountIncludedInRootPortfolio  								 := ReceptiveAccount new.
+	secondAccountIncludedInSecondPortfolio		 := ReceptiveAccount new.
+	secondPortfolioIncludedInRootPortfolio  						 := Portfolio with: secondAccountIncludedInSecondPortfolio.
+	rootPortfolio := Portfolio with: firstAccountIncludedInRootPortfolio with: secondPortfolioIncludedInRootPortfolio.
 	
-	Deposit register:  100 * peso on: firstAccountInRootPortfolio.
-	Withdraw register: 50 * peso on: firstAccountInRootPortfolio.
+	Deposit register:  100 * peso on: firstAccountIncludedInRootPortfolio.
+	Withdraw register: 50 * peso on: firstAccountIncludedInRootPortfolio.
 	
-	Deposit register:  100 * peso on: secondAccountInSecondPortfolio.
-	Withdraw	 register: 40 * peso on: secondAccountInSecondPortfolio.
+	Deposit register:  100 * peso on: secondAccountIncludedInSecondPortfolio.
+	Withdraw	 register: 40 * peso on: secondAccountIncludedInSecondPortfolio.
 	
-	Transfer amount: 100 * peso from: firstAccountInRootPortfolio to: ReceptiveAccount new.
-	Transfer amount:   50 * peso from: ReceptiveAccount new to: firstAccountInRootPortfolio.
+	Transfer amount: 100 * peso from: firstAccountIncludedInRootPortfolio to: ReceptiveAccount new.
+	Transfer amount:   50 * peso from: ReceptiveAccount new to: firstAccountIncludedInRootPortfolio.
 	
-	Transfer amount: 100 * peso from: secondAccountInSecondPortfolio to: ReceptiveAccount new.
-	Transfer amount:   50 * peso from: ReceptiveAccount new to: secondAccountInSecondPortfolio.
+	Transfer amount: 100 * peso from: secondAccountIncludedInSecondPortfolio to: ReceptiveAccount new.
+	Transfer amount:   50 * peso from: ReceptiveAccount new to: secondAccountIncludedInSecondPortfolio.
 	
-	aReportOfRootPortfolio := transferNet reportOf: rootPortfolio.
-	aReportOfSecondPortfolio := transferNet reportOf: secondPortfolioContainedInRootPortfolio.
+	self createTransferNetReportOf: rootPortfolio.
 	
-	self assert: -100 * peso equals: aReportOfRootPortfolio.
-	self assert:   -50 * peso equals: aReportOfSecondPortfolio.
-	self assert:    10 * peso equals: rootPortfolio balance.! !
+	self assertTransferNetReportEquals: -100 * peso.
+	self assert: 10 * peso equals: rootPortfolio balance.
+	
+	self createTransferNetReportOf: secondPortfolioIncludedInRootPortfolio.
+	
+	self assertTransferNetReportEquals: -50 * peso.! !
+
+
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:23'!
+test18Vacio
+	
+	| aPortfolio |
+	
+	aPortfolio := Portfolio named: 'Portfolio padre'.
+	aReportToCompareWith add: 'Portfolio padre'.
+
+	self createPortfolioTreePrinterReportOf: aPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
+
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:27'!
+test19ConUnaCuenta
+	
+	| aPortfolio anAccountIncludedInPortfolio |
+	
+	anAccountIncludedInPortfolio := ReceptiveAccount named: 'Cuenta uno'.
+	aPortfolio := Portfolio named: 'Portfolio padre' with: anAccountIncludedInPortfolio.
+	
+	aReportToCompareWith addAll: {
+						'Portfolio padre'. 
+						'    Cuenta uno'}.
+
+	self createPortfolioTreePrinterReportOf: aPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
+
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:32'!
+test20ConUnPortfolio
+	
+	| rootPortfolio secondPortfolioIncludedInRootPortfolio |
+	
+	secondPortfolioIncludedInRootPortfolio := Portfolio named: 'Portfolio de hijos'.
+	rootPortfolio := Portfolio named: 'Portfolio padre' with: secondPortfolioIncludedInRootPortfolio.
+	
+	aReportToCompareWith addAll: {
+						'Portfolio padre'.
+						'    Portfolio de hijos'}.
+
+	self createPortfolioTreePrinterReportOf: rootPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
+
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:36'!
+test21ConUnaCuentaYUnPortfolio
+
+	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInRootPortfolio |
+	
+	secondPortfolioIncludedInRootPortfolio  						:= Portfolio named: 'Portfolio de hijos'.
+	firstAccountIncludedInRootPortfolio  								:= ReceptiveAccount named: 'Cuenta uno'.
+	rootPortfolio := Portfolio named: 'Portfolio padre' with: firstAccountIncludedInRootPortfolio with: secondPortfolioIncludedInRootPortfolio.
+	
+	aReportToCompareWith addAll: {
+						'Portfolio padre'. 
+						'    Cuenta uno'. 
+						'    Portfolio de hijos'}.
+
+	self createPortfolioTreePrinterReportOf: rootPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
+
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:45'!
+test22Con2NivelesDeIndentacion
+	
+	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInSecondPortfolio secondAccountIncludedInSecondPortfolio |
+	
+	firstAccountIncludedInSecondPortfolio  									:= ReceptiveAccount named: 'Cuenta uno'.
+	secondAccountIncludedInSecondPortfolio  									:= ReceptiveAccount named: 'Cuenta dos'.
+	secondPortfolioIncludedInRootPortfolio  									:= Portfolio named: 'Portfolio de hijos' with: firstAccountIncludedInSecondPortfolio with: secondAccountIncludedInSecondPortfolio.
+	rootPortfolio := Portfolio named: 'Portfolio padre' with: secondPortfolioIncludedInRootPortfolio.
+	
+	aReportToCompareWith addAll: {
+					'Portfolio padre'. 
+					'    Portfolio de hijos'.
+					'        Cuenta uno'.
+					'        Cuenta dos'}.
+					
+	self createPortfolioTreePrinterReportOf: rootPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
+
+!ReportTest methodsFor: 'tests3 - portfolio tree printer' stamp: 'jms 6/14/2022 21:44:49'!
+test23Con2NivelesDeIndentacionYVuelveParaAtras
+	
+	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInRootPortfolio secondAccountIncludedInSecondPortfolio thirdAccountIncludedInSecondPortfolio |
+	
+	firstAccountIncludedInRootPortfolio  									:= ReceptiveAccount named: 'Cuenta uno'.
+	secondAccountIncludedInSecondPortfolio  									:= ReceptiveAccount named: 'Cuenta dos'.
+	thirdAccountIncludedInSecondPortfolio  									:= ReceptiveAccount named: 'Cuenta tres'.
+	secondPortfolioIncludedInRootPortfolio  									:= Portfolio named: 'Portfolio de hijos' with: secondAccountIncludedInSecondPortfolio with: thirdAccountIncludedInSecondPortfolio .
+	rootPortfolio := Portfolio named: 'Portfolio padre' with: secondPortfolioIncludedInRootPortfolio with: firstAccountIncludedInRootPortfolio.
+	
+	aReportToCompareWith addAll: {
+					'Portfolio padre'. 
+					'    Portfolio de hijos'.
+					'        Cuenta dos'.
+					'        Cuenta tres'.
+					'    Cuenta uno'}.
+					
+	self createPortfolioTreePrinterReportOf: rootPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
+
+
+!ReportTest methodsFor: 'tests4 - portfolio detailed tree printer' stamp: 'jms 6/14/2022 21:46:20'!
+test24Vacio
+	
+	| aPortfolio |
+	
+	aPortfolio := Portfolio named: 'Portfolio padre'.
+	aReportToCompareWith addAll: {
+						'Portfolio padre'.
+						'    Balance = 0 * pesos'}.
+
+	self createPortfolioDetailedTreePrinterReportOf: aPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
+
+!ReportTest methodsFor: 'tests4 - portfolio detailed tree printer' stamp: 'jms 6/14/2022 21:46:45'!
+test25ConUnaCuentaConTransacciones
+	
+	| aPortfolio anAccount |
+	
+	anAccount := ReceptiveAccount named: 'Cuenta uno'.
+	aPortfolio := Portfolio named: 'Portfolio padre' with: anAccount.
+	aReportToCompareWith addAll: {
+						'Portfolio padre'. 
+						'    Cuenta uno'.
+						'        Depósito por 100 * pesos'.
+						'        Extracción por 50 * pesos'.
+						'        Salida por transferencia de 20 * pesos'.
+						'        Entrada por transferencia de 30 * pesos'.
+						'        Balance = 60 * pesos'.
+						'    Balance = 60 * pesos'}.
+						
+	Deposit    register: 100 * peso on: anAccount.
+	Withdraw register:   50 * peso on: anAccount.
+	Transfer  amount:   20 * peso from: anAccount to: ReceptiveAccount new.
+	Transfer  amount:   30 * peso from: ReceptiveAccount new to: anAccount.
+	
+	self createPortfolioDetailedTreePrinterReportOf: aPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
+
+!ReportTest methodsFor: 'tests4 - portfolio detailed tree printer' stamp: 'jms 6/14/2022 21:47:03'!
+test26Con2NivelesDeIndentacionYVuelveParaAtras
+	
+	| rootPortfolio secondPortfolioIncludedInRootPortfolio firstAccountIncludedInRootPortfolio secondAccountIncludedInSecondPortfolio thirdAccountIncludedInSecondPortfolio |
+	
+	firstAccountIncludedInRootPortfolio  									:= ReceptiveAccount named: 'Cuenta uno'.
+	secondAccountIncludedInSecondPortfolio  									:= ReceptiveAccount named: 'Cuenta dos'.
+	thirdAccountIncludedInSecondPortfolio  									:= ReceptiveAccount named: 'Cuenta tres'.
+	secondPortfolioIncludedInRootPortfolio  									:= Portfolio named: 'Portfolio de hijos' with: secondAccountIncludedInSecondPortfolio with: thirdAccountIncludedInSecondPortfolio .
+	rootPortfolio := Portfolio named: 'Portfolio padre' with: secondPortfolioIncludedInRootPortfolio with: firstAccountIncludedInRootPortfolio.
+	
+	aReportToCompareWith addAll: {
+						'Portfolio padre'. 
+						'    Portfolio de hijos'.
+						'        Cuenta dos'.
+						'            Depósito por 100 * pesos'.
+						'            Extracción por 50 * pesos'.
+						'            Balance = 50 * pesos'.
+						'        Cuenta tres'.
+						'            Salida por transferencia de 100 * pesos'.
+						'            Balance = -100 * pesos'.
+						'        Balance = -50 * pesos'.
+						'    Cuenta uno'.
+						'        Depósito por 200 * pesos'.
+						'        Extracción por 50 * pesos'.
+						'        Balance = 150 * pesos'.
+						'    Balance = 100 * pesos'}.
+						
+	Deposit    register: 200 * peso on: firstAccountIncludedInRootPortfolio.
+	Withdraw register:   50 * peso on: firstAccountIncludedInRootPortfolio.
+	
+	Deposit    register: 100 * peso on: secondAccountIncludedInSecondPortfolio .
+	Withdraw register:   50 * peso on: secondAccountIncludedInSecondPortfolio.
+	
+	Transfer  amount: 100 * peso from: thirdAccountIncludedInSecondPortfolio to: ReceptiveAccount new.
+	
+	self createPortfolioDetailedTreePrinterReportOf: rootPortfolio.
+	self assertReportEqualsWhatIsExpected.! !
+
+
+!ReportTest methodsFor: 'private' stamp: 'jms 6/14/2022 21:48:23'!
+assertReportEqualsWhatIsExpected
+
+	self assert: aReportToCompareWith equals: aReportToBeCompared.! !
+
+!ReportTest methodsFor: 'private' stamp: 'jms 6/14/2022 21:48:23'!
+assertTransferNetReportEquals: amountOfMoney
+
+	self assert: amountOfMoney equals: aReportToBeCompared.! !
+
+!ReportTest methodsFor: 'private' stamp: 'jms 6/14/2022 21:54:58'!
+createAccountSummaryReportOf: anAccount
+
+	aReportToBeCompared := accountSummary generateReportOf: anAccount.! !
+
+!ReportTest methodsFor: 'private' stamp: 'jms 6/14/2022 21:54:58'!
+createPortfolioDetailedTreePrinterReportOf: aPortfolio
+
+	aReportToBeCompared := portfolioDetailedTreePrinter generateReportOf: aPortfolio.! !
+
+!ReportTest methodsFor: 'private' stamp: 'jms 6/14/2022 21:54:58'!
+createPortfolioTreePrinterReportOf: aPortfolio
+
+	aReportToBeCompared := portfolioTreePrinter generateReportOf: aPortfolio.! !
+
+!ReportTest methodsFor: 'private' stamp: 'jms 6/14/2022 21:54:58'!
+createTransferNetReportOf: anAccount
+
+	aReportToBeCompared := transferNet generateReportOf: anAccount.! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
@@ -769,7 +948,7 @@ addTransactionsTo: aCollectionOfTransactions
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Solucion'!
 Account subclass: #Portfolio
-	instanceVariableNames: 'accounts parents'
+	instanceVariableNames: 'accounts parents name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
@@ -843,17 +1022,33 @@ signalCanNotAddAccount
 	self error: self class canNotAddAccountErrorMessage! !
 
 
-!Portfolio methodsFor: 'initialization' stamp: 'HAW 5/25/2019 12:03:18'!
+!Portfolio methodsFor: 'initialization' stamp: 'jms 6/14/2022 21:10:07'!
 initialize
 
 	accounts := OrderedCollection new.
-	parents := OrderedCollection new.! !
+	parents := OrderedCollection new.
+	name := nil.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'jms 6/14/2022 16:25:53'!
+registerName: aName
+
+	name := aName.! !
 
 
 !Portfolio methodsFor: 'main protocol' stamp: 'JMS 6/12/2022 20:53:18'!
 balance
 	
 	^accounts sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 * peso ]! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/14/2022 19:38:53'!
+forEachAccountDo: aBlock
+	
+	accounts do: aBlock.! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'jms 6/14/2022 21:15:18'!
+forEachTransactionsDo: aBlock
+	
+	self transactions do: aBlock.! !
 
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:28:29'!
 hasRegistered: aTransaction
@@ -871,10 +1066,24 @@ transactions
 	^transactions ! !
 
 
-!Portfolio methodsFor: 'private' stamp: 'HAW 5/25/2019 11:42:55'!
+!Portfolio methodsFor: 'private' stamp: 'jms 6/14/2022 17:19:05'!
 addTransactionsTo: aCollectionOfTransactions
 
 	accounts do: [ :anAccount | anAccount addTransactionsTo: aCollectionOfTransactions ]! !
+
+
+!Portfolio methodsFor: 'private - DD' stamp: 'jms 6/14/2022 22:28:51'!
+accept: aReport
+
+	^aReport visitForPortfolio: self. 
+	
+	"tremendo!!"! !
+
+
+!Portfolio methodsFor: 'private - accessing' stamp: 'jms 6/14/2022 18:12:20'!
+name
+
+	^name.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -882,19 +1091,20 @@ addTransactionsTo: aCollectionOfTransactions
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:48:55'!
+!Portfolio class methodsFor: 'error message' stamp: 'HAW 5/25/2019 11:48:55'!
 canNotAddAccountErrorMessage
 	
 	^'Can not add repeated account to a portfolio'! !
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:18:21'!
+
+!Portfolio class methodsFor: 'instance creation' stamp: 'HAW 5/25/2019 11:18:21'!
 with: anAccount
 
 	^self new 
 		add: anAccount;
 		yourself! !
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:23:59'!
+!Portfolio class methodsFor: 'instance creation' stamp: 'HAW 5/25/2019 11:23:59'!
 with: anAccount with: anotherAccount
 
 	^self new 
@@ -902,10 +1112,35 @@ with: anAccount with: anotherAccount
 		add: anotherAccount;
 		yourself! !
 
+
+!Portfolio class methodsFor: 'instance creation - name' stamp: 'jms 6/14/2022 16:49:21'!
+named: aName
+
+	^self new 
+		registerName: aName;
+		yourself.! !
+
+!Portfolio class methodsFor: 'instance creation - name' stamp: 'jms 6/14/2022 16:20:37'!
+named: aName with: anAccount
+
+	^self new 
+		registerName: aName;
+		add: anAccount;
+		yourself.! !
+
+!Portfolio class methodsFor: 'instance creation - name' stamp: 'jms 6/14/2022 16:20:41'!
+named: aName with: anAccount with: anotherAccount
+
+	^self new 
+		registerName: aName;
+		add: anAccount;
+		add: anotherAccount;
+		yourself.! !
+
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Solucion'!
 Account subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions'
+	instanceVariableNames: 'transactions name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
@@ -921,11 +1156,17 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
-!ReceptiveAccount methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 18:35'!
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'jms 6/14/2022 21:10:53'!
 initialize
 
 	super initialize.
-	transactions := OrderedCollection new.! !
+	transactions := OrderedCollection new.
+	name := nil.! !
+
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'jms 6/14/2022 16:26:35'!
+registerName: aName
+
+	name := aName.! !
 
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'JMS 6/12/2022 20:53:22'!
@@ -934,6 +1175,11 @@ balance
 	^transactions 
 		inject: 0 * peso
 		into: [ :currentBalance :transaction | transaction affectBalance: currentBalance ]! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'jms 6/14/2022 20:52:13'!
+forEachTransactionsDo: aBlock
+	
+	transactions do: aBlock.! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/21/2019 18:55:56'!
 hasRegistered: aTransaction
@@ -958,6 +1204,31 @@ addTransactionsTo: aCollectionOfTransactions
 
 	aCollectionOfTransactions addAll: transactions ! !
 
+
+!ReceptiveAccount methodsFor: 'private - DD' stamp: 'jms 6/14/2022 22:21:19'!
+accept: aReport
+
+	^aReport visitForReceptiveAccount: self. ! !
+
+
+!ReceptiveAccount methodsFor: 'private - accessing' stamp: 'jms 6/14/2022 18:11:41'!
+name
+
+	^name! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReceptiveAccount class' category: 'ServiciosFinancieros-Solucion'!
+ReceptiveAccount class
+	instanceVariableNames: ''!
+
+!ReceptiveAccount class methodsFor: 'instance creation - name' stamp: 'jms 6/14/2022 16:22:50'!
+named: aName
+
+	^self new 
+		registerName: aName;
+		yourself.! !
+
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #AccountTransaction
@@ -978,8 +1249,8 @@ affectBalance: aBalance
 	self subclassResponsibility ! !
 
 
-!AccountTransaction methodsFor: 'private' stamp: 'JMS 6/13/2022 20:24:29'!
-transactionDescription: aReport
+!AccountTransaction methodsFor: 'private' stamp: 'jms 6/14/2022 21:52:46'!
+transactionInformation: aReport
 
 	self subclassResponsibility.! !
 
@@ -1009,10 +1280,10 @@ value
 	^ value! !
 
 
-!Deposit methodsFor: 'private' stamp: 'JMS 6/13/2022 21:14:05'!
-transactionDescription: aReport
+!Deposit methodsFor: 'private' stamp: 'jms 6/14/2022 21:52:58'!
+transactionInformation: aReport
 
-	^aReport transactionDescriptionForDeposit: self value.! !
+	^aReport transactionInformationForDeposit: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1091,10 +1362,10 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'private' stamp: 'JMS 6/13/2022 21:14:15'!
-transactionDescription: aReport
+!TransferDepositLeg methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:08'!
+transactionInformation: aReport
 
-	^aReport transactionDescriptionForTransferDepositLeg: self value.
+	^aReport transactionInformationForTransferDepositLeg: self.
 	! !
 
 
@@ -1117,10 +1388,10 @@ affectBalance: aBalance
 	^aBalance + self value negated! !
 
 
-!TransferWithdrawLeg methodsFor: 'private' stamp: 'JMS 6/13/2022 21:14:24'!
-transactionDescription: aReport
+!TransferWithdrawLeg methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:27'!
+transactionInformation: aReport
 
-	^aReport transactionDescriptionForTransferWithdrawLeg: self value.
+	^aReport transactionInformationForTransferWithdrawLeg: self.
 ! !
 
 
@@ -1149,10 +1420,10 @@ value
 	^ value! !
 
 
-!Withdraw methodsFor: 'private' stamp: 'JMS 6/13/2022 21:14:31'!
-transactionDescription: aReport
+!Withdraw methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:17'!
+transactionInformation: aReport
 
-	^aReport transactionDescriptionForWithdraw: self value.
+	^aReport transactionInformationForWithdraw: self.
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -1178,49 +1449,199 @@ register: aValue on: account
 	^ transaction! !
 
 
-!classDefinition: #Report category: 'ServiciosFinancieros-Solucion'!
-Object subclass: #Report
+!classDefinition: #ReportOfAccounts category: 'ServiciosFinancieros-Solucion'!
+Object subclass: #ReportOfAccounts
+	instanceVariableNames: 'report tabulations'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!ReportOfAccounts methodsFor: 'initialization' stamp: 'jms 6/14/2022 20:58:34'!
+initialize
+
+	tabulations := 0.
+	report := OrderedCollection new.! !
+
+
+!ReportOfAccounts methodsFor: 'main protocol' stamp: 'jms 6/14/2022 22:20:39'!
+generateReportOf: anAccount
+	
+	anAccount accept: self.
+	
+	^report.! !
+
+
+!ReportOfAccounts methodsFor: 'private' stamp: 'jms 6/14/2022 22:06:53'!
+addToReport: aLineToBeReported
+
+	report add: (self createIndentation, aLineToBeReported).! !
+
+!ReportOfAccounts methodsFor: 'private' stamp: 'jms 6/14/2022 21:04:34'!
+addToReportForEachAccountIn: anAccountToBeReported
+
+	self subclassResponsibility.! !
+
+!ReportOfAccounts methodsFor: 'private' stamp: 'jms 6/14/2022 20:58:17'!
+createIndentation
+
+	| indentation |
+	
+	indentation := ''.
+	
+	tabulations timesRepeat: [ indentation := indentation, '    ' ].
+	
+	^indentation.! !
+
+!ReportOfAccounts methodsFor: 'private' stamp: 'jms 6/14/2022 20:58:17'!
+withHigherIndentationDo: aBlock
+
+	tabulations := tabulations + 1.
+	
+	aBlock value.
+	
+	tabulations  := tabulations - 1.! !
+
+
+!ReportOfAccounts methodsFor: 'private - DD' stamp: 'jms 6/14/2022 22:21:10'!
+visitForPortfolio: anAccount
+
+	self subclassResponsibility.! !
+
+!ReportOfAccounts methodsFor: 'private - DD' stamp: 'jms 6/14/2022 22:21:19'!
+visitForReceptiveAccount: anAccount
+
+	self subclassResponsibility.! !
+
+
+!classDefinition: #PortfolioDetailedTreePrinter category: 'ServiciosFinancieros-Solucion'!
+ReportOfAccounts subclass: #PortfolioDetailedTreePrinter
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!Report methodsFor: 'main protocol' stamp: 'JMS 6/12/2022 21:41:55'!
-reportOf: anAccount
+!PortfolioDetailedTreePrinter methodsFor: 'private' stamp: 'jms 6/14/2022 22:09:26'!
+addToReportAnAccountSummaryOf: anAccountToBeReported
+
+	| anAccountReportSummary |
+	
+	anAccountReportSummary := self createAccountSummaryReportOf: anAccountToBeReported.	
+	
+	self withHigherIndentationDo: [ 
+				self addToReportAnIndentedSummary: anAccountReportSummary. 
+			].! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'private' stamp: 'jms 6/14/2022 22:07:19'!
+addToReportAnIndentedSummary: anAccountReportSummary
+
+	anAccountReportSummary do: [ :aLineInAReport | self addToReport: aLineInAReport. ].! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'private' stamp: 'jms 6/14/2022 21:06:06'!
+addToReportBalanceOf: anAccountToBeReported
+
+	report add: (self createIndentation, ('Balance = ', anAccountToBeReported balance asString)).! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'private' stamp: 'jms 6/14/2022 22:20:39'!
+addToReportForEachAccountIn: anAccountToBeReported
+
+	self withHigherIndentationDo: [
+				anAccountToBeReported forEachAccountDo: [ :anAccount | anAccount accept: self ].
+	
+				self addToReportBalanceOf: anAccountToBeReported.
+			].! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'private' stamp: 'jms 6/14/2022 22:09:34'!
+createAccountSummaryReportOf: anAccountToBeReported
+
+	^AccountSummary new generateReportOf: anAccountToBeReported.! !
+
+
+!PortfolioDetailedTreePrinter methodsFor: 'private - DD' stamp: 'jms 6/14/2022 22:21:10'!
+visitForPortfolio: anAccountToBeReported
+
+	self addToReport: anAccountToBeReported name.
+
+	self addToReportForEachAccountIn: anAccountToBeReported.! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'private - DD' stamp: 'jms 6/14/2022 22:21:19'!
+visitForReceptiveAccount: anAccountToBeReported
+
+	self addToReport: anAccountToBeReported name.
+
+	self addToReportAnAccountSummaryOf: anAccountToBeReported.! !
+
+
+!classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros-Solucion'!
+ReportOfAccounts subclass: #PortfolioTreePrinter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioTreePrinter methodsFor: 'private' stamp: 'jms 6/14/2022 22:20:39'!
+addToReportForEachAccountIn: anAccountToBeReported
+
+	self withHigherIndentationDo: [	 
+					anAccountToBeReported forEachAccountDo: [ :anAccount | anAccount accept: self ]. 
+				].! !
+
+
+!PortfolioTreePrinter methodsFor: 'private - DD' stamp: 'jms 6/14/2022 22:21:10'!
+visitForPortfolio: anAccountToBeReported
+
+	self addToReport: anAccountToBeReported name.
+
+	self addToReportForEachAccountIn: anAccountToBeReported.! !
+
+!PortfolioTreePrinter methodsFor: 'private - DD' stamp: 'jms 6/14/2022 22:21:19'!
+visitForReceptiveAccount: anAccountToBeReported
+
+	self addToReport: anAccountToBeReported name.! !
+
+
+!classDefinition: #ReportOfTransactions category: 'ServiciosFinancieros-Solucion'!
+Object subclass: #ReportOfTransactions
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!ReportOfTransactions methodsFor: 'main protocol' stamp: 'jms 6/14/2022 21:54:57'!
+generateReportOf: anAccountToBeReported
 
 	self subclassResponsibility.! !
 
 
-!Report methodsFor: 'private' stamp: 'JMS 6/13/2022 21:10:06'!
-transactionDescriptionForDeposit: information 
+!ReportOfTransactions methodsFor: 'private' stamp: 'jms 6/14/2022 21:52:58'!
+transactionInformationForDeposit: aTransactionToBeReported 
 	
 	self subclassResponsibility.! !
 
-!Report methodsFor: 'private' stamp: 'JMS 6/13/2022 21:10:02'!
-transactionDescriptionForTransferDepositLeg: information 
+!ReportOfTransactions methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:07'!
+transactionInformationForTransferDepositLeg: aTransactionToBeReported 
 	
 	self subclassResponsibility.! !
 
-!Report methodsFor: 'private' stamp: 'JMS 6/13/2022 21:09:56'!
-transactionDescriptionForTransferWithdrawLeg: information 
+!ReportOfTransactions methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:27'!
+transactionInformationForTransferWithdrawLeg: aTransactionToBeReported 
 	
 	self subclassResponsibility.! !
 
-!Report methodsFor: 'private' stamp: 'JMS 6/13/2022 21:09:51'!
-transactionDescriptionForWithdraw: information 
+!ReportOfTransactions methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:16'!
+transactionInformationForWithdraw: aTransactionToBeReported 
 	
 	self subclassResponsibility.! !
 
 
 !classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
-Report subclass: #AccountSummary
+ReportOfTransactions subclass: #AccountSummary
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummary methodsFor: 'main protocol' stamp: 'JMS 6/13/2022 20:24:45'!
-reportOf: anAccount
+!AccountSummary methodsFor: 'main protocol' stamp: 'jms 6/14/2022 21:54:57'!
+generateReportOf: anAccountToBeReported
 
 	"generateSummaryOf: anAccount"
 
@@ -1228,87 +1649,77 @@ reportOf: anAccount
 	
 	aReport := OrderedCollection new.
 	
-	anAccount transactions do: [ :aTransaction | aReport add: (aTransaction transactionDescription: self) ].
+	anAccountToBeReported forEachTransactionsDo: [ :aTransaction | aReport add: (aTransaction transactionInformation: self) ].
 
-	aReport add: ('Balance = ', anAccount balance asString).
+	aReport add: ('Balance = ', anAccountToBeReported balance asString).
 	
 	^aReport.
 ! !
 
 
-!AccountSummary methodsFor: 'private' stamp: 'JMS 6/13/2022 20:45:20'!
-transactionDescriptionForDeposit: information 
+!AccountSummary methodsFor: 'private' stamp: 'jms 6/14/2022 21:52:58'!
+transactionInformationForDeposit: aTransactionToBeReported 
 	
-	^'Depósito por ', information asString.! !
+	^'Depósito por ', aTransactionToBeReported value asString.! !
 
-!AccountSummary methodsFor: 'private' stamp: 'JMS 6/13/2022 20:45:38'!
-transactionDescriptionForTransferDepositLeg: information 
+!AccountSummary methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:08'!
+transactionInformationForTransferDepositLeg: aTransactionToBeReported 
 	
-	^'Entrada por transferencia de ', information asString.! !
+	^'Entrada por transferencia de ', aTransactionToBeReported value asString.! !
 
-!AccountSummary methodsFor: 'private' stamp: 'JMS 6/13/2022 20:45:49'!
-transactionDescriptionForTransferWithdrawLeg: information 
+!AccountSummary methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:27'!
+transactionInformationForTransferWithdrawLeg: aTransactionToBeReported 
 	
-	^'Salida por transferencia de ', information asString.! !
+	^'Salida por transferencia de ', aTransactionToBeReported value asString.! !
 
-!AccountSummary methodsFor: 'private' stamp: 'JMS 6/13/2022 20:45:59'!
-transactionDescriptionForWithdraw: information 
+!AccountSummary methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:17'!
+transactionInformationForWithdraw: aTransactionToBeReported 
 	
-	^'Extracción por ', information asString.! !
-
-
-!classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros-Solucion'!
-Report subclass: #PortfolioTreePrinter
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Solucion'!
-
-!PortfolioTreePrinter methodsFor: 'main protocol' stamp: 'JMS 6/13/2022 21:55:13'!
-reportOf: anAccount
-
-	^''.! !
+	^'Extracción por ', aTransactionToBeReported value asString.! !
 
 
 !classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
-Report subclass: #TransferNet
+ReportOfTransactions subclass: #TransferNet
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNet methodsFor: 'private' stamp: 'JMS 6/13/2022 21:00:33'!
-transactionDescriptionForDeposit: information 
+!TransferNet methodsFor: 'private' stamp: 'jms 6/14/2022 21:52:58'!
+transactionInformationForDeposit: aTransactionToBeReported 
 	
 	^0 * peso.
 	! !
 
-!TransferNet methodsFor: 'private' stamp: 'JMS 6/13/2022 21:08:38'!
-transactionDescriptionForTransferDepositLeg: information 
+!TransferNet methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:08'!
+transactionInformationForTransferDepositLeg: aTransactionToBeReported 
 
-	^information.
+	^aTransactionToBeReported value.
 	! !
 
-!TransferNet methodsFor: 'private' stamp: 'JMS 6/13/2022 21:01:03'!
-transactionDescriptionForTransferWithdrawLeg: information 
+!TransferNet methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:27'!
+transactionInformationForTransferWithdrawLeg: aTransactionToBeReported 
 	
-	^information negated.
+	^aTransactionToBeReported value negated.
 	! !
 
-!TransferNet methodsFor: 'private' stamp: 'JMS 6/13/2022 21:00:17'!
-transactionDescriptionForWithdraw: information 
+!TransferNet methodsFor: 'private' stamp: 'jms 6/14/2022 21:53:17'!
+transactionInformationForWithdraw: aTransactionToBeReported 
 	
 	^0 * peso.
 	! !
 
 
-!TransferNet methodsFor: 'main protocol' stamp: 'JMS 6/13/2022 21:15:25'!
-reportOf: anAccount
+!TransferNet methodsFor: 'main protocol' stamp: 'jms 6/14/2022 21:54:57'!
+generateReportOf: anAccountToBeReported
 
-	^anAccount transactions 
-		inject: 0
-		into: [ :currentBalance :aTransaction | currentBalance + (aTransaction transactionDescription: self) ].
-	! !
+	| transferNet |
+	
+	transferNet := 0.
+
+	anAccountToBeReported forEachTransactionsDo: [ :aTransaction | transferNet := transferNet + (aTransaction transactionInformation: self)].
+	
+	^transferNet.! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Solucion'!
